@@ -1,0 +1,61 @@
+@import url('../Builder/config.css');
+:root {
+    --ad-FontSize: 16px;
+    --ad-Color-prim: #263238;
+    --ad-Color-sec: #00e5ff;
+    --ad-Color-del: #ff5252;
+}
+.ad-SVG {
+	display: block;
+	flex-shrink: 0;
+	background: #fff;
+	border-radius: 4px;
+}
+	.ad-Grid {
+		fill: none;
+		stroke: color(var(--ad-Color-prim) l(+75%));
+		stroke-width: 1px;
+	}
+	.ad-Grid.is-hidden {
+		opacity: 0;
+	}
+	.ad-Path {
+		fill: none;
+		stroke: color(var(--ad-Color-prim) l(+15%));
+		stroke-width: 4px;
+		stroke-linecap: round;
+	}
+	.ad-Path--filled {
+		fill: color(var(--ad-Color-prim) l(+15%));
+	}
+	.ad-Point {
+		cursor: pointer;
+		fill: #fff;
+		stroke: color(var(--ad-Color-prim) l(+15%));
+		stroke-width: 5px;
+		transition: fill .2s;
+	}
+	.ad-Point:hover,
+	.ad-PointGroup.is-active .ad-Point {
+		fill: var(--ad-Color-sec);
+	}
+	.ad-PointGroup--first .ad-Point {
+		stroke: var(--ad-Color-sec);
+	}
+	.ad-Anchor {
+		opacity: .5;
+	}
+	.ad-PointGroup.is-active .ad-Anchor {
+		opacity: 1;
+	}
+		.ad-Anchor-point {
+			cursor: pointer;
+			fill: #fff;
+			stroke: color(var(--ad-Color-prim) l(+35%));
+			stroke-width: 4px;
+		}
+		.ad-Anchor-line {
+			stroke: color(var(--ad-Color-prim) l(+35%));
+			stroke-width: 1px;
+			stroke-dasharray: 10 10;
+		}

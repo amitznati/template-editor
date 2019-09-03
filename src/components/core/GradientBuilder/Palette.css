@@ -1,0 +1,7 @@
+.palette { 
+	background-color: #eee;
+	background-image: linear-gradient(45deg, #c1c1c1 25%, transparent 25%, transparent 75%, #c1c1c1 75%, #c1c1c1),
+	linear-gradient(45deg, #c1c1c1 25%, transparent 25%, transparent 75%, #c1c1c1 75%, #c1c1c1);
+	background-size: 20px 20px;
+	background-position: 0 0, 10px 10px;
+}
