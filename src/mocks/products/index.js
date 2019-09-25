@@ -11,7 +11,7 @@ const products = [
 			width: 20
 		},
 		templateFrame: {
-			height: 25,width: 19, x: 0.5, y: 0.5
+			height: 25,width: 18.5, x: 0.5, y: 1.1
 		}
 	},
 	{

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import FontPicker from 'font-picker-react';
 import config from '../../config';
-import { style } from '@material-ui/system';
 
 export default class CoreFontSelector extends Component {
 	constructor(props) {

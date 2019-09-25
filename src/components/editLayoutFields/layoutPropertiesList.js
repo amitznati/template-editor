@@ -31,9 +31,9 @@ export default function LayoutPropertiesList({...props}) {
     setExpanded(isExpanded ? panel : false);
   };
   const allFields = {
-	  font: {id: 'font', title: 'Font Properties', component: FontProperties},
-	  position: {id: 'position', title: 'Position Properties', component: PositionProperties},
-	  color: {id: 'color', title: 'Color Properties', component: ColorProperties},
+	  font: {id: 'fontProperties', title: 'Font Properties', component: FontProperties},
+	  position: {id: 'positionProperties', title: 'Position Properties', component: PositionProperties},
+	  color: {id: 'colorProperties', title: 'Color Properties', component: ColorProperties},
   }
   const fields = {
 	  text: [

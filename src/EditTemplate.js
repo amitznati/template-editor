@@ -47,10 +47,11 @@ const layoutsTemplate = (type,payload) => {
 			type: 'text',
 			properties: {
 				text: payload,
-				x: 5, y: 5, scaleX: 1, scaleY: 1,
+				x: 5, y: 10, scaleX: 1, scaleY: 1,
 				fontSize: 40, fontFamily: 'Raleway', fontWeight: '100',
 				rotate: 0,
-				fill: {fill: 'black'}
+				fill: {fill: 'black'},
+				transform: {}
 			}
 		};
 	case 'textPath': 
@@ -84,8 +85,8 @@ class EditTemplate extends React.Component {
 
 	componentDidMount() {
 		let {template} = this.state;
-
-		template.layouts.push(layoutsTemplate('text','All the worlds a stage, and all the men and women merely players.'));
+// and all the men and women merely players.
+		template.layouts.push(layoutsTemplate('text','All the worlds a stage,'));
 		this.setState({template});
 		
 	}
@@ -250,6 +251,7 @@ class EditTemplate extends React.Component {
 							onLayoutClick={this.onLayoutClick}
 							onEditLayoutEnd={this.onEditLayoutEnd}
 							selectedLayoutIndex={selectedLayoutIndex}
+							selectedLayout={selectedLayout}
 						/>}
 						{allFonts && allFonts.length && <FontLoader
 							fontProvider="google"

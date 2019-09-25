@@ -2,11 +2,11 @@ import React from 'react';
 import {Grid} from '@material-ui/core';
 import { CoreNumber, CoreSelect, CoreFontSelector } from '../core';
 const FontProperties = (props) => {
-	/* only rerenders if props change */
 	const weightOptions =
 	['normal','100','200','300','400','500','600','700','800','900','bold','bolder','lighter'].map((i) => {
 		return {id: i, name: i};
 	});
+
 	const {layout: {properties: {fontSize, fontWeight}}} = props;
 	
 	return (

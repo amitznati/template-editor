@@ -1,27 +1,37 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import cx from 'classnames';
-import Transformer from './subjx';
-export default class CanvasText extends React.Component {
-	textRef = React.createRef();
-	static propTypes = {
-		onUpdateNode: PropTypes.func
-	}
+import {getPX} from './../../utils';
 
 
-	render() {
-		return (
-			<Transformer>
-				<text
-					{...this.props}
-					className={cx('drag-svg')}
-					ref={this.textRef}
-				>
-					{this.props.text}
-				</text>
-			</Transformer>
+const Text =({...props}) => {
+
+	const textRef = React.createRef();
+	const {scale, layout, index} = props;
+	const {fontFamily, fontSize, fontWeight, x, y, text,
+		transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0}
+	} = layout.properties;
+	
+	const textProperties = {
+		fontFamily,
+		fontSize, 
+		fontWeight,
+		x: getPX(x),
+		y: getPX(y),
+		transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`
+	};
+	return (
+		<text
+			{...textProperties}
+			className={cx('drag-svg')}
+			name={index}
+			key={`text_${index}`}
+			ref={textRef}
+			layoutindex={index}
 			
-		);
-	}
+		>
+			{text}
+		</text>
+	);
 }
+
+export default Text;
