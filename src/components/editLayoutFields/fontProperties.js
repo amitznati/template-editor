@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Grid} from '@material-ui/core';
 import { CoreNumber, CoreSelect, CoreFontSelector } from '../core';
-import FontLoader from '../../fontLoader';
 
 const FontProperties = (props) => {
 	const weightOptions =
@@ -10,7 +9,7 @@ const FontProperties = (props) => {
 	});
 
 	const styleOptions =
-	['italic'].map((i) => {
+	['italic', 'normal'].map((i) => {
 		return {id: i, name: i};
 	});
 
@@ -29,10 +28,6 @@ const FontProperties = (props) => {
 			}
 		});
 	}
-
-	const onFontActive = (familyName, fvd) => {
-		console.info(familyName + ' ' + fvd + ' is Active!');
-	};
 
 	return (
 		<Grid container>
@@ -57,7 +52,7 @@ const FontProperties = (props) => {
 					onChange={v => onPropertyChange('fontWeight', v)}
 				/>
 			</Grid>
-			<Grid item xs={3}>
+			<Grid item xs={4}>
 				<CoreSelect
 					label="Style"
 					value={fontStyle}
@@ -65,11 +60,6 @@ const FontProperties = (props) => {
 					onChange={v => onPropertyChange('fontStyle', v)}
 				/>
 			</Grid>
-			{/* <FontLoader
-				fontProvider="google"
-				fontFamilies={[`${selectedFontFamily}:${selectedFontWeight}${selectedFontStyle}`]}
-				fontactive={onFontActive}
-			/> */}
 		</Grid>
 	);
 };
