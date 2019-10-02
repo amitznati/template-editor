@@ -1,141 +1,106 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import subjx from './../LayoutsKonvaJS/subjx/js';
-import './../LayoutsKonvaJS/subjx/style/subjx.css';
-import {getCM, decomposeMatrix} from './../../utils';
+import { Stage, Layer, Transformer } from 'react-konva';
 
-const svgOptions = (methods) => {
-	const options = {
-		container: '#svg-container',
-		//restrict: '#svg-container',
-		//proportions: true,
-		//rotationPoint: true,
-		themeColor: 'purple',
-		each: {
-			//move: true,
-			//rotate: true
-		},
-		snap: {
-			x: 0,
-			y: 0,
-			angle: 1
-		},
-		cursorMove: 'move',
-		cursorRotate: 'crosshair',
-		cursorResize: 'pointer',
-		...methods
+class TransformerComponent extends React.Component {
+	static propTypes = {
+		selectedShapeName: PropTypes.string,
+		onUpdateNode: PropTypes.func
 	}
-	return options;
-};
-
-
-class DesignCanvas extends React.Component {
-	getActiveNode = () => {
-		const {selectedLayoutIndex} = this.props;
-		let node = undefined;
-		React.Children.map(this.props.children, (element, idx) => {
-			if (element.props.layoutindex === selectedLayoutIndex) {
-				node = element.ref.current;
-			}
-		});
-		return node;
-	};
-
-	getPropertiesFromActiveNode = (el) => {
-		if (!el) return {};
-		const {scale} = this.props;
-		const x = el.x.baseVal[0].value;
-		const y = el.y.baseVal[0].value;
-		const matrix = el.transform && el.transform.baseVal[0] && el.transform.baseVal[0].matrix
-		const {a,b,c,d,e,f} = matrix;
-		const transform = matrix ? {scaleX: a.toFixed(3), skewX: b.toFixed(3), skewY: c.toFixed(3), scaleY: d.toFixed(3), translateX: e.toFixed(3), translateY: f.toFixed(3)}: {};
-		return {
-			x: getCM(x),
-			y: getCM(y),
-			transform
-		};
+	componentDidMount() {
+		this.checkNode();
 	}
-
-	methods = {
-		onResize: (dx, dy) => {
-			console.log('{dx, dy}', {dx, dy});
-		},
-		// onRotate: (rad) => {
-		// 	this.updateNode({rotate: rad});
-		// },
-		onDrop: (e, el) => {
-			const newVals = this.getPropertiesFromActiveNode(el);
-			this.updateNode(newVals);
-		},
-		// onInit(el) {
-		// 	//console.log('init');
-		// },
-		// onMove: () => {
-		// 	const el = this.getActiveNode();
-		//  	const newVals = this.getPropertiesFromActiveNode(el);
-		// 	this.updateNode(newVals);
-		// },
-		// onDestroy(el) {
-		// 	console.log('is destroyed');
-		// }
-	};
-
-	
-
-	updateNode = (newVals) => {
-		const {selectedLayout, onUpdateLayout} = this.props;
-		selectedLayout.properties = {
-			...selectedLayout.properties,
-			...newVals
-		};
-		onUpdateLayout && onUpdateLayout(selectedLayout);
+	componentDidUpdate() {
+		this.checkNode();
 	}
+	checkNode() {
+		// here we need to manually attach or detach Transformer node
+		const stage = this.transformer.getStage();
+		const { selectedShapeName } = this.props;
 
-	handleStageMouseDown = e => {
-		// clicked on stage - cler selection
-		if ('svg-container' === e.target.id) {
-			this.props.onEditLayoutEnd();
-		//	this.currentLayout && this.currentLayout.disable();
+		const selectedNode = stage.findOne('.' + selectedShapeName);
+		// do nothing if selected node is already attached
+		if (selectedNode === this.transformer.node()) {
 			return;
 		}
-		if (e.target.classList.contains('sjx-drag')) return;
-		// this.currentLayout && this.currentLayout.disable();
-		// this.currentLayout = subjx(e.target).drag(svgOptions(this.methods), obs)[0];
-		this.props.onLayoutClick(Number(e.target.getAttribute('name')));
-	};
 
-	componentDidUpdate(prevProps) {
-		const {selectedLayoutIndex} = this.props;
-		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex) {
-			this.currentLayout && this.currentLayout.disable();
-			const node = this.getActiveNode();
-			this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+		if (selectedNode) {
+			// attach to another node
+			this.transformer.attachTo(selectedNode);
+		} else {
+			// remove transformer
+			this.transformer.detach();
 		}
+		this.transformer.getLayer().batchDraw();
 	}
-
 	render() {
-		const {h, w} = this.props;
+		const {rotateEnabled = true} = this.props;
 		return (
-			<svg id="svg-container" viewBox={`0 0 ${w} ${h}`} xmlns="http://www.w3.org/2000/svg"
-				xmlnsXlink="http://www.w3.org/1999/xlink" 
-				onMouseDown={this.handleStageMouseDown}>
-				{this.props.children}
-			</svg>
+			<Transformer
+				onTransformEnd={(e) => this.props.onUpdateNode(e.currentTarget.node())}
+				ref={node => {
+					this.transformer = node;
+				}}
+				rotateEnabled={rotateEnabled}
+			/>
 		);
 	}
 }
 
-DesignCanvas.propTypes = {
-	children: PropTypes.array,
-	onUpdateNode: PropTypes.func,
-	onLayoutClick: PropTypes.func,
-	onEditLayoutEnd: PropTypes.func,
-	selectedLayoutIndex: PropTypes.any,
-	h: PropTypes.number,
-	w: PropTypes.number,
-	scale: PropTypes.number,
-	layout: PropTypes.array
-};
-
-export default DesignCanvas;
+export default class DesignCanvas extends React.Component {
+	static propTypes = {
+		children: PropTypes.array,
+		onUpdateNode: PropTypes.func,
+		onLayoutClick: PropTypes.func,
+		onEditLayoutEnd: PropTypes.func,
+		selectedLayoutIndex: PropTypes.any,
+		h: PropTypes.number,
+		w: PropTypes.number,
+		scale: PropTypes.number
+	}
+	handleStageMouseDown = e => {
+		// clicked on stage - cler selection
+		if (e.target === e.target.getStage()) {
+			this.props.onEditLayoutEnd();
+			return;
+		}
+		// clicked on transformer - do nothing
+		const clickedOnTransformer =
+		e.target.getParent().className === 'Transformer';
+		if (clickedOnTransformer) {
+			return;
+		}
+	
+		// find clicked rect by its name
+		const name = e.target.name();
+		const {onLayoutClick, onEditLayoutEnd} =this.props;
+		if (name) {
+			onLayoutClick && onLayoutClick(Number(name));
+		} else {
+			onEditLayoutEnd && onEditLayoutEnd();
+		}
+	};
+	render() {
+		const {w, h, scale, selectedLayoutIndex, onUpdateNode, selectedLayout} = this.props;
+		const rotateEnabled = selectedLayout && selectedLayout.type !== 'textPath';
+		return (
+			<Stage
+				width={w}
+				height={h}
+				onMouseDown={this.handleStageMouseDown}
+				scaleX={scale}
+				scaleY={scale}
+			>
+				<Layer>
+					{this.props.children}
+					<TransformerComponent
+						selectedShapeName={`${selectedLayoutIndex}`}
+						onUpdateNode={onUpdateNode}
+						rotateEnabled={rotateEnabled}
+					/>
+				</Layer>
+			</Stage>
+		);
+	}
+}

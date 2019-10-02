@@ -245,14 +245,10 @@ class EditLayout extends React.Component {
 	}
 
 	renderFontSelector = () => {
-		const {layout: {properties: {fontStyle, fontWeight}}} = this.props;
 		return (
 			<Grid container justify="center">
 				<Grid item>
-					<CoreFontSelector
-						onChange={v => this.handleChange('fontFamily', v)}
-						{...{fontWeight, fontStyle}}
-					/>
+					<CoreFontSelector />
 				</Grid>
 			</Grid>
 			

@@ -48,10 +48,9 @@ const layoutsTemplate = (type,payload) => {
 			properties: {
 				text: payload,
 				x: 5, y: 10, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway', fontWeight: '100',
+				fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100',
 				rotate: 0,
-				fill: {fill: 'black'},
-				transform: {}
+				fill: {fill: 'black'}
 			}
 		};
 	case 'textPath': 
@@ -60,7 +59,7 @@ const layoutsTemplate = (type,payload) => {
 			properties: {
 				text: payload,
 				x: 5, y: 5, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway', fontStyle: '100',
+				fontSize: 40, fontFamily: 'Raleway', fontStyle: '100:bold',
 				rotation: 0,
 				fill: {fill: 'black'},
 			}
@@ -144,9 +143,9 @@ class EditTemplate extends React.Component {
 		const {layouts = []} = template;
 		const allFonts = [];
 		layouts.map(l => {
-			const {fontFamily, fontStyle} = l.properties;
+			const {fontFamily, fontStyle, fontWeight} = l.properties;
 			if (l.type === 'text' || l.type === 'textPath') {
-				allFonts.push(`${fontFamily}:${(fontStyle && fontStyle.replace(' ',',')) || 300}`);
+				allFonts.push(`${fontFamily}:${fontWeight || 300}${fontStyle || 'normal'}`);
 			}
 			return false;
 		});
@@ -217,7 +216,7 @@ class EditTemplate extends React.Component {
 						<ProductProperties  product={undefined} onProductChanged={(p) => this.setState({product: p})}/>
 					</Paper>
 				</Grid>
-				<Grid item md={3} className={classes.section}>
+				<Grid item md={2} className={classes.section}>
 					<Button variant="outlined" color="primary" onClick={() => this.setState({isAddOpen: true})}>
 					+ Add Layout
 					</Button>
@@ -234,7 +233,7 @@ class EditTemplate extends React.Component {
 						onTogglePathBuilder={this.onTogglePathBuilder.bind(this)}
 					/>}
 				</Grid>
-				{product && <Grid item md={9} className={classes.section}>
+				{product && <Grid item md={10} className={classes.section}>
 					<CoreSlider
 						label="Scale"
 						value={scale}

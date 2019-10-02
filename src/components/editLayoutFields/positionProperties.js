@@ -2,25 +2,17 @@ import React from 'react';
 import {Grid} from '@material-ui/core';
 import { CoreNumber } from '../core';
 const PositionProperties = (props) => {
-	const {layout: {properties: {x, y, transform}}} = props;
-	const {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0} = transform;
+	const {layout: {properties: {x, y, rotation = 0, scaleX = 1, scaleY = 1 }}} = props;
 	const numberFields = [
 		{name: 'x', title: 'X', value: x},
 		{name: 'y', title: 'Y', value: y},
 		{name: 'scaleX', title: 'Scale X', value: scaleX},
 		{name: 'scaleY', title: 'Scale Y', value: scaleY},
-		{name: 'translateX', title: 'Translate X', value: translateX},
-		{name: 'translateY', title: 'Translate Y', value: translateY},
-		{name: 'skewX', title: 'skewX', value: skewX},
-		{name: 'skewY', title: 'skewY', value: skewY},
+		{name: 'rotation', title: 'rotation', value: rotation},
 	]
 
 	const onPropertyChange = (name, value) => {
-		if (['x','y'].includes(name)) {
-			props.onPropertyChange && props.onPropertyChange(name, value)
-		} else {
-			props.onPropertyChange && props.onPropertyChange('transform', {...transform, [name]: value})
-		}
+		props.onPropertyChange && props.onPropertyChange(name, value)
 	}
 	return (
 		<Grid container>

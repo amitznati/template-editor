@@ -38,7 +38,10 @@ export default function LayoutPropertiesList({...props}) {
   const fields = {
 	  text: [
 		  allFields.font, allFields.position, allFields.color
-	  ]
+    ],
+    textPath: [
+      allFields.font, allFields.position, allFields.color
+    ]
   };
 
   return (

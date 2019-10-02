@@ -1,37 +1,32 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import cx from 'classnames';
-import {getPX} from './../../utils';
+import PropTypes from 'prop-types';
+import { Text, useStrictMode } from 'react-konva';
+import GradientShapes from './GradientShapes';
 
+useStrictMode(true);
+export default class CanvasText extends React.Component {
+	static propTypes = {
+		onUpdateNode: PropTypes.func
+	}
 
-const Text =({...props}) => {
-
-	const textRef = React.createRef();
-	const {scale, layout, index} = props;
-	const {fontFamily, fontSize, fontWeight, x, y, text,
-		transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0}
-	} = layout.properties;
-	
-	const textProperties = {
-		fontFamily,
-		fontSize, 
-		fontWeight,
-		x: getPX(x),
-		y: getPX(y),
-		transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`
-	};
-	return (
-		<text
-			{...textProperties}
-			className={cx('drag-svg')}
-			name={index}
-			key={`text_${index}`}
-			ref={textRef}
-			layoutindex={index}
-			
-		>
-			{text}
-		</text>
-	);
+	render() {
+		const {gradientData} = this.props;
+		const shapes = [];
+		if (gradientData && gradientData.gradientPointsOnFocus) {
+			shapes.push(<GradientShapes {...this.props} />);
+		}
+		
+		shapes.push(<Text key={`text-${this.props.name}`}
+			{...this.props}
+			ref={node => {
+				this.textNode = node;
+			}}
+			draggable
+			onDragEnd={() => this.props.onUpdateNode(this.textNode)}
+		/>
+		);
+		
+		return shapes;
+	}
 }
-
-export default Text;
