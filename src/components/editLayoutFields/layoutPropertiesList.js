@@ -56,7 +56,8 @@ export default function LayoutPropertiesList({...props}) {
           y,
           rotation = 0,
           scaleX = 1,
-          scaleY = 1 
+          scaleY = 1,
+          fill
         }
       }
     } = props;
@@ -68,7 +69,7 @@ export default function LayoutPropertiesList({...props}) {
         return <PositionProperties {...{x, y, rotation, scaleX, scaleY, onPropertyChange }} />;
       }
       case 'colorProperties': {
-        return <ColorProperties />;
+        return <ColorProperties {...{fill, onPropertyChange}} />;
       }
       default:
         return '';

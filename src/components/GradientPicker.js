@@ -39,11 +39,16 @@ const WrappedSketchPicker = ({ onSelect, ...rest }) => {
 
 
 class GradientPicker extends React.Component {
+	constructor(props){
+		super(props);
+		this.gradientRef = React.createRef();
+	}
 	componentDidMount(){
 		const {onPaletteChange, gradientData} = this.props;
 		if (onPaletteChange) {
 			onPaletteChange(gradientData);
 		}
+		console.log(this.gradientRef);
 	}
 
 	handleAngleChange = (angle) => {
@@ -70,10 +75,10 @@ class GradientPicker extends React.Component {
 		const {gradientData} = this.props;
 		const {palette, activeId, isActive, gradientType} = gradientData;
 		return (
-			<div>
+			<div ref={this.gradientRef}>
 				<ClickAwayListener onClickAway={() => this.handleChange({isActive: false})}>
 					<GradientBuilder {...{
-						width: 320,
+						width: 250,
 						height: 32,
 						palette,
 						activeId,
