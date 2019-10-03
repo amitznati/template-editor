@@ -2,7 +2,7 @@ import React from 'react';
 //import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
 import WebFont from 'webfontloader';
-import { CoreNumber, CoreSelect, CoreFontSelector } from '../core';
+import { CoreNumber, CoreSelect, CoreFontSelector, CoreText } from '../core';
 
 // const useStyles = makeStyles(theme => ({
 // 	progress: {
@@ -22,7 +22,7 @@ const FontProperties = (props) => {
 		return {id: i, name: i};
 	});
 
-	const {fontSize, fontWeight, fontStyle, fontFamily} = props;
+	const {fontSize, fontWeight, fontStyle, fontFamily, text} = props;
 	const onPropertyChange = (name, value) => {
 		const selectedFontFamily = name === 'fontFamily' ? value : fontFamily;
 		const selectedFontWeight = name === 'fontWeight' ? value : fontWeight;
@@ -40,6 +40,13 @@ const FontProperties = (props) => {
 
 	return (
 		<Grid container>
+			<Grid item xs={12}>
+				<CoreText
+					label="Text"
+					value={text}
+					handleChange={v => props.onPropertyChange && props.onPropertyChange('text', v)}
+				/>
+			</Grid>
 			<Grid item xs={12} >
 				<CoreFontSelector
 					{...{fontFamily, fontStyle, fontWeight}}

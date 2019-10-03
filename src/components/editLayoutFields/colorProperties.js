@@ -1,7 +1,7 @@
 import React from 'react';
-import {Grid, Button, Typography} from '@material-ui/core';
+import {Grid, Button} from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
-import { CoreColorPicker } from '../core';
+import { CoreColorPicker, CoreNumber } from '../core';
 import GradientPicker from '../GradientPicker';
 
 export default class ColorProperties extends React.Component {
@@ -9,7 +9,9 @@ export default class ColorProperties extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			colorPickerOpen: false
+			colorPickerOpen: false,
+			strokeAnchorEl: null,
+			
 		}
 	}
 	handleColorOpen = (e) => {
@@ -32,7 +34,7 @@ export default class ColorProperties extends React.Component {
 		const {fill} = this.props;
 		const {anchorEl} = this.state;
 		const open = Boolean(anchorEl);
-  		const id = open ? 'simple-popover' : undefined;
+  		const id = open ? 'fill-color-popover' : undefined;
 		const color = fill && fill.fill;
 		return (
 			<Grid container>
@@ -103,6 +105,40 @@ export default class ColorProperties extends React.Component {
 		onPropertyChange && onPropertyChange('fill', fill);
 	};
 
+	renderStrokeProperties = () => {
+		const {stroke, strokeWidth = 0, onPropertyChange} = this.props;
+		const {strokeAnchorEl} = this.state;
+		const open = Boolean(strokeAnchorEl);
+  		const id = open ? 'stroke-color-popover' : undefined;
+		return (
+			<Grid container>
+				<Grid item xs={12}>
+					Stroke
+				</Grid>
+				<Grid item xs={3}>
+					<Button aria-describedby={id} size="small" onClick={(e) => this.setState({strokeAnchorEl: e.currentTarget})} style={{background: stroke}}>
+					Stroke color
+					</Button>
+					<CoreColorPicker
+						anchorEl={strokeAnchorEl}
+						id={id}
+						open={open}
+						handleClose={() => this.setState({strokeAnchorEl: null})}
+						onChange={v => onPropertyChange('stroke', v)}
+						color={stroke}
+					/>
+				</Grid>
+				<Grid item xs={6}>
+					<CoreNumber
+						label="Stroke Width"
+						value={strokeWidth}
+						onChange={v => onPropertyChange('strokeWidth', v)}
+					/> 
+				</Grid>
+			</Grid>
+		);
+	}
+
 	render() {
 		const {fill} = this.props;
 		let selectedFillColorType = 'Fill';
@@ -112,9 +148,7 @@ export default class ColorProperties extends React.Component {
 		return (
 			<Grid container >
 				<Grid item xs={12}>
-					{/* <Typography variant="h6" gutterBottom> */}
 						Fill Color
-					{/* </Typography> */}
 				</Grid>
 				<Grid item>
 					<ToggleButtonGroup size="medium" exclusive value={selectedFillColorType} onChange={this.handleFillColorTypeChange}>
@@ -134,6 +168,7 @@ export default class ColorProperties extends React.Component {
 				<Grid item md={12}>
 					{this.fillColorFields[selectedFillColorType]()}
 				</Grid>
+				{this.renderStrokeProperties()}
 			</Grid>
 		);
 	}

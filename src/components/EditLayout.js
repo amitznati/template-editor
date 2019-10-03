@@ -320,7 +320,7 @@ class EditLayout extends React.Component {
 		);
 	}
 	render() {
-		const {classes, layout, onBack} = this.props;
+		const {classes, layout, onBack, onTogglePathBuilder} = this.props;
 		return (
 			<Paper className={classes.paper}>
 				<Fab size="medium" color="secondary" className={classes.fab} onClick={onBack}>
@@ -328,7 +328,11 @@ class EditLayout extends React.Component {
 				</Fab>
 				<Grid container>
 					{/* {fields[layout.type].map(this.renderFields.bind(this))} */}
-					<LayoutPropertiesList onPropertyChange={this.onPropertyChange} layout={layout}/>
+					<LayoutPropertiesList
+						onPropertyChange={this.onPropertyChange}
+						layout={layout}
+						onTogglePathBuilder={onTogglePathBuilder}
+					/>
 				</Grid>
 			</Paper>
 		);
