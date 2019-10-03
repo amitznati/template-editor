@@ -37,7 +37,7 @@ const FontProperties = (props) => {
 			},
 		});
 	}
-	console.log('render')
+
 	return (
 		<Grid container>
 			<Grid item xs={12} >

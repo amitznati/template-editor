@@ -112,12 +112,12 @@ export default class ColorProperties extends React.Component {
 		return (
 			<Grid container >
 				<Grid item xs={12}>
-					<Typography variant="h6" gutterBottom>
+					{/* <Typography variant="h6" gutterBottom> */}
 						Fill Color
-					</Typography>
+					{/* </Typography> */}
 				</Grid>
 				<Grid item>
-					<ToggleButtonGroup size="large" exclusive value={selectedFillColorType} onChange={this.handleFillColorTypeChange}>
+					<ToggleButtonGroup size="medium" exclusive value={selectedFillColorType} onChange={this.handleFillColorTypeChange}>
 						<ToggleButton value="Fill">
 							<i className="material-icons">
 								format_color_fill

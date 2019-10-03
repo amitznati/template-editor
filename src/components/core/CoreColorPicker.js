@@ -23,7 +23,7 @@ const CoreColorPicker = ({...props}) => {
 			onClose={handleClose}
 			anchorOrigin={{
 				vertical: 'bottom',
-				horizontal: 'right',
+				horizontal: 'left',
 			}}
 			transformOrigin={{
 				vertical: 'top',

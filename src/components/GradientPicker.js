@@ -8,8 +8,7 @@ import {GradientBuilder, CoreNumber} from './../components/core';
 const styles = {
 	popover: {
 		position: 'absolute',
-		zIndex: '2',
-		bottom: '-190px'
+		zIndex: '2'
 	},
 	cover: {
 		position: 'fixed',
@@ -122,7 +121,7 @@ class GradientPicker extends React.Component {
 										type="number" 
 										label={name} 
 										value={gradientData[name]} 
-										handleTextChange={(v) => this.handleChange({[name]: v})}
+										onChange={(v) => this.handleChange({[name]: v})}
 										onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
 									/>
 								</Grid>
@@ -136,7 +135,7 @@ class GradientPicker extends React.Component {
 											type="number"
 											label={name}
 											value={gradientData[name]}
-											handleTextChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
+											onChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
 											onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
 										/>
 									</Grid>
