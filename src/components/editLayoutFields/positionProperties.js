@@ -2,7 +2,7 @@ import React from 'react';
 import {Grid} from '@material-ui/core';
 import { CoreNumber } from '../core';
 const PositionProperties = (props) => {
-	const {layout: {properties: {x, y, rotation = 0, scaleX = 1, scaleY = 1 }}} = props;
+	const {x, y, rotation = 0, scaleX = 1, scaleY = 1 } = props;
 	const numberFields = [
 		{name: 'x', title: 'X', value: x},
 		{name: 'y', title: 'Y', value: y},

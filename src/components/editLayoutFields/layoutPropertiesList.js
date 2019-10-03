@@ -44,6 +44,37 @@ export default function LayoutPropertiesList({...props}) {
     ]
   };
 
+  const renderProperties = (type) => {
+    const {
+      layout: {
+        properties: {
+          fontSize,
+          fontWeight,
+          fontStyle,
+          fontFamily,
+          x,
+          y,
+          rotation = 0,
+          scaleX = 1,
+          scaleY = 1 
+        }
+      }
+    } = props;
+    switch(type) {
+      case 'fontProperties': {
+        return <FontProperties {...{fontSize, fontWeight, fontStyle, fontFamily, onPropertyChange}} />;
+      }
+      case 'positionProperties': {
+        return <PositionProperties {...{x, y, rotation, scaleX, scaleY, onPropertyChange }} />;
+      }
+      case 'colorProperties': {
+        return <ColorProperties />;
+      }
+      default:
+        return '';
+    }
+  }
+
   return (
     <div className={classes.root}>
 		{fields[layout.type].map((field) => {
@@ -58,7 +89,7 @@ export default function LayoutPropertiesList({...props}) {
 						{/* <Typography className={classes.secondaryHeading}>family, size, weigth..</Typography> */}
 					</ExpansionPanelSummary>
 					<ExpansionPanelDetails>
-						{field.component({layout, onPropertyChange})}
+						{renderProperties(field.id)}
 					</ExpansionPanelDetails>
 				</ExpansionPanel>
 			);

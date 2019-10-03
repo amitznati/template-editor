@@ -1,8 +1,17 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core';
+import WebFont from 'webfontloader';
 import { CoreNumber, CoreSelect, CoreFontSelector } from '../core';
 
+const useStyles = makeStyles(theme => ({
+	progress: {
+	  margin: theme.spacing(2),
+	},
+}));
+
 const FontProperties = (props) => {
+
 	const weightOptions =
 	['normal','100','200','300','400','500','600','700','800','900','bold','bolder','lighter'].map((i) => {
 		return {id: i, name: i};
@@ -13,9 +22,8 @@ const FontProperties = (props) => {
 		return {id: i, name: i};
 	});
 
-	const {layout: {properties: {fontSize, fontWeight, fontStyle, fontFamily}}} = props;
+	const {fontSize, fontWeight, fontStyle, fontFamily} = props;
 	const onPropertyChange = (name, value) => {
-		const WebFont = require('webfontloader');
 		const selectedFontFamily = name === 'fontFamily' ? value : fontFamily;
 		const selectedFontWeight = name === 'fontWeight' ? value : fontWeight;
 		const selectedFontStyle = name === 'fontStyle' ? value : fontStyle;
@@ -23,12 +31,13 @@ const FontProperties = (props) => {
 			google: {
 				families: [`${selectedFontFamily}:${selectedFontWeight}${selectedFontStyle}`]
 			},
-			active: () => {
+			fontactive: (familyName, fvd) => {
+				console.info(familyName + ' ' + fvd + ' is Active!');
 				props.onPropertyChange && props.onPropertyChange(name, value);
-			}
+			},
 		});
 	}
-
+	console.log('render')
 	return (
 		<Grid container>
 			<Grid item xs={12} >
