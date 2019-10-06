@@ -85,6 +85,7 @@ class EditTemplate extends React.Component {
 	componentDidMount() {
 		let {template} = this.state;
 // and all the men and women merely players.
+		template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
 		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
 		this.setState({template});
 		
