@@ -2,72 +2,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SketchPicker } from 'react-color';
+import {Popover} from '@material-ui/core';
 
 const getRgba = (rgba) => {
 	return `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
 };
 
-class CoreColorPicker extends React.Component {
-	state = {
-		displayColorPicker: false,
-		color: {
-			r: '241',
-			g: '112',
-			b: '19',
-			a: '1',
-		},
+const CoreColorPicker = ({...props}) => {
+	const {handleClose, onChange, open, id, anchorEl, color} = props;
+
+	const handleChange = (color) => {
+		onChange && onChange(getRgba(color.rgb));
 	};
 
-	handleClick = () => {
-		this.setState({ displayColorPicker: !this.state.displayColorPicker });
-	};
-
-	handleClose = () => {
-		this.setState({ displayColorPicker: false });
-	};
-
-	handleChange = (color) => {
-		this.setState({ color: color.rgb });
-		this.props.onChange && this.props.onChange(getRgba(color.rgb));
-	};
-
-	render() {
-
-		const styles = {
-			color: {
-				width: '36px',
-				height: '14px',
-				borderRadius: '2px',
-				background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
-			},
-			swatch: {
-				padding: '5px',
-				background: '#fff',
-				borderRadius: '1px',
-				boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-				display: 'inline-block',
-				cursor: 'pointer',
-			},
-			popover: {
-				position: 'absolute',
-				zIndex: '2',
-			},
-			cover: {
-				position: 'fixed',
-				top: '0px',
-				right: '0px',
-				bottom: '0px',
-				left: '0px',
-			},
-		};
-		const {color, ...rest} = this.props;
-		return (
-			<div style={ styles.popover }>
-				<div style={ styles.cover } onClick={ rest.handleClose }/>
-				<SketchPicker color={color || this.state.color} { ...rest } onChange={this.handleChange} />
-			</div>
-		);
-	}
+	return (
+		<Popover
+			id={id}
+			open={open}
+			anchorEl={anchorEl}
+			onClose={handleClose}
+			anchorOrigin={{
+				vertical: 'bottom',
+				horizontal: 'left',
+			}}
+			transformOrigin={{
+				vertical: 'top',
+				horizontal: 'left',
+			}}
+			>
+			<SketchPicker color={color} onChange={handleChange} />
+		</Popover>
+	);
+	
 }
 
 CoreColorPicker.propTypes = {

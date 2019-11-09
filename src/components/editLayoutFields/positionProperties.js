@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Grid} from '@material-ui/core';
 import { CoreNumber } from '../core';
 const PositionProperties = (props) => {
-	const {layout: {properties: {x, y, transform}}} = props;
+	const {x, y, transform} = props;
 	const {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0} = transform;
 	const numberFields = [
 		{name: 'x', title: 'X', value: x},
@@ -13,15 +14,16 @@ const PositionProperties = (props) => {
 		{name: 'translateY', title: 'Translate Y', value: translateY},
 		{name: 'skewX', title: 'skewX', value: skewX},
 		{name: 'skewY', title: 'skewY', value: skewY},
-	]
+	];
 
 	const onPropertyChange = (name, value) => {
 		if (['x','y'].includes(name)) {
-			props.onPropertyChange && props.onPropertyChange(name, value)
+			props.onPropertyChange && props.onPropertyChange(name, value);
 		} else {
-			props.onPropertyChange && props.onPropertyChange('transform', {...transform, [name]: value})
+			props.onPropertyChange && props.onPropertyChange('transform', {...transform, [name]: value});
 		}
-	}
+	};
+
 	return (
 		<Grid container>
 			{numberFields.map((f) => {
@@ -36,6 +38,13 @@ const PositionProperties = (props) => {
 			})}
 		</Grid>
 	);
+};
+
+PositionProperties.propTypes = {
+	x: PropTypes.number,
+	y: PropTypes.number,
+	transform: PropTypes.object,
+	onPropertyChange: PropTypes.func
 };
 
 export default PositionProperties;

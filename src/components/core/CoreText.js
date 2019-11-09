@@ -5,13 +5,14 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from './../../styles/styles';
 
 const CoreText = props => {
-	const {value, handleChange, label, type = 'text'} = props;
+	const {value, handleChange, label, type = 'text', onFocus} = props;
 	return (
 		<FormControl fullWidth >
 			<TextField
 				type={type}
 				label={label}
 				value={value}
+				onFocus={onFocus}
 				onChange={(e) => handleChange && handleChange(e.target.value)}
 			/>
 		</FormControl>

@@ -8,8 +8,7 @@ import {GradientBuilder, CoreNumber} from './../components/core';
 const styles = {
 	popover: {
 		position: 'absolute',
-		zIndex: '2',
-		bottom: '-190px'
+		zIndex: '2'
 	},
 	cover: {
 		position: 'fixed',
@@ -39,6 +38,10 @@ const WrappedSketchPicker = ({ onSelect, ...rest }) => {
 
 
 class GradientPicker extends React.Component {
+	constructor(props){
+		super(props);
+		this.gradientRef = React.createRef();
+	}
 	componentDidMount(){
 		const {onPaletteChange, gradientData} = this.props;
 		if (onPaletteChange) {
@@ -70,10 +73,10 @@ class GradientPicker extends React.Component {
 		const {gradientData} = this.props;
 		const {palette, activeId, isActive, gradientType} = gradientData;
 		return (
-			<div>
+			<div ref={this.gradientRef}>
 				<ClickAwayListener onClickAway={() => this.handleChange({isActive: false})}>
 					<GradientBuilder {...{
-						width: 320,
+						width: 250,
 						height: 32,
 						palette,
 						activeId,
@@ -117,7 +120,7 @@ class GradientPicker extends React.Component {
 										type="number" 
 										label={name} 
 										value={gradientData[name]} 
-										handleTextChange={(v) => this.handleChange({[name]: v})}
+										onChange={(v) => this.handleChange({[name]: v})}
 										onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
 									/>
 								</Grid>
@@ -131,7 +134,7 @@ class GradientPicker extends React.Component {
 											type="number"
 											label={name}
 											value={gradientData[name]}
-											handleTextChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
+											onChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
 											onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
 										/>
 									</Grid>
@@ -154,19 +157,19 @@ GradientPicker.propTypes = {
 GradientPicker.defaultProps = {
 	gradientData: {
 		gradientType: 'Linear',
-		StartX: 100,
-		StartY: 10,
-		EndX: 150,
-		EndY: 10,
+		StartX: 50,
+		StartY: 50,
+		EndX: 50,
+		EndY: 50,
 		palette: [
-			{ pos: 0, color: '#9adafa' },
-			{ pos: 1, color: '#028080' }
+			{ pos: 0, color: 'rgba(255,0,18,1)' },
+			{ pos: 1, color: 'rgba(30,0,255,1)' }
 		],
 		activeId: 1,
 		isActive: false,
 		gradientPointsOnFocus: false,
 		Angle: 0,
-		EndRadius: 70
+		EndRadius: 50
 	}
 };
 

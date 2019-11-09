@@ -16,7 +16,7 @@ export default function SimpleSelect({...props}) {
   const classes = useStyles();
   const {value, onChange, options} = props;
   function handleChange(event) {
-	onChange && onChange(event.target.value);
+	  onChange && onChange(event.target.value);
   }
 
   return (

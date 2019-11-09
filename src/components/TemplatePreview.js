@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import DesignCanvas from './LayoutsKonvaJS/DesignCanvas';
+import {TextPath, URLImage} from './LayoutsKonvaJS';
+import {Text, RootSVG} from './svgs';
 
-import Text from './LayoutsKonvaJS/Text';
-
-import {getPX/* , getCM, decomposeMatrix */} from './../utils';
+import {getPX, getCM /* , decomposeMatrix */} from './../utils';
 const styles = theme => ({
 	templateRoot: {
 		//background: 'white',
@@ -47,15 +46,15 @@ class TemplatePreview extends React.Component {
 		return layout;
 	}
 
-	// onUpdateNode = (data) => {
-	// 	const {selectedLayout, scale} = this.props;
-	// 	selectedLayout.properties.scaleX = data.scaleX;
-	// 	selectedLayout.properties.scaleY = data.scaleY;
-	// 	selectedLayout.properties.rotation = data.rotation;
-	// 	selectedLayout.properties.x = getCM(data.x, scale);
-	// 	selectedLayout.properties.y = getCM(data.y, scale);
-	// 	this.props.onUpdateLayout(layout);
-	// }
+	onUpdateNode = (node) => {
+		const layout = this.getLayout(node);
+		layout.properties.scaleX = node.attrs.scaleX;
+		layout.properties.scaleY = node.attrs.scaleY;
+		layout.properties.rotation = node.attrs.rotation;
+		layout.properties.x = getCM(node.attrs.x);
+		layout.properties.y = getCM(node.attrs.y);
+		this.props.onUpdateLayout(layout);
+	}
 
 	onPathChange = (pathData, node) => {
 		const layout = this.getLayout(node);
@@ -64,18 +63,69 @@ class TemplatePreview extends React.Component {
 		onUpdateLayout(layout);
 	};
 
+	renderImage(layout, index) {
+		const p = layout.properties;
+		return (
+			<URLImage
+				key={index}
+				src={p.src}
+				x={getPX(p.x)}
+				y={getPX(p.y)}
+				height={getPX(p.height)}
+				width={getPX(p.width)}
+				scaleX={p.scaleX}
+				scaleY={p.scaleY}
+				rotation={p.rotation}
+				name={`${index}`}
+				onUpdateNode={this.onUpdateNode}
+			/>
+		);
+	}
 	renderText(layout, index) {
-		return Text({layout, index, scale: this.props.scale});
+		return Text({layout, index});
+		// const p = layout.properties;
+		// const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
+		// return (
+		// 	<Text 
+		// 		key={index} 
+		// 		x={getPX(x)}
+		// 		y={getPX(y)}
+		// 		{...fill}
+		// 		name={`${index}`}
+		// 		onUpdateNode={this.onUpdateNode}
+		// 		fontStyle={`${fontWeight} ${fontStyle}`}
+		// 		{...rest}
+		// 	/>
+		// );
 	}
 
+	renderTextPath(layout, index) {
+		const p = layout.properties;
+		const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
+		return (
+			<TextPath 
+				key={index} 
+				x={getPX(x)}
+				y={getPX(y)}
+				{...fill}
+				name={`${index}`}
+				onUpdateNode={this.onUpdateNode}
+				fontStyle={`${fontWeight} ${fontStyle}`}
+				{...rest}
+			/>
+		);
+	}
 
 	renderLayout = {
-		text: this.renderText.bind(this)
+		text: this.renderText.bind(this),
+		textPath: this.renderTextPath.bind(this),
+		image: this.renderImage.bind(this),
 	};
 
 	render() {
-		const {template = {}, scale, product, classes, selectedLayout} = this.props;
+		const {template = {}, scale, product, classes, selectedLayoutIndex} = this.props;
 		const {layouts = []} = template;
+		const selectedLayout = layouts[selectedLayoutIndex];
 		const productH = getPX(product.productSize.height, scale);
 		const productW = getPX(product.productSize.width, scale);
 		const templateH = getPX(product.templateFrame.height, scale);
@@ -86,18 +136,18 @@ class TemplatePreview extends React.Component {
 			<div style={{height: productH,width: productW, position: 'relative'}}>
 				<img className={classes.productImage} src={product.image} alt="product" style={{height: productH,width: productW}}/>
 				<div id="templateDiv" style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: templateY, left: templateX}}>
-					<DesignCanvas
+					<RootSVG
 						onEditLayoutEnd={this.props.onEditLayoutEnd}
 						selectedLayoutIndex={this.props.selectedLayoutIndex}
 						onLayoutClick={this.props.onLayoutClick}
 						onUpdateLayout={this.props.onUpdateLayout}
-						h={templateH}
-						w={templateW}
+						h={getPX(product.templateFrame.height)}
+						w={getPX(product.templateFrame.width)}
 						scale={scale}
 						selectedLayout={selectedLayout}
 					>
 						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
-					</DesignCanvas>
+					</RootSVG>
 				</div>
 			</div>
 		);

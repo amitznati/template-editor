@@ -9,7 +9,7 @@ import { getPath } from './utils/path';
 
 import SVG from './SVG';
 import Controls from './Controls';
-//import Portal from '../../../containers/editTemplate/components/LayoutsKonvaJS/Portal';
+import Portal from '../../LayoutsKonvaJS/Portal';
 
 
 import './Builder/styles.css';
@@ -37,7 +37,7 @@ class SVGPathBuilder extends Component {
 			fillPath: false,
 			grid: {
 				show: true,
-				snap: true,
+				snap: false,
 				size: props.gridSize,
 			},
 			points: props.initialPoints,
@@ -472,7 +472,7 @@ class SVGPathBuilder extends Component {
 				className="ad-Builder"
 				onMouseUp={ this.cancelDragging }
 			>
-				<div elementId="templateDiv">
+				<Portal elementId="templateDiv">
 					<div ref={this.portalRef}
 						style={{
 							position: 'absolute',
@@ -499,7 +499,7 @@ class SVGPathBuilder extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
+				</Portal>
 				<Drawer
 					variant="persistent"
 					anchor="right"

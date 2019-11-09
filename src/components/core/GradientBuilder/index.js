@@ -165,7 +165,7 @@ GradientBuilder.defaultProps = {
 	drop: 50,
 	palette: [
 		{ pos: 0, color: '#9adafa' },
-		{ pos: 1, color: '#028080' }
+		{ pos: 1, color: 'rgba(241,57,70,1)' }
 	],
 	activeId: 1
 };
