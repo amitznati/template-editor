@@ -47,7 +47,6 @@ class GradientPicker extends React.Component {
 		if (onPaletteChange) {
 			onPaletteChange(gradientData);
 		}
-		console.log(this.gradientRef);
 	}
 
 	handleAngleChange = (angle) => {
@@ -158,19 +157,19 @@ GradientPicker.propTypes = {
 GradientPicker.defaultProps = {
 	gradientData: {
 		gradientType: 'Linear',
-		StartX: 100,
-		StartY: 10,
-		EndX: 150,
-		EndY: 10,
+		StartX: 50,
+		StartY: 50,
+		EndX: 50,
+		EndY: 50,
 		palette: [
-			{ pos: 0, color: '#9adafa' },
-			{ pos: 1, color: '#028080' }
+			{ pos: 0, color: 'rgba(255,0,18,1)' },
+			{ pos: 1, color: 'rgba(30,0,255,1)' }
 		],
 		activeId: 1,
 		isActive: false,
 		gradientPointsOnFocus: false,
 		Angle: 0,
-		EndRadius: 70
+		EndRadius: 50
 	}
 };
 

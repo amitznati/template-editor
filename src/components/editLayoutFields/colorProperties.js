@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Grid, Button} from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
-import { CoreColorPicker, CoreNumber } from '../core';
+import { CoreColorPicker } from '../core';
 import GradientPicker from '../GradientPicker';
 
-export default class ColorProperties extends React.Component {
+class ColorProperties extends React.Component {
 
 	constructor(props){
 		super(props);
@@ -12,7 +13,7 @@ export default class ColorProperties extends React.Component {
 			colorPickerOpen: false,
 			strokeAnchorEl: null,
 			
-		}
+		};
 	}
 	handleColorOpen = (e) => {
 		this.setState({anchorEl: e.currentTarget});
@@ -34,7 +35,7 @@ export default class ColorProperties extends React.Component {
 		const {fill} = this.props;
 		const {anchorEl} = this.state;
 		const open = Boolean(anchorEl);
-  		const id = open ? 'fill-color-popover' : undefined;
+		const id = open ? 'fill-color-popover' : undefined;
 		const color = fill && fill.fill;
 		return (
 			<Grid container>
@@ -57,25 +58,14 @@ export default class ColorProperties extends React.Component {
 	};
 
 	onGradientChange = (data) => {
-		const {onPropertyChange} = this.props;
-		const {palette, EndX, EndY, StartX, StartY} = data;
-		const stops = [];
+		const {onPropertyChange, fill} = this.props;
+		const {palette} = data;
 		const layoutPalette = [];
 		palette.map(p => {
-			stops.push(...[p.pos, p.color]);
 			layoutPalette.push({pos: Number(p.pos), color: p.color});
 			return false;
 		});
-		const fill = {
-			gradientData: {...data, palette: layoutPalette},
-			fill: '',
-			fillPriority: `${data.gradientType.toLowerCase()}-gradient`,
-			[`fill${data.gradientType}GradientEndPoint`]: {x: EndX, y: EndY},
-			[`fill${data.gradientType}GradientStartPoint`]: {x: StartX, y: StartY},
-			[`fill${data.gradientType}GradientColorStops`]: stops,
-			fillRadialGradientEndRadius: data.gradientType === 'Radial' ? data.EndRadius : undefined,
-			fillRadialGradientStartRadius: data.gradientType === 'Radial' ?data.StartRadius: undefined,
-		};
+		fill.gradientData = {...data, palette: layoutPalette};
 		onPropertyChange && onPropertyChange('fill', fill);
 	};
 
@@ -95,56 +85,49 @@ export default class ColorProperties extends React.Component {
 		Gradient: this.renderFillGradientField
 	}
 
-	handleFillColorTypeChange = (event, selectedFillColor) => {
+	handleFillColorTypeChange = (event, selectedFillColorType) => {
 		const {fill, onPropertyChange} = this.props;
-		if (selectedFillColor === 'Fill') {
-			fill.fill = 'black';
-		} else {
-			fill.fill = '';
-		}
+		fill.selectedFillColorType = selectedFillColorType;
 		onPropertyChange && onPropertyChange('fill', fill);
 	};
 
-	renderStrokeProperties = () => {
-		const {stroke, strokeWidth = 0, onPropertyChange} = this.props;
-		const {strokeAnchorEl} = this.state;
-		const open = Boolean(strokeAnchorEl);
-  		const id = open ? 'stroke-color-popover' : undefined;
-		return (
-			<Grid container>
-				<Grid item xs={12}>
-					Stroke
-				</Grid>
-				<Grid item xs={3}>
-					<Button aria-describedby={id} size="small" onClick={(e) => this.setState({strokeAnchorEl: e.currentTarget})} style={{background: stroke}}>
-					Stroke color
-					</Button>
-					<CoreColorPicker
-						anchorEl={strokeAnchorEl}
-						id={id}
-						open={open}
-						handleClose={() => this.setState({strokeAnchorEl: null})}
-						onChange={v => onPropertyChange('stroke', v)}
-						color={stroke}
-					/>
-				</Grid>
-				<Grid item xs={6}>
-					<CoreNumber
-						label="Stroke Width"
-						value={strokeWidth}
-						onChange={v => onPropertyChange('strokeWidth', v)}
-					/> 
-				</Grid>
-			</Grid>
-		);
-	}
+	// renderStrokeProperties = () => {
+	// 	const {stroke, strokeWidth = 0, onPropertyChange} = this.props;
+	// 	const {strokeAnchorEl} = this.state;
+	// 	const open = Boolean(strokeAnchorEl);
+	// 	const id = open ? 'stroke-color-popover' : undefined;
+	// 	return (
+	// 		<Grid container>
+	// 			<Grid item xs={12}>
+	// 				Stroke
+	// 			</Grid>
+	// 			<Grid item xs={3}>
+	// 				<Button aria-describedby={id} size="small" onClick={(e) => this.setState({strokeAnchorEl: e.currentTarget})} style={{background: stroke}}>
+	// 				Stroke color
+	// 				</Button>
+	// 				<CoreColorPicker
+	// 					anchorEl={strokeAnchorEl}
+	// 					id={id}
+	// 					open={open}
+	// 					handleClose={() => this.setState({strokeAnchorEl: null})}
+	// 					onChange={v => onPropertyChange('stroke', v)}
+	// 					color={stroke}
+	// 				/>
+	// 			</Grid>
+	// 			<Grid item xs={6}>
+	// 				<CoreNumber
+	// 					label="Stroke Width"
+	// 					value={strokeWidth}
+	// 					onChange={v => onPropertyChange('strokeWidth', v)}
+	// 				/> 
+	// 			</Grid>
+	// 		</Grid>
+	// 	);
+	// }
 
 	render() {
 		const {fill} = this.props;
-		let selectedFillColorType = 'Fill';
-		if (!fill.fill) {
-			selectedFillColorType = 'Gradient';
-		}
+		const {selectedFillColorType = 'Fill'} = fill;
 		return (
 			<Grid container >
 				<Grid item xs={12}>
@@ -168,8 +151,15 @@ export default class ColorProperties extends React.Component {
 				<Grid item md={12}>
 					{this.fillColorFields[selectedFillColorType]()}
 				</Grid>
-				{this.renderStrokeProperties()}
+				{/* {this.renderStrokeProperties()} */}
 			</Grid>
 		);
 	}
+}
+
+ColorProperties.propTypes = {
+	fill: PropTypes.any,
+	onPropertyChange: PropTypes.func
 };
+
+export default ColorProperties;

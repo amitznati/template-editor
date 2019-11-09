@@ -9,6 +9,7 @@
     "array-move": "^2.1.0",
     "classnames": "^2.2.6",
     "cross-env": "^6.0.0",
+    "eslint": "^6.5.1",
     "font-picker-react": "^3.4.0",
     "konva": "^4.0.12",
     "node-sass": "^4.12.0",

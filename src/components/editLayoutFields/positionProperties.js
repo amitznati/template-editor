@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Grid} from '@material-ui/core';
 import { CoreNumber } from '../core';
 const PositionProperties = (props) => {
@@ -9,11 +10,11 @@ const PositionProperties = (props) => {
 		{name: 'scaleX', title: 'Scale X', value: scaleX},
 		{name: 'scaleY', title: 'Scale Y', value: scaleY},
 		{name: 'rotation', title: 'rotation', value: rotation},
-	]
+	];
 
 	const onPropertyChange = (name, value) => {
-		props.onPropertyChange && props.onPropertyChange(name, value)
-	}
+		props.onPropertyChange && props.onPropertyChange(name, value);
+	};
 	return (
 		<Grid container>
 			{numberFields.map((f) => {
@@ -28,6 +29,15 @@ const PositionProperties = (props) => {
 			})}
 		</Grid>
 	);
+};
+
+PositionProperties.propTypes = {
+	x: PropTypes.number,
+	y: PropTypes.number,
+	rotation: PropTypes.number,
+	scaleX: PropTypes.number,
+	scaleY: PropTypes.number,
+	onPropertyChange: PropTypes.func
 };
 
 export default PositionProperties;

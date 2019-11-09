@@ -49,7 +49,7 @@ const layoutsTemplate = (type,payload) => {
 				text: payload,
 				x: 5, y: 10, scaleX: 1, scaleY: 1,
 				fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100',
-				rotate: 0,strokeWidth: 0, stroke: '',
+				rotate: 0,
 				fill: {fill: 'black'}
 			}
 		};
@@ -59,9 +59,9 @@ const layoutsTemplate = (type,payload) => {
 			properties: {
 				text: payload,
 				x: 5, y: 5, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway', fontStyle: 'normal', fontWeight: '100',
+				fontSize: 40, fontFamily: 'Raleway', fontStyle: '100:bold',
 				rotation: 0,
-				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
+				fill: {fill: 'black'},
 			}
 		};
 	default:
@@ -85,8 +85,7 @@ class EditTemplate extends React.Component {
 	componentDidMount() {
 		let {template} = this.state;
 // and all the men and women merely players.
-		template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
-		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
+		template.layouts.push(layoutsTemplate('text','All the worlds a stage,'));
 		this.setState({template});
 		
 	}

@@ -99,17 +99,23 @@ class TemplatePreview extends React.Component {
 
 	renderTextPath(layout, index) {
 		const p = layout.properties;
-		const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
 		return (
 			<TextPath 
 				key={index} 
-				x={getPX(x)}
-				y={getPX(y)}
-				{...fill}
+				fontFamily={p.fontFamily}
+				fontSize={(p.fontSize)}
+				fontStyle={p.fontStyle}
+				x={getPX(p.x)}
+				y={getPX(p.y)}
+				scaleX={p.scaleX}
+				scaleY={p.scaleY}
+				text={p.text}
+				{...p.fill}
+				pathData={p.pathData}
+				rotation={p.rotation}
 				name={`${index}`}
 				onUpdateNode={this.onUpdateNode}
-				fontStyle={`${fontWeight} ${fontStyle}`}
-				{...rest}
+				onPathChange={this.onPathChange}
 			/>
 		);
 	}

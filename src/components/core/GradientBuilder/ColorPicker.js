@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import './ColorPicker.css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import './ColorPicker.css';
 
 const colors = [
 	{ value: '#000000', name: 'black' },
@@ -19,7 +19,7 @@ const colors = [
 	{ value: '#000080', name: 'navy' },
 	{ value: '#FF00FF', name: 'fuchsia' },
 	{ value: '#800080', name: 'purple' }
-]
+];
 
 const ColorPicker = ({ onSelect, color }) => {
 	return (
@@ -27,20 +27,20 @@ const ColorPicker = ({ onSelect, color }) => {
 			{
 				colors.map(c =>
 					<div onClick={ () => onSelect(c.value) }
-							  key={ c.name }
-							  title={ c.name }
-							  style={{ backgroundColor: c.value }}
+						key={ c.name }
+						title={ c.name }
+						style={{ backgroundColor: c.value }}
 					/>
 				)
 			}
 			<pre>Active color: { color }</pre>
 		</div>
-	)
-}
+	);
+};
 
 ColorPicker.propTypes = {
 	color: PropTypes.string.isRequired,
 	onSelect: PropTypes.func.isRequired
-}
+};
 
-export default ColorPicker
+export default ColorPicker;
