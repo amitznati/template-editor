@@ -2,6 +2,22 @@
 import React from 'react';
 import { useStrictMode, Arrow, Circle } from 'react-konva';
 
+export const getGradientFill = (data) => {
+	const {palette, EndX, EndY, StartX, StartY} = data;
+	const stops = [];
+	palette.forEach(p => {
+		stops.push(...[p.pos, p.color]);
+	});
+	return {
+		fillPriority: `${data.gradientType.toLowerCase()}-gradient`,
+		[`fill${data.gradientType}GradientEndPoint`]: {x: EndX, y: EndY},
+		[`fill${data.gradientType}GradientStartPoint`]: {x: StartX, y: StartY},
+		[`fill${data.gradientType}GradientColorStops`]: stops,
+		fillRadialGradientEndRadius: data.gradientType === 'Radial' ? data.EndRadius : undefined,
+		fillRadialGradientStartRadius: data.gradientType === 'Radial' ? data.StartRadius: undefined,
+	};
+};
+
 useStrictMode(true);
 export default class GradientShapes extends React.Component {
 	render(){

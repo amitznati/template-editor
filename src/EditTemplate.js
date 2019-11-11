@@ -58,9 +58,9 @@ const layoutsTemplate = (type,payload) => {
 			type: 'textPath',
 			properties: {
 				text: payload,
-				x: 5, y: 5, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway', fontStyle: '100:bold',
-				rotation: 0,
+				x: 15, y: 15, scaleX: 1, scaleY: 1,
+				fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '300',
+				rotate: 0,
 				fill: {fill: 'black'},
 			}
 		};
@@ -84,8 +84,8 @@ class EditTemplate extends React.Component {
 
 	componentDidMount() {
 		let {template} = this.state;
-// and all the men and women merely players.
 		template.layouts.push(layoutsTemplate('text','All the worlds a stage,'));
+		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
 		this.setState({template});
 		
 	}
