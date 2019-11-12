@@ -50,11 +50,24 @@ class GradientPicker extends React.Component {
 	}
 
 	handleAngleChange = (angle) => {
-		const {gradientData: {EndRadius, StartX, StartY}} = this.props;
+		const {gradientData: {StartX: cx, StartY: cy, EndX, EndY}} = this.props;
+		const p = {x: EndX, y: EndY};
+		const c = Math.cos(angle * Math.PI / 180.0);
+		const s = Math.sin(angle * Math.PI / 180.0);
+		p.x -= cx;
+		p.y -= cy;
+
+		// rotate point
+		const xnew = p.x * c - p.y * s;
+		const ynew = p.x * s + p.y * c;
+
+		// translate point back:
+		p.x = xnew + cx;
+		p.y = ynew + cy;
 		return {
 			Angle: angle,
-			EndX: StartX + (Math.cos(angle * Math.PI / 180.0))*(EndRadius-5),
-			EndY: StartY + (Math.sin(angle * Math.PI / 180.0))*(EndRadius-5)
+			EndX: p.x,
+			EndY: p.y
 		};
 	};
 
@@ -77,9 +90,10 @@ class GradientPicker extends React.Component {
 				<ClickAwayListener onClickAway={() => this.handleChange({isActive: false})}>
 					<GradientBuilder {...{
 						width: 250,
-						height: 32,
+						height: 250,
 						palette,
 						activeId,
+						gradientData,
 						onPaletteChange: (palette) => this.handleChange({palette}),
 						onStepClick: (activeId) => this.handleChange({isActive: true, activeId})
 					}}>
@@ -118,7 +132,9 @@ class GradientPicker extends React.Component {
 								<Grid item md={3} key={name}>
 									<CoreNumber 
 										type="number" 
-										label={name} 
+										label={name}
+										inputProps={{ min: '0', max: '1', step: '0.01' }}
+										margin="normal"
 										value={gradientData[name]} 
 										onChange={(v) => this.handleChange({[name]: v})}
 										onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
@@ -133,6 +149,7 @@ class GradientPicker extends React.Component {
 										<CoreNumber
 											type="number"
 											label={name}
+											inputProps={{step: '0.1' }}
 											value={gradientData[name]}
 											onChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
 											onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
@@ -157,10 +174,10 @@ GradientPicker.propTypes = {
 GradientPicker.defaultProps = {
 	gradientData: {
 		gradientType: 'Linear',
-		StartX: 50,
-		StartY: 50,
-		EndX: 50,
-		EndY: 50,
+		StartX: 0.5,
+		StartY: 0.5,
+		EndX: 0.5,
+		EndY: 0.1,
 		palette: [
 			{ pos: 0, color: 'rgba(255,0,18,1)' },
 			{ pos: 1, color: 'rgba(30,0,255,1)' }
@@ -169,7 +186,7 @@ GradientPicker.defaultProps = {
 		isActive: false,
 		gradientPointsOnFocus: false,
 		Angle: 0,
-		EndRadius: 50
+		EndRadius: 0.5
 	}
 };
 

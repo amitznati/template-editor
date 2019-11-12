@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {TextPath, URLImage} from './LayoutsKonvaJS';
+// import {TextPath, URLImage} from './LayoutsKonvaJS';
 import {Text, RootSVG} from './svgs';
 
 import {getPX, getCM /* , decomposeMatrix */} from './../utils';
@@ -63,24 +63,24 @@ class TemplatePreview extends React.Component {
 		onUpdateLayout(layout);
 	};
 
-	renderImage(layout, index) {
-		const p = layout.properties;
-		return (
-			<URLImage
-				key={index}
-				src={p.src}
-				x={getPX(p.x)}
-				y={getPX(p.y)}
-				height={getPX(p.height)}
-				width={getPX(p.width)}
-				scaleX={p.scaleX}
-				scaleY={p.scaleY}
-				rotation={p.rotation}
-				name={`${index}`}
-				onUpdateNode={this.onUpdateNode}
-			/>
-		);
-	}
+	// renderImage(layout, index) {
+	// 	const p = layout.properties;
+	// 	return (
+	// 		<URLImage
+	// 			key={index}
+	// 			src={p.src}
+	// 			x={getPX(p.x)}
+	// 			y={getPX(p.y)}
+	// 			height={getPX(p.height)}
+	// 			width={getPX(p.width)}
+	// 			scaleX={p.scaleX}
+	// 			scaleY={p.scaleY}
+	// 			rotation={p.rotation}
+	// 			name={`${index}`}
+	// 			onUpdateNode={this.onUpdateNode}
+	// 		/>
+	// 	);
+	// }
 	renderText(layout, index) {
 		return Text({layout, index});
 		// const p = layout.properties;
@@ -99,27 +99,27 @@ class TemplatePreview extends React.Component {
 		// );
 	}
 
-	renderTextPath(layout, index) {
-		const p = layout.properties;
-		const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
-		return (
-			<TextPath 
-				key={index} 
-				x={getPX(x)}
-				y={getPX(y)}
-				{...fill}
-				name={`${index}`}
-				onUpdateNode={this.onUpdateNode}
-				fontStyle={`${fontWeight} ${fontStyle}`}
-				{...rest}
-			/>
-		);
-	}
+	// renderTextPath(layout, index) {
+	// 	const p = layout.properties;
+	// 	const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
+	// 	return (
+	// 		<TextPath 
+	// 			key={index} 
+	// 			x={getPX(x)}
+	// 			y={getPX(y)}
+	// 			{...fill}
+	// 			name={`${index}`}
+	// 			onUpdateNode={this.onUpdateNode}
+	// 			fontStyle={`${fontWeight} ${fontStyle}`}
+	// 			{...rest}
+	// 		/>
+	// 	);
+	// }
 
 	renderLayout = {
 		text: this.renderText.bind(this),
-		textPath: this.renderTextPath.bind(this),
-		image: this.renderImage.bind(this),
+		//textPath: this.renderTextPath.bind(this),
+		//image: this.renderImage.bind(this),
 	};
 
 	render() {

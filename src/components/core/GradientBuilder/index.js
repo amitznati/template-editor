@@ -18,6 +18,40 @@ const fromState = (palette) => {
 	return sortedPalette.map(({ pos, color }) => ({ pos: pos.toPrecision(3), color }));
 };
 
+export const getGradientDef = (id, gradientData) => {
+	const {gradientType, EndY, EndX, StartX, StartY, EndRadius, palette} = gradientData;
+	const stops = palette.map((point, index) => {
+		return <stop key={`stop-${index}`} offset={point.pos} stopColor={point.color} />;
+	});
+	let shape = '';
+	switch (gradientType) {
+	case 'Linear': {
+		shape = (
+			<linearGradient id={ id } x1={StartX} y1={StartY} x2={EndX} y2={EndY}> 
+				{stops}	
+			</linearGradient>
+		);
+		break;
+	}
+	case 'Radial': {
+		shape = (
+			<radialGradient id={id} cx={StartX} cy={StartY} r={EndRadius} fx={EndX} fy={EndY}>
+				{stops}
+			</radialGradient>
+		);
+		break;
+	}
+	default: 
+		return '';
+	}
+
+	return (
+		<defs key={id}>
+			{shape}
+		</defs>
+	);
+};
+
 class GradientBuilder extends React.Component {
 	constructor (props) {
 		super(props);
@@ -123,12 +157,13 @@ class GradientBuilder extends React.Component {
 	}
 
 	render () {
-		const { width, height, drop } = this.props;
+		const { width, height, drop, gradientData } = this.props;
+		const {palette} = this.state;
 		const min = -HALF_STOP_WIDTH;
 		const max = this.width1 - HALF_STOP_WIDTH;
 		return (
 			<div>
-				<Palette width={ width } height={ height } palette={ this.state.palette } />
+				<Palette {...{ width, height, palette, gradientData }} />
 				<ColorStopsHolder
 					width={ width }
 					stops={ this.mapStateToStops }
@@ -148,6 +183,7 @@ GradientBuilder.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
 	drop: PropTypes.number,
+	gradientData: PropTypes.object,
 	palette: PropTypes.arrayOf(
 		PropTypes.shape({
 			pos: PropTypes.number,
@@ -163,6 +199,10 @@ GradientBuilder.defaultProps = {
 	width: 400,
 	height: 32,
 	drop: 50,
+	gradientData: {
+		StartX: 0, StartY: 0, EndX: 1, EndY: 0,
+		Radius: 0.5
+	},
 	palette: [
 		{ pos: 0, color: '#9adafa' },
 		{ pos: 1, color: 'rgba(241,57,70,1)' }

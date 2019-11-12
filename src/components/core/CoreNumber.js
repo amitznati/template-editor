@@ -6,13 +6,13 @@ import styles from './../../styles/styles';
 
 const CoreNumber = props => {
 	// eslint-disable-next-line no-unused-vars
-	const {classes, handleTextChange, ...rest} = props;
+	const {classes, onChange, ...rest} = props;
 	return (
 		<FormControl fullWidth >
 			<TextField
 				{...rest}
 				type="number"
-				onChange={(e) => props.onChange && props.onChange(Number(e.target.value))}
+				onChange={(e) => onChange && onChange(Number(e.target.value))}
 			/>
 		</FormControl>
 	);

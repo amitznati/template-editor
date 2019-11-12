@@ -1,27 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {getGradientDef} from './index';
 import './Palette.css';
 
-const Palette = ({ palette, width, height }) => {
-	const compare = ({ pos: pos1 }, { pos: pos2 }) => pos1 - pos2;
-	const sortedPalette = [...palette].sort(compare);
+const Palette = ({  width, height, gradientData }) => {
+	// const compare = ({ pos: pos1 }, { pos: pos2 }) => pos1 - pos2;
+	//const sortedPalette = [...palette].sort(compare);
 	const gradientId = '_' + Math.random().toString(36).substr(2, 9);
 	const gradientUrl = `url(#${gradientId})`;
+	const {StartX, StartY, EndX, EndY} = gradientData;
 	return (
 		<div className="palette" style={{ width, height }}>
 			<svg width="100%" height="100%">
-				<defs>
-					<linearGradient id={ gradientId } x1="0" y1="0.5" x2="1" y2="0.5"> {
-						sortedPalette.map(c =>
-							<stop
-								key={ c.id }
-								offset={ c.pos }
-								style={{ stopColor: c.color, stopOpacity: 1 }}
-							/>
-						)}
-					</linearGradient>
-				</defs>
+				{getGradientDef(gradientId, gradientData)}
 				<rect x="0" y="0" width="100%" height="100%" fill={ gradientUrl }/>
+				{[{x: StartX, y: StartY, text: 'S'}, {x: EndX, y: EndY, text: 'E'}].map(point => {
+					return (
+						<g key={`point-${point.text}`}>
+							<circle
+								// onMouseDown={ (e) => drag(e, index) }
+								cx={ `${point.x * 100}%` }
+								cy={ `${point.y * 100}%` }
+								fill='black'
+								r={ 8 } />
+							<text x={`${(point.x * 100) - 2}%`} y={`${(point.y * 100) + 1.5}%`} fill="white">{point.text}</text>
+						</g>
+					);
+				})}
 			</svg>
 		</div>
 	);
@@ -30,6 +35,7 @@ const Palette = ({ palette, width, height }) => {
 Palette.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
+	gradientData: PropTypes.object.isRequired,
 	palette: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.number.isRequired,

@@ -2,40 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import {getPX} from './../../utils';
-
-const getGradientDef = (id, gradientData) => {
-	const {gradientType, EndY, EndX, StartX, StartY, EndRadius, palette} = gradientData;
-	const stops = palette.map((point, index) => {
-		return <stop key={`stop-${index}`} offset={point.pos} stopColor={point.color} />;
-	});
-	let shape = '';
-	switch (gradientType) {
-	case 'Linear': {
-		shape = (
-			<linearGradient id={id} x1={`${StartX}%`} y1={`${StartY}%`} x2={`${EndX}%`} y2={`${EndY}%`}>
-				{stops}
-			</linearGradient>
-		);
-		break;
-	}
-	case 'Radial': {
-		shape = (
-			<radialGradient id={id} cx={`${StartX}%`} cy={`${StartY}%`} r={`${EndRadius}%`} fx={`${EndX}%`} fy={`${EndY}%`}>
-				{stops}
-			</radialGradient>
-		);
-		break;
-	}
-	default: 
-		return '';
-	}
-
-	return (
-		<defs key={id}>
-			{shape}
-		</defs>
-	);
-};
+import {getGradientDef} from './../../components/core/GradientBuilder';
 
 
 const Text = (props) => {
