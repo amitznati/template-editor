@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { SketchPicker } from 'react-color';
 import { Grid, ClickAwayListener } from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
-import {GradientBuilder, CoreNumber} from './../components/core';
+import {GradientBuilder, CoreNumber, CoreSelect} from './../components/core';
 
 const styles = {
 	popover: {
@@ -84,7 +84,7 @@ class GradientPicker extends React.Component {
 
 	render() {
 		const {gradientData} = this.props;
-		const {palette, activeId, isActive, gradientType} = gradientData;
+		const {palette, activeId, isActive, gradientType, spreadMethod } = gradientData;
 		return (
 			<div ref={this.gradientRef}>
 				<Grid container style={{margin: '15px 0'}}>
@@ -146,6 +146,14 @@ class GradientPicker extends React.Component {
 								</Grid>
 							);
 						})}
+						<Grid item md={6}>
+							<CoreSelect
+								options={['pad', 'reflect', 'repeat'].map(o => {return {id: o, name: o};})}
+								label="Spread Method"
+								value={spreadMethod}
+								onChange={(v) => this.handleChange({spreadMethod: v})}
+							/>
+						</Grid>
 						{gradientType === 'Radial' && 
 							['Angle', 'EndRadius'].map(name => {
 								return (
@@ -190,7 +198,8 @@ GradientPicker.defaultProps = {
 		isActive: false,
 		gradientPointsOnFocus: false,
 		Angle: 0,
-		EndRadius: 0.5
+		EndRadius: 0.5,
+		spreadMethod: 'pad'
 	}
 };
 

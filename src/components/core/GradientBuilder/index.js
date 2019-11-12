@@ -19,7 +19,7 @@ const fromState = (palette) => {
 };
 
 export const getGradientDef = (id, gradientData) => {
-	const {gradientType, EndY, EndX, StartX, StartY, EndRadius, palette} = gradientData;
+	const {gradientType, EndY, EndX, StartX, StartY, EndRadius, palette, spreadMethod} = gradientData;
 	const stops = palette.map((point, index) => {
 		return <stop key={`stop-${index}`} offset={point.pos} stopColor={point.color} />;
 	});
@@ -27,7 +27,7 @@ export const getGradientDef = (id, gradientData) => {
 	switch (gradientType) {
 	case 'Linear': {
 		shape = (
-			<linearGradient id={ id } x1={StartX} y1={StartY} x2={EndX} y2={EndY}> 
+			<linearGradient spreadMethod={spreadMethod} id={ id } x1={StartX} y1={StartY} x2={EndX} y2={EndY}> 
 				{stops}	
 			</linearGradient>
 		);
@@ -35,7 +35,7 @@ export const getGradientDef = (id, gradientData) => {
 	}
 	case 'Radial': {
 		shape = (
-			<radialGradient id={id} cx={StartX} cy={StartY} r={EndRadius} fx={EndX} fy={EndY}>
+			<radialGradient spreadMethod={spreadMethod} id={id} cx={StartX} cy={StartY} r={EndRadius} fx={EndX} fy={EndY}>
 				{stops}
 			</radialGradient>
 		);
