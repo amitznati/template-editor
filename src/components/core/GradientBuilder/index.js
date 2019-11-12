@@ -157,13 +157,13 @@ class GradientBuilder extends React.Component {
 	}
 
 	render () {
-		const { width, height, drop, gradientData } = this.props;
+		const { width, height, drop, gradientData, onPointMove } = this.props;
 		const {palette} = this.state;
 		const min = -HALF_STOP_WIDTH;
 		const max = this.width1 - HALF_STOP_WIDTH;
 		return (
 			<div>
-				<Palette {...{ width, height, palette, gradientData }} />
+				<Palette {...{ width, height, palette, gradientData, onPointMove }} />
 				<ColorStopsHolder
 					width={ width }
 					stops={ this.mapStateToStops }
@@ -184,6 +184,7 @@ GradientBuilder.propTypes = {
 	height: PropTypes.number,
 	drop: PropTypes.number,
 	gradientData: PropTypes.object,
+	onPointMove: PropTypes.func,
 	palette: PropTypes.arrayOf(
 		PropTypes.shape({
 			pos: PropTypes.number,

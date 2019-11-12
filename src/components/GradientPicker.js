@@ -87,26 +87,9 @@ class GradientPicker extends React.Component {
 		const {palette, activeId, isActive, gradientType} = gradientData;
 		return (
 			<div ref={this.gradientRef}>
-				<ClickAwayListener onClickAway={() => this.handleChange({isActive: false})}>
-					<GradientBuilder {...{
-						width: 250,
-						height: 250,
-						palette,
-						activeId,
-						gradientData,
-						onPaletteChange: (palette) => this.handleChange({palette}),
-						onStepClick: (activeId) => this.handleChange({isActive: true, activeId})
-					}}>
-						<WrappedSketchPicker {...{
-							width: 200,
-							disableAlpha: false,
-							isActive: isActive,
-						}} />
-					</GradientBuilder>
-				</ClickAwayListener>
 				<Grid container style={{margin: '15px 0'}}>
-					<Grid item>
-						<ToggleButtonGroup size="large"
+					<Grid item xs={12}>
+						<ToggleButtonGroup size="medium"
 							exclusive
 							value={gradientType}
 							onChange={(event, gradientType) =>this.handleChange({gradientType})}>
@@ -125,6 +108,27 @@ class GradientPicker extends React.Component {
 						</ToggleButtonGroup>
 					</Grid>
 				</Grid>
+				<ClickAwayListener onClickAway={() => this.handleChange({isActive: false})}>
+					<GradientBuilder {...{
+						width: 250,
+						height: 250,
+						palette,
+						activeId,
+						gradientData,
+						onPaletteChange: (palette) => this.handleChange({palette}),
+						onStepClick: (activeId) => this.handleChange({isActive: true, activeId}),
+						onPointMove: (newVal) => this.handleChange(newVal)
+					}}>
+						<WrappedSketchPicker 
+							{...{
+								width: 200,
+								disableAlpha: false,
+								isActive: isActive,
+							}} 
+						/>
+					</GradientBuilder>
+				</ClickAwayListener>
+				
 				<ClickAwayListener onClickAway={() => this.handleChange({gradientPointsOnFocus: false})}>
 					<Grid container>
 						{['StartX', 'StartY', 'EndX', 'EndY'].map(name => {
