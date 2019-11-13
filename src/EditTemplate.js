@@ -31,6 +31,13 @@ const styles = theme => ({
 }); 
 
 
+const defaultPosition = {
+	x: 5, y: 10, transform: {}
+};
+
+const defaultFontProps = {
+	fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100'
+};
 
 const layoutsTemplate = (type,payload) => {
 	switch(type) {
@@ -47,11 +54,11 @@ const layoutsTemplate = (type,payload) => {
 			type: 'text',
 			properties: {
 				text: payload,
-				x: 5, y: 10, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100',
-				rotate: 0,strokeWidth: 0, stroke: '',
+				...defaultPosition,
+				...defaultFontProps,
+				strokeWidth: 0, stroke: '',
 				fill: {fill: 'black'},
-				transform: {}
+				
 			}
 		};
 	case 'textPath': 
@@ -59,10 +66,10 @@ const layoutsTemplate = (type,payload) => {
 			type: 'textPath',
 			properties: {
 				text: payload,
-				x: 5, y: 5, scaleX: 1, scaleY: 1,
-				fontSize: 40, fontFamily: 'Raleway', fontStyle: 'normal', fontWeight: '100',
-				rotation: 0,
+				...defaultPosition,
+				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
+				pathData: {}
 			}
 		};
 	default:
@@ -87,7 +94,7 @@ class EditTemplate extends React.Component {
 		let {template} = this.state;
 		// and all the men and women merely players.
 		template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
-		//template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
+		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
 		this.setState({template});
 		
 	}

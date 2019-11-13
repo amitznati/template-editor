@@ -605,13 +605,13 @@ export default class Subject {
 		storage.onExecution = false;
 		storage.cursor = null;
 
-		this._apply(action);
+		// this._apply(action);
 
-		observable.notify(
-			'onapply',
-			this,
-			action
-		);
+		// observable.notify(
+		// 	'onapply',
+		// 	this,
+		// 	action
+		// );
 
 		cancelAnimFrame(storage.frame);
 		proxyMethods.onDrop.call(this, e, el);

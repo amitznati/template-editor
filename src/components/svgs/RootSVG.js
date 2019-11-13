@@ -44,6 +44,8 @@ class DesignCanvas extends React.Component {
 
 	getPropertiesFromActiveNode = (el) => {
 		if (!el) return {};
+		const l = this.currentLayout;
+		console.log(l);
 		const x = el.x.baseVal[0].value;
 		const y = el.y.baseVal[0].value;
 		const matrix = el.transform && el.transform.baseVal[0] && el.transform.baseVal[0].matrix;

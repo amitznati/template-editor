@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 // import {TextPath, URLImage} from './LayoutsKonvaJS';
-import {Text, RootSVG} from './svgs';
+import {Text, TextPath, RootSVG} from './svgs';
 
 import {getPX, getCM /* , decomposeMatrix */} from './../utils';
 const styles = theme => ({
@@ -99,7 +99,8 @@ class TemplatePreview extends React.Component {
 		// );
 	}
 
-	// renderTextPath(layout, index) {
+	renderTextPath(layout, index) {
+		return TextPath({layout, index});
 	// 	const p = layout.properties;
 	// 	const {x, y, fill, fontStyle, fontWeight, ...rest} = p;
 	// 	return (
@@ -114,11 +115,11 @@ class TemplatePreview extends React.Component {
 	// 			{...rest}
 	// 		/>
 	// 	);
-	// }
+	}
 
 	renderLayout = {
 		text: this.renderText.bind(this),
-		//textPath: this.renderTextPath.bind(this),
+		textPath: this.renderTextPath.bind(this),
 		//image: this.renderImage.bind(this),
 	};
 

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { warn } from './../../util/util';
 import { floatToFixed } from '../common';
 
