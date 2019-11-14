@@ -37,13 +37,13 @@ class SVG extends Component {
 			addPoint,
 			drag,
 			handleMouseMove,
-			scale,
-			layout: {properties: {x, y, scaleX, scaleY, rotation}}
+			layout: {properties: {x, y, transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0}}}
 		} = this.props;
-		const lx = getPX(x);
-		const ly = getPX(y);
-		const translateX = scaleX > 1 ? (lx/scaleX) - lx : 0;
-		const translateY = scaleY > 1 ? (ly/scaleY) - ly : 0;
+		const layoutProperties = {
+			x: getPX(x),
+			y: getPX(y),
+			transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`,
+		};
 		let circles = points.map((point, index, _points) => {
 			let anchors = [],
 				previous = false;
@@ -107,8 +107,8 @@ class SVG extends Component {
 			<svg
 				ref={this.props.propRef}
 				className="ad-SVG"
-				width={ w }
-				height={ h }
+				viewBox={`0 0 ${w} ${h}`}
+				xmlns="http://www.w3.org/2000/svg"
 				onClick={ addPoint }
 				onMouseMove={ handleMouseMove }>
 				<Grid
@@ -116,11 +116,7 @@ class SVG extends Component {
 					h={ h }
 					grid={ grid } />
 				<g 
-					transform={`
-					scale(${scale * scaleX} ${scale * scaleY}) 
-					translate(${lx + translateX} ${ly + translateY})
-					rotate(${rotation})
-					`} >
+					transform={layoutProperties.transform} >
 					<path 
 						className={ cx('ad-Path', { 'ad-Path--filled': fillPath }) }
 						d={ path } />

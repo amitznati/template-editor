@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-// import {TextPath, URLImage} from './LayoutsKonvaJS';
+import SVGPathBuilder from './core/SVGPathBuilder';
 import {Text, TextPath, RootSVG} from './svgs';
 
 import {getPX, getCM /* , decomposeMatrix */} from './../utils';
@@ -123,8 +123,33 @@ class TemplatePreview extends React.Component {
 		//image: this.renderImage.bind(this),
 	};
 
+	renderPathBuilder = () => {
+		const {template = {}, scale, product, selectedLayoutIndex} = this.props;
+		const {layouts = []} = template;
+		const selectedLayout = layouts[selectedLayoutIndex];
+		const {pathData, x, y} = selectedLayout && selectedLayout.properties;
+		let initialPoints = [
+			{x: getPX(x), y: getPX(y)}, {x: getPX(x) + 200, y: getPX(y)}
+		];
+		if (pathData && pathData.points) {
+			initialPoints = pathData.points;
+		}
+		const w = getPX(product.templateFrame.width, scale);
+		const h = getPX(product.templateFrame.height, scale);
+		return (
+			<SVGPathBuilder
+				onChange={this.onPathChange}
+				{...{w, h}}
+				layout={selectedLayout}
+				initialPoints={initialPoints}
+				gridSize={product.templateFrame.width}
+				scale={scale}
+			/>
+		);
+	};
+
 	render() {
-		const {template = {}, scale, product, classes, selectedLayoutIndex} = this.props;
+		const {template = {}, scale, product, classes, selectedLayoutIndex, isSVGPathBuilderOpen} = this.props;
 		const {layouts = []} = template;
 		const selectedLayout = layouts[selectedLayoutIndex];
 		const productH = getPX(product.productSize.height, scale);
@@ -137,6 +162,7 @@ class TemplatePreview extends React.Component {
 			<div style={{height: productH,width: productW, position: 'relative'}}>
 				<img className={classes.productImage} src={product.image} alt="product" style={{height: productH,width: productW}}/>
 				<div id="templateDiv" style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: templateY, left: templateX}}>
+					
 					<RootSVG
 						onEditLayoutEnd={this.props.onEditLayoutEnd}
 						selectedLayoutIndex={this.props.selectedLayoutIndex}
@@ -149,6 +175,11 @@ class TemplatePreview extends React.Component {
 					>
 						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
 					</RootSVG>
+					{isSVGPathBuilderOpen &&
+						<div style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: 0, left: 0}}>
+							{this.renderPathBuilder()}
+						</div>
+					}
 				</div>
 			</div>
 		);

@@ -11,6 +11,7 @@ import SVG from './SVG';
 import Controls from './Controls';
 
 
+
 import './Builder/styles.css';
 import { getPX } from '../../../utils';
 
@@ -153,7 +154,7 @@ class SVGPathBuilder extends Component {
 	}
 
 	getMouseCoords = (e) => {
-		const {w, scale, layout: {properties: {x: lx, y: ly, scaleY = 1, scaleX = 1}}} = this.props;
+		const {w, scale, layout: {properties: {transform: {translateX: lx = 0, translateY: ly = 0, scaleX = 1, scaleY = 1}}}} = this.props;
 		const { left, top } = this.svg.current.getBoundingClientRect(),
 			{ grid: {size, snap}} = this.state;
 		const spacing = w / size;
@@ -167,7 +168,7 @@ class SVGPathBuilder extends Component {
 			x = spacing * Math.round(x / spacing);
 			y = spacing * Math.round(y / spacing);
 		}
-		return { x: (x/(scale) - calcLX)/scaleX, y: (y/scale - calcLY)/scaleY };
+		return { x: (x/(scale) - calcLX)/scaleX, y: (y/scale - calcLY)/scaleY  };
 	}
 
 	resetNextCurve = (points, active) => {
@@ -468,37 +469,22 @@ class SVGPathBuilder extends Component {
 		if (!this.state.path) return null;
 		return (
 			<div
-				className="ad-Builder"
+				className="ad-Builder--"
 				onMouseUp={ this.cancelDragging }
 			>
-				<div elementId="templateDiv">
-					<div ref={this.portalRef}
-						style={{
-							position: 'absolute',
-							top: 0,
-							left: 0,
-							width: this.props.w,
-							height: this.props.h,
-						}}
-						
-						onMouseUp={ this.cancelDragging }
-					>
-						<div className="ad-Builder-main">
-							<div className="ad-Builder-svg">
-								<SVG
-									propRef={this.svg}
-									{ ...this.state }
-									w={this.props.w}
-									h={this.props.h}
-									scale={this.props.scale}
-									layout={this.props.layout}
-									drag={ this.drag }
-									addPoint={ this.addPoint }
-									handleMouseMove={ this.handleMouseMove } />
-							</div>
-						</div>
-					</div>
-				</div>
+				<SVG
+					propRef={this.svg}
+					{ ...this.state }
+					w={this.props.w/this.props.scale}
+					h={this.props.h/this.props.scale}
+					scale={this.props.scale}
+					layout={this.props.layout}
+					drag={ this.drag }
+					addPoint={ this.addPoint }
+					handleMouseMove={ this.handleMouseMove } />
+
+				
+				
 				<Drawer
 					variant="persistent"
 					anchor="right"

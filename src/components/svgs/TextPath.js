@@ -25,8 +25,8 @@ const TextPath = (props) => {
 	let layouFill = fill.fill;
 	const shapes = [];
 	const layoutProperties = {
-		x: getPX(x),
-		y: getPX(y),
+		//x: pathData.path ? 0 : getPX(x),
+		//y: pathData.path ? 0 : getPX(y),
 		transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`,
 	};
 
@@ -43,7 +43,7 @@ const TextPath = (props) => {
 		...layoutProperties
 	};
 	if (!pathData.path) {
-		pathData.path = `M ${getPX(x)} ${getPX(y)} 1000 ${getPX(y)}`;
+		pathData.path = `M ${getPX(x)} ${getPX(y)} L ${getPX(x) + 200} ${getPX(y)}`;
 	}
 	shapes.push(getPathDef(`Path-${index}`, pathData));
 

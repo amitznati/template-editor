@@ -61,17 +61,20 @@ const layoutsTemplate = (type,payload) => {
 				
 			}
 		};
-	case 'textPath': 
+	case 'textPath': {
+		const x = getPX(5);
+		const y = getPX(10);
 		return {
 			type: 'textPath',
 			properties: {
 				text: payload,
-				...defaultPosition,
+				x: 5, y: 10, transform: {},
 				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
-				pathData: {}
+				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, initialPoints: [{x, y}, {x: x + 200, y}]}
 			}
 		};
+	}
 	default:
 		return '';
 	}
@@ -93,7 +96,7 @@ class EditTemplate extends React.Component {
 	componentDidMount() {
 		let {template} = this.state;
 		// and all the men and women merely players.
-		template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
+		//template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
 		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
 		this.setState({template});
 		
@@ -167,14 +170,7 @@ class EditTemplate extends React.Component {
 		template.layouts[selectedLayoutIndex].properties.pathData = pathData;
 		this.setState({template});
 	};
-	getInitiatePathData = () => {
-		const points = [
-			{x: 0, y: 0}, {x: 0 + 100, y: 0}
-		];
-		return {
-			points
-		};
-	}
+
 	onTogglePathBuilder = () => {
 		const {isSVGPathBuilderOpen} = this.state;
 		this.setState({isSVGPathBuilderOpen: !isSVGPathBuilderOpen});
@@ -182,9 +178,9 @@ class EditTemplate extends React.Component {
 
 	renderPathBuilder = () => {
 		const {selectedLayout, product, scale} = this.state;
-		const pathData = selectedLayout && selectedLayout.properties.pathData;
+		const {pathData, x, y} = selectedLayout && selectedLayout.properties;
 		let initialPoints = [
-			{x: 0, y: 0}, {x: 100, y: 0}
+			{x: getPX(x), y: getPX(y)}, {x: getPX(x) + 200, y: getPX(y)}
 		];
 		if (pathData && pathData.points) {
 			initialPoints = pathData.points;
@@ -260,6 +256,7 @@ class EditTemplate extends React.Component {
 							onEditLayoutEnd={this.onEditLayoutEnd}
 							selectedLayoutIndex={selectedLayoutIndex}
 							selectedLayout={selectedLayout}
+							isSVGPathBuilderOpen={isSVGPathBuilderOpen}
 						/>}
 						{allFonts && allFonts.length && <FontLoader
 							fontProvider="google"
@@ -268,7 +265,7 @@ class EditTemplate extends React.Component {
 						/>}
 					</div>
 				</Grid>}
-				{isSVGPathBuilderOpen && this.renderPathBuilder()}
+				{/* {isSVGPathBuilderOpen && this.renderPathBuilder()} */}
 			</Grid>
 		);
 	}
