@@ -71,7 +71,7 @@ const layoutsTemplate = (type,payload) => {
 				x: 5, y: 10, transform: {},
 				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
-				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, initialPoints: [{x, y}, {x: x + 200, y}]}
+				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, points: [{x, y}, {x: x + 200, y}]}
 			}
 		};
 	}

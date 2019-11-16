@@ -172,6 +172,7 @@ class TemplatePreview extends React.Component {
 						w={getPX(product.templateFrame.width)}
 						scale={scale}
 						selectedLayout={selectedLayout}
+						isSVGPathBuilderOpen={isSVGPathBuilderOpen}
 					>
 						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
 					</RootSVG>
@@ -195,7 +196,8 @@ TemplatePreview.propTypes = {
 	onUpdateLayout: PropTypes.func,
 	onLayoutClick: PropTypes.func,
 	onEditLayoutEnd: PropTypes.func,
-	selectedLayoutIndex: PropTypes.any
+	selectedLayoutIndex: PropTypes.any,
+	isSVGPathBuilderOpen: PropTypes.bool
 };
 
 export default withStyles(styles)(TemplatePreview);

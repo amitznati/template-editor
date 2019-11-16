@@ -105,11 +105,18 @@ class DesignCanvas extends React.Component {
 	};
 
 	componentDidUpdate(prevProps) {
-		const {selectedLayoutIndex} = this.props;
+		const {selectedLayoutIndex, isSVGPathBuilderOpen} = this.props;
 		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex) {
 			this.currentLayout && this.currentLayout.disable();
 			const node = this.getActiveNode();
 			this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+		} else if (isSVGPathBuilderOpen !== prevProps.isSVGPathBuilderOpen) {
+			if (isSVGPathBuilderOpen) {
+				this.currentLayout && this.currentLayout.disable();
+			} else {
+				const node = this.getActiveNode();
+				this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+			}
 		}
 	}
 
@@ -135,7 +142,8 @@ DesignCanvas.propTypes = {
 	h: PropTypes.number,
 	w: PropTypes.number,
 	scale: PropTypes.number,
-	selectedLayout: PropTypes.object || undefined
+	selectedLayout: PropTypes.object || undefined,
+	isSVGPathBuilderOpen: PropTypes.bool
 };
 
 export default DesignCanvas;

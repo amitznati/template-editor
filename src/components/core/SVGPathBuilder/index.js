@@ -10,10 +10,7 @@ import { getPath } from './utils/path';
 import SVG from './SVG';
 import Controls from './Controls';
 
-
-
 import './Builder/styles.css';
-import { getPX } from '../../../utils';
 
 class SVGPathBuilder extends Component {
 	static propTypes = {
@@ -154,13 +151,10 @@ class SVGPathBuilder extends Component {
 	}
 
 	getMouseCoords = (e) => {
-		const {w, scale, layout: {properties: {transform: {translateX: lx = 0, translateY: ly = 0, scaleX = 1, scaleY = 1}}}} = this.props;
+		const {w, scale, layout: {properties: {transform: {translateX: calcLX = 0, translateY: calcLY = 0, scaleX = 1, scaleY = 1}}}} = this.props;
 		const { left, top } = this.svg.current.getBoundingClientRect(),
 			{ grid: {size, snap}} = this.state;
 		const spacing = w / size;
-		const calcLX = getPX(lx);
-		const calcLY = getPX(ly);
-		//const translateX = scaleX > 1 ? (calcLX/scaleX) + calcLX : calcLX;
 		let x = Math.round(e.pageX - left),
 			y = Math.round(e.pageY - top);
 		
