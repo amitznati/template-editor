@@ -6,7 +6,7 @@ function Point(props) {
 		x,
 		y,
 		drag,
-		index,
+		index
 	} = props;
 
 	return (

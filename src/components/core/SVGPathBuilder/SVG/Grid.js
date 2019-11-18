@@ -23,18 +23,6 @@ function Grid(props) {
 				y2={ h } />
 		);
 	}
-	// // vertical lines
-	// for (let i = 1 ; i < (w / grid.size) ; i++) {
-	// 	_grid.push(
-	// 		<line
-	// 			key={ `v_${i}` }
-	// 			x1={ i * grid.size }
-	// 			y1={ 0 }
-	// 			x2={ i * grid.size }
-	// 			y2={ h } />
-	// 	);
-	// }
-
 	// horizontal lines
 	for (let i = 1 ; (i * spacing) < h ; i++) {
 		_grid.push(

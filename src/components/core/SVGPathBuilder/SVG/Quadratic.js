@@ -10,7 +10,7 @@ function Quadratic(props) {
 		p2y,
 		t,
 		index,
-		drag,
+		drag
 	} = props;
 
 	let anchor = (<g />);

@@ -108,9 +108,10 @@ class SVG extends Component {
 				ref={this.props.propRef}
 				className="ad-SVG"
 				viewBox={`0 0 ${w} ${h}`}
+				id="path-builder-svg"
 				xmlns="http://www.w3.org/2000/svg"
-				onClick={ addPoint }
-				onMouseMove={ handleMouseMove }>
+				onMouseMove={ handleMouseMove }
+				onClick={ addPoint }>
 				<Grid
 					w={ w }
 					h={ h }

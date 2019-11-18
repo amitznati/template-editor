@@ -26,7 +26,9 @@ class SVGPathBuilder extends Component {
 	constructor(props) {
 		super(props);
 		this.svg = React.createRef();
-		this.portalRef = React.createRef();
+		SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
+			return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
+		};
 		this.state = {
 			ctrl: false,
 			activePoint: 0,
@@ -150,20 +152,43 @@ class SVGPathBuilder extends Component {
 		this.handleChange({ grid });
 	}
 
-	getMouseCoords = (e) => {
-		const {w, scale, layout: {properties: {transform: {translateX: calcLX = 0, translateY: calcLY = 0, scaleX = 1, scaleY = 1}}}} = this.props;
-		const { left, top } = this.svg.current.getBoundingClientRect(),
-			{ grid: {size, snap}} = this.state;
-		const spacing = w / size;
-		let x = Math.round(e.pageX - left),
-			y = Math.round(e.pageY - top);
-		
-		if (snap) {
-			x = spacing * Math.round(x / spacing);
-			y = spacing * Math.round(y / spacing);
-		}
-		return { x: (x/(scale) - calcLX)/scaleX, y: (y/scale - calcLY)/scaleY  };
+	cursorPoint =(evt) => {
+		const svg = this.svg.current;
+		const pt = svg.createSVGPoint();
+		pt.x = evt.clientX; pt.y = evt.clientY;
+		const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+		return {x: loc.x, y: loc.y};
+	};
+
+	getMouseCoords = (e, dragData) => {
+		if (!dragData) return;
+		const {mouseStart, elementStart, element} = dragData;
+		const svg = this.svg.current;
+		let pt = svg.createSVGPoint();
+		var current = this.cursorPoint(e);
+		pt.x = current.x - mouseStart.x;
+		pt.y = current.y - mouseStart.y;
+		var m = element.getTransformToElement(svg).inverse();
+		m.e = m.f = 0;
+		pt = pt.matrixTransform(m);
+		return {x: elementStart.x+pt.x, y: elementStart.y+pt.y};
 	}
+
+	drag = (e, index, object = 'point', n = false) => {
+		var mouseStart   = this.cursorPoint(e);
+		var elementStart = { x:e.target.cx.animVal.value, y:e.target.cy.animVal.value };
+		
+
+		if ( ! this.state.ctrl) {
+			const newState = {
+				activePoint: index,
+				isDragging: { object, n, mouseStart, elementStart, element: e.target },
+			};
+			this.handleChange({
+				...newState
+			});
+		}
+	};
 
 	resetNextCurve = (points, active) => {
 		if (active !== points.length - 1) {
@@ -368,27 +393,13 @@ class SVGPathBuilder extends Component {
 		});
 	}
 
-	drag = (e, index, object = 'point', n = false) => {
-		e.preventDefault();
-
-		if ( ! this.state.ctrl) {
-			const newState = {
-				activePoint: index,
-				isDragging: { object, n },
-			};
-			this.handleChange({
-				...newState
-			});
-		}
-	}
-
 	cancelDragging = () => {
 		this.handleChange({ isDragging: false });
 	}
 
 	addPoint = (e) => {
 		if (this.state.ctrl) {
-			const coords = this.getMouseCoords(e),
+			const coords = this.cursorPoint(e),
 				{ points, closePath } = this.state;
 
 			points.push(coords);
@@ -422,22 +433,23 @@ class SVGPathBuilder extends Component {
 	}
 
 	handleMouseMove = (e) => {
-		e.preventDefault();
+		
 
 		if ( ! this.state.ctrl) {
+			const {isDragging} = this.state;
 			let { object, n } = this.state.isDragging;
 
 			switch (object) {
 			case 'point':
-				this.setPointCoords(this.getMouseCoords(e));
+				this.setPointCoords(this.getMouseCoords(e, isDragging));
 				break;
 
 			case 'quadratic':
-				this.setQuadraticCoords(this.getMouseCoords(e));
+				this.setQuadraticCoords(this.getMouseCoords(e, isDragging));
 				break;
 
 			case 'cubic':
-				this.setCubicCoords(this.getMouseCoords(e), n);
+				this.setCubicCoords(this.getMouseCoords(e, isDragging), n);
 				break;
 			default:
 				break;

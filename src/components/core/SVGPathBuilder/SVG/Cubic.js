@@ -13,7 +13,7 @@ function Cubic(props) {
 		p2y,
 		s,
 		index,
-		drag,
+		drag
 	} = props;
 
 	return (
