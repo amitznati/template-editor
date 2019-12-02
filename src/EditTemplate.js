@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import {Grid, Button, Paper} from '@material-ui/core';
 import LayoutsList from './components/LayoutsList';
 import arrayMove from 'array-move';
-import EditLayout from './components/EditLayout';
 import AddLayoutDialog from './components/addLayoutDialog';
 import TemplatePreview from './components/TemplatePreview';
 import ProductProperties from './components/ProductProperties';
@@ -13,6 +12,7 @@ import {CoreSlider, SVGPathBuilder} from './components/core';
 import FontLoader from './fontLoader';
 import {getPX} from './utils';
 import withRoot from './withRoot';
+import LayoutPropertiesList from './components/editLayoutFields/LayoutPropertiesList';
 
 const styles = theme => ({
 	section: {
@@ -231,11 +231,12 @@ class EditTemplate extends React.Component {
 						onLayoutClick={this.onLayoutClick.bind(this)}
 						onDeleteLayout={this.onDeleteLayout.bind(this)}
 					/>}
-					{selectedLayout && <EditLayout 
+					{selectedLayout && <LayoutPropertiesList
 						layout={selectedLayout} 
 						onBack={this.onEditLayoutEnd}
 						onUpdate={this.onUpdateLayout.bind(this)}
 						onTogglePathBuilder={this.onTogglePathBuilder.bind(this)}
+						{...{isSVGPathBuilderOpen}}
 					/>}
 				</Grid>
 				{product && <Grid item md={10} className={classes.section}>

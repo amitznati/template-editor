@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import {Fab, Paper, Grid} from '@material-ui/core';
+import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -10,8 +12,10 @@ import FontProperties from './fontProperties';
 import PositionProperties from './positionProperties';
 import ColorProperties from './colorProperties';
 import PathProperties from './pathProperties';
+import ShadowProperties from './shadowProperties';
+import {pathToObject} from './../core/SVGPathBuilder/utils/points';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
 	root: {
 		width: '100%',
 	},
@@ -23,31 +27,52 @@ const useStyles = makeStyles(theme => ({
 		fontSize: theme.typography.pxToRem(16),
 		color: theme.palette.text.secondary,
 	},
-}));
+	paper: {
+		margin: theme.spacing(1),
+		marginLeft: 0,
+		borderRadius: 0
+	},
+	fab: {
+		margin: theme.spacing(1),
+	}
+});
 
-function LayoutPropertiesList({...props}) {
-	const classes = useStyles();
+function LayoutPropertiesList(props) {
 	//const [expanded, setExpanded] = React.useState(false);
-	const {layout, onPropertyChange, onTogglePathBuilder} = props;
-	// const handleChange = panel => (event, isExpanded) => {
-	//	 setExpanded(isExpanded ? panel : false);
-	// };
+	const {layout, onTogglePathBuilder, classes, onBack, onUpdate, isSVGPathBuilderOpen} = props;
+	
 	const allFields = {
-		font: {id: 'fontProperties', title: 'Font Properties'},
-		position: {id: 'positionProperties', title: 'Position Properties'},
-		color: {id: 'colorProperties', title: 'Color Properties'},
-		path: {id: 'pathProperties', title: 'Path Properties'}
+		font: {id: 'fontProperties', title: 'Font & Text'},
+		position: {id: 'positionProperties', title: 'Position'},
+		color: {id: 'colorProperties', title: 'Fill Color'},
+		path: {id: 'pathProperties', title: 'Path'},
+		shadow: {id: 'shadowProperties', title: 'Shadow'}
 		
 	};
 	
-	const fields = {
-		text: [
-			allFields.font, allFields.position, allFields.color
-		],
-		textPath: [
-			allFields.font, allFields.position, allFields.color, allFields.path
-		]
+	const fields = {};
+	fields.text = [
+		allFields.font, allFields.position, allFields.color, allFields.shadow
+	];
+	fields.textPath = [
+		...fields.text, allFields.path
+	];
+
+	const onPropertyChange = (name,value) => {
+		layout.properties[name] = value;
+		onUpdate(layout);
 	};
+
+	const onPathChanged = (path) => {
+		const points = pathToObject(path);
+		const newPathData = {
+			...layout.properties.pathData,
+			points,
+			path
+		};
+		onPropertyChange('pathData', newPathData);
+	};
+	
 
 	const renderProperties = (type) => {
 		const {
@@ -64,7 +89,8 @@ function LayoutPropertiesList({...props}) {
 					fill,
 					stroke,
 					strokeWidth,
-					pathData
+					pathData,
+					shadowData
 				}
 			}
 		} = props;
@@ -79,41 +105,54 @@ function LayoutPropertiesList({...props}) {
 			return <ColorProperties {...{fill, strokeWidth, stroke, onPropertyChange}} />;
 		}
 		case 'pathProperties': {
-			return <PathProperties {...{pathData, onTogglePathBuilder}} />;
+			return <PathProperties {...{pathData, onTogglePathBuilder, onPathChanged, isSVGPathBuilderOpen}} />;
 		}
+		case 'shadowProperties':
+			return <ShadowProperties {...{shadowData}} />;
 		default:
 			return '';
 		}
+		
 	};
 
 	return (
-		<div className={classes.root}>
-			{fields[layout.type].map((field) => {
-				return (
-					<ExpansionPanel key={field.id} /* expanded={expanded === field.title} onChange={handleChange(field.title)} */ 
-					>
-						<ExpansionPanelSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls={`panel${field.id}bh-content`}
-							id={`panel${field.id}bh-header`}
-						>
-							<Typography className={classes.heading}>{field.title}</Typography>
-							{/* <Typography className={classes.secondaryHeading}>family, size, weigth..</Typography> */}
-						</ExpansionPanelSummary>
-						<ExpansionPanelDetails>
-							{renderProperties(field.id)}
-						</ExpansionPanelDetails>
-					</ExpansionPanel>
-				);
-			})}
-		</div>
+		<Paper className={classes.paper}>
+			<Fab size="medium" color="secondary" className={classes.fab} onClick={onBack}>
+				<BackIcon />
+			</Fab>
+			<Grid container>
+				<div className={classes.root}>
+					{fields[layout.type].map((field) => {
+						return (
+							<ExpansionPanel key={field.id} /* expanded={expanded === field.title} onChange={handleChange(field.title)} */ 
+							>
+								<ExpansionPanelSummary
+									expandIcon={<ExpandMoreIcon />}
+									aria-controls={`panel${field.id}bh-content`}
+									id={`panel${field.id}bh-header`}
+								>
+									<Typography className={classes.heading}>{field.title}</Typography>
+									{/* <Typography className={classes.secondaryHeading}>family, size, weigth..</Typography> */}
+								</ExpansionPanelSummary>
+								<ExpansionPanelDetails>
+									{renderProperties(field.id)}
+								</ExpansionPanelDetails>
+							</ExpansionPanel>
+						);
+					})}
+				</div>
+			</Grid>
+		</Paper>
 	);
 }
 
 LayoutPropertiesList.propTypes = {
+	classes: PropTypes.object.isRequired,
+	onBack: PropTypes.func.isRequired,
 	layout: PropTypes.object,
 	onTogglePathBuilder: PropTypes.func,
-	onPropertyChange: PropTypes.func
+	onUpdate: PropTypes.func,
+	isSVGPathBuilderOpen: PropTypes.bool
 };
 
-export default LayoutPropertiesList;
+export default withStyles(useStyles)(LayoutPropertiesList);
