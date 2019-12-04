@@ -13,6 +13,7 @@ import PositionProperties from './positionProperties';
 import ColorProperties from './colorProperties';
 import PathProperties from './pathProperties';
 import ShadowProperties from './shadowProperties';
+import FilterProperties from './filtersProperties';
 import {pathToObject} from './../core/SVGPathBuilder/utils/points';
 
 const useStyles = theme => ({
@@ -40,19 +41,20 @@ const useStyles = theme => ({
 function LayoutPropertiesList(props) {
 	//const [expanded, setExpanded] = React.useState(false);
 	const {layout, onTogglePathBuilder, classes, onBack, onUpdate, isSVGPathBuilderOpen} = props;
-	
+
 	const allFields = {
 		font: {id: 'fontProperties', title: 'Font & Text'},
 		position: {id: 'positionProperties', title: 'Position'},
 		color: {id: 'colorProperties', title: 'Fill Color'},
 		path: {id: 'pathProperties', title: 'Path'},
-		shadow: {id: 'shadowProperties', title: 'Shadow'}
-		
+		shadow: {id: 'shadowProperties', title: 'Shadow'},
+		filter: {id: 'filterProperties', title: 'Filters'}
+
 	};
-	
+
 	const fields = {};
 	fields.text = [
-		allFields.font, allFields.position, allFields.color, allFields.shadow
+		allFields.font, allFields.position, allFields.color, allFields.shadow, allFields.filter
 	];
 	fields.textPath = [
 		...fields.text, allFields.path
@@ -72,7 +74,7 @@ function LayoutPropertiesList(props) {
 		};
 		onPropertyChange('pathData', newPathData);
 	};
-	
+
 
 	const renderProperties = (type) => {
 		const {
@@ -109,10 +111,13 @@ function LayoutPropertiesList(props) {
 		}
 		case 'shadowProperties':
 			return <ShadowProperties {...{shadowData}} />;
+		case 'filterProperties': {
+			return <FilterProperties />;
+		}
 		default:
 			return '';
 		}
-		
+
 	};
 
 	return (
@@ -124,7 +129,7 @@ function LayoutPropertiesList(props) {
 				<div className={classes.root}>
 					{fields[layout.type].map((field) => {
 						return (
-							<ExpansionPanel key={field.id} /* expanded={expanded === field.title} onChange={handleChange(field.title)} */ 
+							<ExpansionPanel key={field.id} /* expanded={expanded === field.title} onChange={handleChange(field.title)} */
 							>
 								<ExpansionPanelSummary
 									expandIcon={<ExpandMoreIcon />}
