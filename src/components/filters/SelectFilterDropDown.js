@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 		padding: '2px 4px',
 		display: 'flex',
 		alignItems: 'center',
-		width: 400,
+		width: '100%',
 	},
 	input: {
 		marginLeft: theme.spacing(1),
@@ -32,13 +32,14 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function SelectFilterDropDown() {
+export default function SelectFilterDropDown({onAdd}) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({anchorEl: null});
 	const handleClose = () => setState({...state, anchorEl: null});
 	const handleSelect = (selectedName, selectedItem) => {setState({anchorEl: null, selectedName, selectedItem});};
 	const handleAdd = () => {
-		console.log('add', state.selectedItem);
+		const item = {...state.selectedItem};
+		onAdd(item);
 		setState({...state, selectedItem: '', selectedName: ''});
 	};
 	const filtersList = primitivesData.map(item => {
@@ -51,7 +52,7 @@ export default function SelectFilterDropDown() {
 		return <MenuItem key={name} onClick={() => handleSelect(name, item)}>{name}</MenuItem>;
 	});
 	return (
-		<Paper component="form" className={classes.root}>
+		<Paper className={classes.root}>
 			<div className={classes.input}>
 				<Button
 					className={classes.button}

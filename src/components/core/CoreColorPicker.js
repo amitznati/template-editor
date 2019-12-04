@@ -29,12 +29,12 @@ const CoreColorPicker = ({...props}) => {
 				vertical: 'top',
 				horizontal: 'left',
 			}}
-			>
+		>
 			<SketchPicker color={color} onChange={handleChange} />
 		</Popover>
 	);
-	
-}
+
+};
 
 CoreColorPicker.propTypes = {
 	onChange: PropTypes.func,

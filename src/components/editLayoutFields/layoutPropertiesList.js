@@ -12,7 +12,6 @@ import FontProperties from './fontProperties';
 import PositionProperties from './positionProperties';
 import ColorProperties from './colorProperties';
 import PathProperties from './pathProperties';
-import ShadowProperties from './shadowProperties';
 import FilterProperties from './filtersProperties';
 import {pathToObject} from './../core/SVGPathBuilder/utils/points';
 
@@ -47,18 +46,18 @@ function LayoutPropertiesList(props) {
 		position: {id: 'positionProperties', title: 'Position'},
 		color: {id: 'colorProperties', title: 'Fill Color'},
 		path: {id: 'pathProperties', title: 'Path'},
-		shadow: {id: 'shadowProperties', title: 'Shadow'},
-		filter: {id: 'filterProperties', title: 'Filters'}
+		filters: {id: 'filterProperties', title: 'Filters'}
 
 	};
 
-	const fields = {};
-	fields.text = [
-		allFields.font, allFields.position, allFields.color, allFields.shadow, allFields.filter
-	];
-	fields.textPath = [
-		...fields.text, allFields.path
-	];
+	const fields = {
+		text: [
+			allFields.font, allFields.position, allFields.color, allFields.filters
+		],
+		textPath: [
+			allFields.font, allFields.position, allFields.color, allFields.path, allFields.filters
+		]
+	};
 
 	const onPropertyChange = (name,value) => {
 		layout.properties[name] = value;
@@ -91,8 +90,7 @@ function LayoutPropertiesList(props) {
 					fill,
 					stroke,
 					strokeWidth,
-					pathData,
-					shadowData
+					pathData
 				}
 			}
 		} = props;
@@ -109,8 +107,6 @@ function LayoutPropertiesList(props) {
 		case 'pathProperties': {
 			return <PathProperties {...{pathData, onTogglePathBuilder, onPathChanged, isSVGPathBuilderOpen}} />;
 		}
-		case 'shadowProperties':
-			return <ShadowProperties {...{shadowData}} />;
 		case 'filterProperties': {
 			return <FilterProperties />;
 		}

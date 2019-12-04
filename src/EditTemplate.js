@@ -28,7 +28,7 @@ const styles = theme => ({
 		// minHeight: '100%',
 		padding: theme.spacing(1)
 	}
-}); 
+});
 
 
 const defaultPosition = {
@@ -49,7 +49,7 @@ const layoutsTemplate = (type,payload) => {
 				x:8,y:8,height: 5,width:5, rotation: 0, scaleX: 1, scaleY: 1
 			}
 		};
-	case 'text': 
+	case 'text':
 		return {
 			type: 'text',
 			properties: {
@@ -58,7 +58,7 @@ const layoutsTemplate = (type,payload) => {
 				...defaultFontProps,
 				strokeWidth: 0, stroke: '',
 				fill: {fill: 'black'},
-				
+
 			}
 		};
 	case 'textPath': {
@@ -99,7 +99,7 @@ class EditTemplate extends React.Component {
 		//template.layouts.push(layoutsTemplate('text','text All the worlds a stage,'));
 		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
 		this.setState({template});
-		
+
 	}
 
 	onTemplateChanged(template) {
@@ -132,7 +132,7 @@ class EditTemplate extends React.Component {
 		let {template} = this.state;
 
 		template.layouts.push(layoutsTemplate(type,payload));
-		
+
 		this.setState({isAddOpen: false, template});
 	}
 
@@ -204,10 +204,10 @@ class EditTemplate extends React.Component {
 		const {selectedLayout, template, scale, product, selectedLayoutIndex, allFontsLoaded, isSVGPathBuilderOpen} = this.state;
 		const {layouts = []} = template;
 		const allFonts = this.getAllFonts();
-		
+
 		return (
 			<Grid container className={classes.rootGrid}>
-				<AddLayoutDialog 
+				<AddLayoutDialog
 					open={this.state.isAddOpen}
 					onClose={this.handleAddClose.bind(this)}
 				/>
@@ -221,25 +221,25 @@ class EditTemplate extends React.Component {
 						<ProductProperties  product={undefined} onProductChanged={(p) => this.setState({product: p})}/>
 					</Paper>
 				</Grid>
-				<Grid item md={2} className={classes.section}>
+				<Grid item md={3} className={classes.section}>
 					<Button variant="outlined" color="primary" onClick={() => this.setState({isAddOpen: true})}>
 					+ Add Layout
 					</Button>
-					{!selectedLayout && <LayoutsList 
-						onSortEnd={this.onSortEnd.bind(this)} 
-						layouts={layouts} 
+					{!selectedLayout && <LayoutsList
+						onSortEnd={this.onSortEnd.bind(this)}
+						layouts={layouts}
 						onLayoutClick={this.onLayoutClick.bind(this)}
 						onDeleteLayout={this.onDeleteLayout.bind(this)}
 					/>}
 					{selectedLayout && <LayoutPropertiesList
-						layout={selectedLayout} 
+						layout={selectedLayout}
 						onBack={this.onEditLayoutEnd}
 						onUpdate={this.onUpdateLayout.bind(this)}
 						onTogglePathBuilder={this.onTogglePathBuilder.bind(this)}
 						{...{isSVGPathBuilderOpen}}
 					/>}
 				</Grid>
-				{product && <Grid item md={10} className={classes.section}>
+				{product && <Grid item md={9} className={classes.section}>
 					<CoreSlider
 						label="Scale"
 						value={scale}
@@ -248,9 +248,9 @@ class EditTemplate extends React.Component {
 						handleSliderChange={(v)=>this.setState({scale: Number(Number(v).toFixed(2))})}
 					/>
 					<div className={classes.templatePaper}>
-						{allFontsLoaded && <TemplatePreview 
-							scale={scale} 
-							product={product} 
+						{allFontsLoaded && <TemplatePreview
+							scale={scale}
+							product={product}
 							template={template}
 							onUpdateLayout={this.onUpdateLayout}
 							onLayoutClick={this.onLayoutClick}

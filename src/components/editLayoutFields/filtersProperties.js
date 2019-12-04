@@ -1,8 +1,8 @@
 import React from 'react';
-import FilterList from '../filters/FilterList';
+import Filters from '../filters';
 
 export default function FilterProperties() {
 	return (
-		<FilterList/>
+		<Filters/>
 	);
 }
