@@ -3,11 +3,13 @@
   "inputsData": {
     "xlinkHref": {
       "type": "text",
+      "col": 12,
       "name": "xlink:href"
     },
     "preserveAspectRatio": {
       "type": "select",
       "double": true,
+      "col": 12,
       "valuesKeys": [
         "align",
         "meetOrSlice"

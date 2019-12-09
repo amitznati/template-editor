@@ -9,13 +9,13 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function FiltersList(props) {
 	const classes = useStyles();
-	const {filters = []} = props;
+	const {filters = [], onAttributeChange} = props;
 	return (
 		<Grid container>
 			{filters.map((filter, index) => {
 				return (
 					<Grid className={classes.filter} key={`filter-${index}`} item xs={12}>
-						<Filter {...{filter}} />
+						<Filter {...{filter, filterIndex: index, onAttributeChange}} />
 					</Grid>
 				);
 			})}
