@@ -8,3 +8,4 @@ export {default as SVGPathBuilder} from './SVGPathBuilder';
 export {default as GradientBuilder} from './GradientBuilder';
 export {default as CoreSortableList} from './CoreSortableList';
 export {default as CoreSelect} from './CoreSelect';
+export {default as CoreColorPickerButton} from './CoreColorPickerButton';

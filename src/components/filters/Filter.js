@@ -1,19 +1,25 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import {Grid, TextField, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton, Icon, Fab  } from '@material-ui/core';
+import {sortableHandle} from 'react-sortable-hoc';
+import ReorderIcon from '@material-ui/icons/Reorder';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {primitivesAttrs} from './Data';
-import {CoreNumber, CoreSelect, CoreText} from '../core';
-import {Grid, TextField} from '@material-ui/core';
-import CoreColorPickerButton from '../core/CoreColorPickerButton';
+import {CoreNumber, CoreSelect, CoreText, CoreColorPickerButton} from '../core';
+
+const DragHandle = sortableHandle(() => <ReorderIcon style={{cursor: 'move'}}/>);
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		padding: theme.spacing(3, 2),
+		padding: theme.spacing(1, 1),
 	},
 	filter: {
 		display: 'flex',
 		padding: theme.spacing(1)
+	},
+	noPadding: {
+		padding: 0
 	}
 }));
 
@@ -21,6 +27,7 @@ export default function Filter(props) {
 	const classes = useStyles();
 	const {filter, onAttributeChange, filterIndex} = props;
 	const itemProps = primitivesAttrs[filter.groupName];
+	const filterKey = `filter-field-${itemProps.name}-${filterIndex}`;
 	const dependencies = [];
 	Object.keys(itemProps.inputsData).forEach((name) => {
 		const field = itemProps.inputsData[name];
@@ -30,7 +37,8 @@ export default function Filter(props) {
 	});
 	const renderTextField = (name) => {
 		const value = filter.params[name].value;
-		return <CoreText
+		const key = `${filterKey}-${name}-field`;
+		return <CoreText key={key}
 			handleChange={(v) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: v })}
 			label={name}
 			value={value}
@@ -38,10 +46,11 @@ export default function Filter(props) {
 	};
 	const renderNumberField = (name) => {
 		const value = filter.params[name].value;
+		const key = `${filterKey}-${name}-field`;
 		if (itemProps.inputsData[name].double) {
 			const values = filter.params[name].value.split(' ');
-			const key1 = `filter-${name}-${values[0]}`;
-			const key2 = `filter-${name}-${values[1]}`;
+			const key1 = `${key}-1`;
+			const key2 = `${key}-2`;
 			return [
 				<CoreNumber
 					key={key1}
@@ -58,6 +67,7 @@ export default function Filter(props) {
 		}
 		return <CoreNumber
 			label={name}
+			key={key}
 			value={value}
 			onChange={(v) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: v })}
 		/>;
@@ -65,22 +75,23 @@ export default function Filter(props) {
 
 	const renderSelectField = (name) => {
 		const value = filter.params[name].value;
+		const key = `${filterKey}-${name}-field`;
 		if (itemProps.inputsData[name].double) {
 			const options1 = itemProps[itemProps.inputsData[name].valuesKeys[0]];
 			const options2 = itemProps[itemProps.inputsData[name].valuesKeys[1]];
 			const values = value.split(' ');
-			const select1Key = `filter-${name}-${values[0]}`;
-			const select2Key = `filter-${name}-${values[1]}`;
+			const key1 = `${key}-1`;
+			const key2 = `${key}-2`;
 			return [
 				<CoreSelect
-					key={select1Key}
+					key={key1}
 					label={itemProps.inputsData[name].valuesKeys[0]}
 					value={values[0]}
 					options={options1.map(o => {return {id: o, name: o};})}
 					onChange={(v) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: `${v} ${values[1]}` })}
 				/>,
 				<CoreSelect
-					key={select2Key}
+					key={key2}
 					label={itemProps.inputsData[name].valuesKeys[1]}
 					value={values[1]}
 					options={options2.map(o => {return {id: o, name: o};})}
@@ -92,6 +103,7 @@ export default function Filter(props) {
 		return <CoreSelect
 			label={name}
 			value={value}
+			key={key}
 			options={options.map(o => {return {id: o, name: o};})}
 			onChange={(v) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: v })}
 		/>;
@@ -100,8 +112,10 @@ export default function Filter(props) {
 
 	const renderColorField = (name) => {
 		const value = filter.params[name].value;
+		const key = `${filterKey}-${name}-field`;
 		return (
 			<CoreColorPickerButton
+				key={key}
 				btnText={name}
 				color={value}
 				handleChange={(v) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: v })}
@@ -111,34 +125,46 @@ export default function Filter(props) {
 
 	const renderTextAreaField = (name) => {
 		const value = filter.params[name].value;
+		const key = `${filterKey}-${name}-field`;
 		return (
 			<TextField
 				label={name}
+				key={key}
 				multiline
 				rows="4"
 				value={value}
 				variant="outlined"
+				onChange={(e) => onAttributeChange && onAttributeChange({index: filterIndex,name, value: e.target.value })}
 			/>
 		);
 	};
 
 	const renderField = (name, field) => {
+		const deleteKey = `${filterKey}-${name}-delete`;
+		const fieldToReturn = [<IconButton size="small" key={deleteKey}><Icon>visibility</Icon></IconButton>];
 		if(!['in', 'in2'].includes(name)) {
 			switch (field.type) {
 			case 'text':
-				return renderTextField(name);
+				fieldToReturn.push(renderTextField(name));
+				break;
 			case 'select':
-				return renderSelectField(name);
+				fieldToReturn.push(renderSelectField(name));
+				break;
 			case 'number':
-				return renderNumberField(name);
+				fieldToReturn.push(renderNumberField(name));
+				break;
 			case 'color':
-				return renderColorField(name);
+				fieldToReturn.push(renderColorField(name));
+				break;
 			case 'textarea':
-				return renderTextAreaField(name);
+				fieldToReturn.push(renderTextAreaField(name));
+				break;
 			default:
 				return null;
 			}
+			return fieldToReturn;
 		}
+
 	};
 	const isEnable = (name) => {
 		const geDependenciesByType = (type) => {
@@ -170,25 +196,46 @@ export default function Filter(props) {
 		}
 		return true;
 	};
+
 	return (
-		<Paper className={classes.root}>
-			<Typography variant="h5" component="h3">
-				{itemProps.name}
-			</Typography>
-			<Grid container>
-				{Object.keys(itemProps.inputsData).map(name => {
-					if (!isEnable(name)) {
-						return null;
-					}
-					const key = `filter-field-${itemProps.name}-${name}`;
-					const col = itemProps.inputsData[name].col;
-					return (
-						<Grid className={classes.filter} key={key} item xs={col || 4}>
-							{renderField(name, itemProps.inputsData[name])}
+		<ExpansionPanel className={classes.root}>
+			<ExpansionPanelSummary
+				expandIcon={<ExpandMoreIcon/>}
+				className={classes.noPadding}
+			>
+				<Grid container justify="center" alignItems="center">
+					<Grid item xs={1}><DragHandle/></Grid>
+					<Grid item xs={10}>
+						<Typography variant="subtitle1">
+							{itemProps.name}
+						</Typography>
+					</Grid>
+					<Grid item xs={1}>
+						<Fab size='small'><DeleteIcon /></Fab>
+					</Grid>
+				</Grid>
+			</ExpansionPanelSummary>
+			<ExpansionPanelDetails className={classes.noPadding}>
+				<Grid container>
+					{Object.keys(itemProps.inputsData).map(name => {
+						if (!isEnable(name)) {
+							return null;
+						}
+						const key = `${filterKey}-${name}`;
+						const col = itemProps.inputsData[name].col;
+						return (
+							<Grid className={classes.filter} key={key} item xs={col || 4}>
+								{renderField(name, itemProps.inputsData[name])}
+							</Grid>
+						);
+					})}
+					{props.children &&
+						<Grid item xs={12}>
+							{props.children}
 						</Grid>
-					);
-				})}
-			</Grid>
-		</Paper>
+					}
+				</Grid>
+			</ExpansionPanelDetails>
+		</ExpansionPanel>
 	);
 }

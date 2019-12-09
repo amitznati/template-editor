@@ -4,7 +4,8 @@
     "order": {
       "type": "number",
       "double": true,
-      "min": 1
+      "min": 1,
+      "col": 12
     },
     "kernelMatrix": {
       "type": "textarea",

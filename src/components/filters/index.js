@@ -1,14 +1,32 @@
 import React from 'react';
+import {Grid} from '@material-ui/core';
+import arrayMove from 'array-move';
 import SelectFilterDropDown from './SelectFilterDropDown';
 import FiltersList from './FiltersList';
-import {Grid} from '@material-ui/core';
 
 export default function Filters(props) {
 	const [filters, setFilters] = React.useState([]);
-	const onAttributeChange = ({index, name, value}) => {
+	const onAttributeChange = ({index, name, value, childIndex}) => {
 		const newFilters = filters.map((f,i) => {
 			if (i === index) {
-				f.params[name].value = value;
+				if (!isNaN(childIndex)) {
+					f.children[childIndex].params[name].value = value;
+				} else {
+					f.params[name].value = value;
+				}
+			}
+			return f;
+		});
+		setFilters(newFilters);
+	};
+	const onSortEnd = ({oldIndex, newIndex}) => {
+		const newFilters = arrayMove(filters, oldIndex, newIndex);
+		setFilters(newFilters);
+	};
+	const onSortChildrenEnd = ({oldIndex, newIndex, filterIndex}) => {
+		const newFilters = filters.map((f,i) => {
+			if (i === filterIndex) {
+				f.children = arrayMove(f.children, oldIndex, newIndex);
 			}
 			return f;
 		});
@@ -20,7 +38,7 @@ export default function Filters(props) {
 				<SelectFilterDropDown onAdd={filter => setFilters([...filters, filter])} />
 			</Grid>
 			<Grid item xs={12}>
-				<FiltersList {...{filters, onAttributeChange}}/>
+				<FiltersList {...{filters, onAttributeChange, onSortEnd, onSortChildrenEnd}}/>
 			</Grid>
 		</Grid>
 	);

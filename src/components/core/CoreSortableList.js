@@ -6,7 +6,7 @@ import {
 
 const SortableItem = sortableElement(({value, onItemClick}) => (
 	<li style={{listStyle: 'none'}} onClick={onItemClick}>
-		{value}	
+		{value}
 	</li>
 ));
 
@@ -14,7 +14,7 @@ const SortableList = sortableContainer(({items, onItemClick}) => {
 	return (
 		<ul style={{listStyle: 'none', margin: 0,padding: 0}}>
 			{items.map((value, index) => (
-				<SortableItem key={`item-${index}`} index={index} value={value} onItemClick={() => onItemClick(index)}/>
+				<SortableItem key={`item-${index}`} index={index} value={value} onItemClick={() => onItemClick && onItemClick(index)}/>
 			))}
 		</ul>
 	);

@@ -15,7 +15,8 @@
     },
     "kernelUnitLength": {
       "type": "number",
-      "double": true
+      "double": true,
+      "col": 12
     },
     "lightingColor": {
       "type": "color",
