@@ -6,7 +6,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 
-import {primitivesData, primitivesAttrs} from './Data';
+import {primitivesAttrs} from '../Data';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function SelectFilterDropDown({onAdd}) {
+export default function SelectFilterDropDown({onAdd, filtersData}) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({anchorEl: null});
 	const handleClose = () => setState({...state, anchorEl: null});
@@ -42,7 +42,7 @@ export default function SelectFilterDropDown({onAdd}) {
 		onAdd(item);
 		setState({...state, selectedItem: '', selectedName: ''});
 	};
-	const filtersList = primitivesData.map(item => {
+	const filtersList = filtersData.map(item => {
 		const groupData = primitivesAttrs[item.groupName];
 		let name = item.name;
 		if (item.groupName) {
