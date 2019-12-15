@@ -1,0 +1,55 @@
+{
+	"name": "feImage",
+	"inputsData": {
+	"xlinkHref": {
+		"type": "text",
+		"col": 12,
+		"name": "xlink:href"
+	},
+	"preserveAspectRatio": {
+		"type": "select",
+		"double": true,
+		"col": 12,
+		"valuesKeys": [
+		"align",
+		"meetOrSlice"
+		]
+	},
+	"crossOrigin": {
+		"type": "select"
+	},
+	"x":{
+		"type": "number"
+	},
+	"y":{
+		"type": "number"
+	},
+	"width":{
+		"type": "number"
+	},
+	"height":{
+		"type": "number"
+	}
+	},
+	"align": [
+	"xMinYMin",
+	"xMinYMid",
+	"xMinYMax",
+
+	"xMidYMin",
+	"xMidYMid",
+	"xMidYMax",
+
+	"xMaxYMin",
+	"xMaxYMid",
+	"xMaxYMax"
+	],
+	"crossOrigin": [
+	"anonymous",
+	"use-credentials"
+	],
+	"meetOrSlice": [
+	"meet",
+	"slice"
+	]
+}

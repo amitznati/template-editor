@@ -1,10 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import './index.scss';
-import EditTemplate from './EditTemplate';
+import EditTemplate from './widgets/EditTemplateMainView/widget/EditTemplateMainView.connect';
 import * as serviceWorker from './serviceWorker';
+import {getStoreInstance} from './sdk';
 
-ReactDOM.render(<EditTemplate />, document.getElementById('root'));
+const store = getStoreInstance();
+render(
+	<Provider store={store}>
+		<EditTemplate />
+	</Provider>,
+	document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

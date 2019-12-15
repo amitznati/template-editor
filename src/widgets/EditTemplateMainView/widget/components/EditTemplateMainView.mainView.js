@@ -1,0 +1,234 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import {Grid, Button} from '@material-ui/core';
+import LayoutsList from '../../../LayoutsList/widget/components/LayoutsListClose';
+import arrayMove from 'array-move';
+import AddLayoutDialogMainView from '../../../AddLayoutDialog/widget/components/AddLayoutDialog.mainView';
+import TemplatePreview from '../../../TemplatePreview/widget/components/TemplatePreview.mainView';
+import {products} from '../../../../mocks';
+import {CoreSlider, SVGPathBuilder} from '../../../core';
+import FontLoader from '../../../../sdk/services/fontLoader';
+import {getPX} from '../../../../sdk/utils';
+import withRoot from '../../../../withRoot';
+import LayoutPropertiesList from '../../../LayoutsList/widget/components/LayoutList.mainView';
+
+const styles = theme => ({
+	section: {
+		padding: '20px 0'
+	},
+	templatePaper: {
+		position: 'relative',
+		overflow: 'auto',
+		padding: '20px 0',
+		margin: 0
+	},
+	rootGrid: {
+		// minHeight: '100%',
+		padding: theme.spacing(1)
+	}
+});
+
+
+const defaultPosition = {
+	x: 5, y: 10, transform: {}
+};
+
+const defaultFontProps = {
+	fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100'
+};
+
+const layoutsTemplate = (type,payload) => {
+	switch(type) {
+	case 'image':
+		return {
+			type: 'image',
+			properties: {
+				src: payload.url,
+				x:8,y:8,height: 5,width:5, rotation: 0, scaleX: 1, scaleY: 1
+			}
+		};
+	case 'text':
+		return {
+			type: 'text',
+			properties: {
+				text: payload,
+				...defaultPosition,
+				...defaultFontProps,
+				strokeWidth: 0, stroke: '',
+				fill: {fill: 'black'},
+
+			}
+		};
+	case 'textPath': {
+		const x = getPX(5);
+		const y = getPX(10);
+		return {
+			type: 'textPath',
+			properties: {
+				text: payload,
+				x: 5, y: 10, transform: {},
+				...defaultFontProps,
+				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
+				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, points: [{x, y}, {x: x + 200, y}]}
+			}
+		};
+	}
+	default:
+		return '';
+	}
+};
+
+class EditTemplateMainViewMainView extends React.Component {
+
+	state = {
+		template: {layouts: []}, //call(apis.TEMPLATES,methods.BYID,1),
+		product: products[0],
+		selectedLayout: null,
+		isAddOpen: false,
+		selectedLayoutIndex: -1,
+		scale: 0.5,
+		allFontsLoaded: false,
+		isSVGPathBuilderOpen: false
+	};
+
+	componentDidMount() {
+		let {template} = this.state;
+		template.layouts.push(layoutsTemplate('textPath','All the worlds a stage,'));
+		this.setState({template});
+
+	}
+
+	onLayoutClick = (index) => {
+		const {layouts} = this.state.template;
+		this.setState({selectedLayout: layouts[index], selectedLayoutIndex: index});
+	};
+
+	onDeleteLayout = (index) => {
+		let {template} = this.state;
+		template.layouts.splice(index,1);
+		this.setState({template});
+	};
+
+	onSortEnd = ({oldIndex, newIndex}) => {
+		let {template} = this.state;
+		const newLayouts = arrayMove(template.layouts, oldIndex, newIndex);
+		template.layouts = newLayouts;
+		this.setState({template});
+	};
+
+	handleAddClose = (type,payload) => {
+		if(!type) {
+			this.setState({isAddOpen: false});
+			return;
+		}
+		let {template} = this.state;
+		template.layouts.push(layoutsTemplate(type,payload));
+		this.setState({isAddOpen: false, template});
+	};
+
+	onUpdateLayout = (layout) => {
+		let {template, selectedLayoutIndex} = this.state;
+		template.layouts[selectedLayoutIndex] = layout;
+		this.setState({template});
+	};
+
+	saveTemplate = () => {
+		//mockService('templates','create',this.state.template);
+	};
+
+	onEditLayoutEnd = () => {
+		this.setState({selectedLayout: null, selectedLayoutIndex: -1, isSVGPathBuilderOpen: false});
+	};
+
+	getAllFonts = () => {
+		const {template} = this.state;
+		const {layouts = []} = template;
+		const allFonts = [];
+		layouts.map(l => {
+			const {fontFamily, fontStyle, fontWeight} = l.properties;
+			if (l.type === 'text' || l.type === 'textPath') {
+				allFonts.push(`${fontFamily}:${fontWeight || 300}${fontStyle || 'normal'}`);
+			}
+			return false;
+		});
+		return allFonts;
+	};
+
+	onTogglePathBuilder = () => {
+		const {isSVGPathBuilderOpen} = this.state;
+		this.setState({isSVGPathBuilderOpen: !isSVGPathBuilderOpen});
+	};
+
+	render() {
+		const {classes} = this.props;
+		const {selectedLayout, template, scale, product, selectedLayoutIndex, allFontsLoaded, isSVGPathBuilderOpen} = this.state;
+		const {layouts = []} = template;
+		const allFonts = this.getAllFonts();
+
+		return (
+			<Grid container className={classes.rootGrid}>
+				<AddLayoutDialogMainView
+					open={this.state.isAddOpen}
+					onClose={this.handleAddClose.bind(this)}
+				/>
+				<Grid item xs={12} className={classes.section}>
+					<Button variant="outlined" color="primary" onClick={this.saveTemplate}>
+						Save
+					</Button>
+				</Grid>
+				<Grid item md={3} className={classes.section}>
+					<Button variant="outlined" color="primary" onClick={() => this.setState({isAddOpen: true})}>
+					+ Add Layout
+					</Button>
+					{!selectedLayout && <LayoutsList
+						onSortEnd={this.onSortEnd.bind(this)}
+						layouts={layouts}
+						onLayoutClick={this.onLayoutClick.bind(this)}
+						onDeleteLayout={this.onDeleteLayout.bind(this)}
+					/>}
+					{selectedLayout && <LayoutPropertiesList
+						layout={selectedLayout}
+						onBack={this.onEditLayoutEnd}
+						onUpdate={this.onUpdateLayout.bind(this)}
+						onTogglePathBuilder={this.onTogglePathBuilder.bind(this)}
+						{...{isSVGPathBuilderOpen}}
+					/>}
+				</Grid>
+				{product && <Grid item md={9} className={classes.section}>
+					<CoreSlider
+						label="Scale"
+						value={scale}
+						max={3}
+						step={0.001}
+						handleSliderChange={(v)=>this.setState({scale: Number(Number(v).toFixed(2))})}
+					/>
+					<div className={classes.templatePaper}>
+						{allFontsLoaded && <TemplatePreview
+							scale={scale}
+							product={product}
+							template={template}
+							onUpdateLayout={this.onUpdateLayout}
+							onLayoutClick={this.onLayoutClick}
+							onEditLayoutEnd={this.onEditLayoutEnd}
+							selectedLayoutIndex={selectedLayoutIndex}
+							selectedLayout={selectedLayout}
+							isSVGPathBuilderOpen={isSVGPathBuilderOpen}
+						/>}
+						{allFonts && allFonts.length && <FontLoader
+							fontProvider="google"
+							fontFamilies={allFonts}
+							onActive={() => this.setState({allFontsLoaded: true})}
+						/>}
+					</div>
+				</Grid>}
+				{/* {isSVGPathBuilderOpen && this.renderPathBuilder()} */}
+			</Grid>
+		);
+	}
+}
+EditTemplateMainViewMainView.propTypes = {
+	classes: PropTypes.object.isRequired,
+};
+
+export default withRoot(withStyles(styles)(EditTemplateMainViewMainView));
