@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
 import {Dialog, Paper,Grid, DialogTitle, DialogActions,DialogContent, Button, Toolbar, AppBar, Tabs, Tab, Typography, IconButton} from '@material-ui/core';
-import {logos} from '../../../../mocks';
-import { CoreText } from '../../../core';
+import {logos} from 'mocks';
+import { CoreText } from 'core';
 function TabContainer(props) {
 	return (
 		<Typography component="div" >

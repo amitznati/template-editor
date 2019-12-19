@@ -2,14 +2,14 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import './index.scss';
-import EditTemplate from './widgets/EditTemplateMainView/widget/EditTemplateMainView.connect';
+import EditTemplateMainView from './widgets/EditTemplateMainView/widget/EditTemplateMainView.connect';
 import * as serviceWorker from './serviceWorker';
 import {getStoreInstance} from './sdk';
 
 const store = getStoreInstance();
 render(
 	<Provider store={store}>
-		<EditTemplate />
+		<EditTemplateMainView />
 	</Provider>,
 	document.getElementById('root')
 );

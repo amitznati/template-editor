@@ -1,3 +1,4 @@
 export default {
-	sliceName: 'layoutsList'
+	sliceName: 'layoutsList',
+	apiName: 'LayoutsListApi'
 };

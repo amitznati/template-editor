@@ -1,3 +1,4 @@
 export default {
-	sliceName: 'templatePreview'
+	sliceName: 'templatePreview',
+	apiName: 'TemplatePreviewApi'
 };

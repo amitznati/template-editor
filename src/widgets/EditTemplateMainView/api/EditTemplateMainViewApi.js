@@ -1,6 +1,7 @@
 import BaseApi from '../../../sdk/BaseApi';
 import selectors from './EditTemplateMainViewSelectors';
-import SimpleServices from '../../../sdk/services/SimpleServices';
+import arrayMove from 'array-move';
+import {getPX} from '../../../sdk/utils';
 
 export const VisibilityFilters = {
 	SHOW_ALL: 'SHOW_ALL',
@@ -9,69 +10,187 @@ export const VisibilityFilters = {
 };
 
 export const ActionTypes = {
-	UPDATE_TODO: 'UPDATE_TODO',
-	ADD_TODO: 'ADD_TODO',
-	CHANGE_EDIT_TODO: 'CHANGE_EDIT_TODO',
-	LOAD_POSTS: 'LOAD_POSTS'
+	UPDATE_SELECTED_LAYOUT: 'UPDATE_SELECTED_LAYOUT',
+	UPDATE_TEMPLATE: 'UPDATE_TEMPLATE',
+	TOGGLE_ADD_LAYOUT_DIALOG: 'TOGGLE_ADD_LAYOUT_DIALOG',
+	EDIT_LAYOUT_END: 'EDIT_LAYOUT_END',
+	TOGGLE_SVG_PATH_BUILDER_OPEN: 'TOGGLE_SVG_PATH_BUILDER_OPEN',
+	UPDATE_SCALE: 'UPDATE_SCALE',
+	SET_ALL_FONTS_LOADED: 'SET_ALL_FONTS_LOADED'
 };
-let nextTodoId = 0;
+const defaultPosition = {
+	x: 5, y: 10, transform: {}
+};
+
+const defaultFontProps = {
+	fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100'
+};
+
+const layoutsTemplate = (type,payload) => {
+	switch(type) {
+	case 'image':
+		return {
+			type: 'image',
+			properties: {
+				src: payload.url,
+				x:8,y:8,height: 5,width:5, rotation: 0, scaleX: 1, scaleY: 1
+			}
+		};
+	case 'text':
+		return {
+			type: 'text',
+			properties: {
+				text: payload,
+				...defaultPosition,
+				...defaultFontProps,
+				strokeWidth: 0, stroke: '',
+				fill: {fill: 'black'},
+
+			}
+		};
+	case 'textPath': {
+		const x = getPX(5);
+		const y = getPX(10);
+		return {
+			type: 'textPath',
+			properties: {
+				text: payload,
+				x: 5, y: 10, transform: {},
+				...defaultFontProps,
+				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
+				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, points: [{x, y}, {x: x + 200, y}]}
+			}
+		};
+	}
+	default:
+		return '';
+	}
+};
+
 export default class EditTemplateMainViewApi extends BaseApi {
 
-	changeEditValue = (value) => {
+	updateTemplate = (template) => {
 		this.dispatchStoreAction({
-			type: ActionTypes.CHANGE_EDIT_TODO,
-			payload: value
+			type: ActionTypes.UPDATE_TEMPLATE,
+			payload: template
 		});
 	};
 
-	addTodo = () => {
-		const text = this.getEditToDoSelector();
-
+	toggleAddLayoutDialog = (isOpen) => {
 		this.dispatchStoreAction({
-			type: ActionTypes.ADD_TODO,
-			payload: {id: nextTodoId++, text}
+			type: ActionTypes.TOGGLE_ADD_LAYOUT_DIALOG,
+			payload: isOpen
 		});
 	};
 
-	toggleTodo = (id) => {
-		const todos = this.getVisibleToDosSelector();
-		const newTodos = todos.map((t) => {
-			if (t.id === id) {
-				t.completed = !t.completed;
+	onLayoutClick = (index) => {
+		const {layouts} = this.getTemplateSelector();
+		this.dispatchStoreAction({
+			type: ActionTypes.UPDATE_SELECTED_LAYOUT,
+			payload: {selectedLayout: layouts[index], selectedLayoutIndex: index}
+		});
+	};
+
+	onDeleteLayout = (index) => {
+		const template = this.getTemplateSelector();
+		template.layouts.splice(index,1);
+		this.updateTemplate(template);
+	};
+
+	onSortEnd = ({oldIndex, newIndex}) => {
+		const template = this.getTemplateSelector();
+		const newLayouts = arrayMove(template.layouts, oldIndex, newIndex);
+		template.layouts = newLayouts;
+		this.updateTemplate(template);
+	};
+
+	handleAddClose = (type,payload) => {
+		if(!type) {
+			this.toggleAddLayoutDialog(false);
+			return;
+		}
+		const template = this.getTemplateSelector();
+		template.layouts.push(layoutsTemplate(type,payload));
+		this.toggleAddLayoutDialog(false);
+		this.updateTemplate(template);
+	};
+
+	onUpdateLayout = (layout) => {
+		const template = this.getTemplateSelector();
+		let {selectedLayoutIndex} = this.getSelectedLayoutSelector();
+		template.layouts[selectedLayoutIndex] = layout;
+		this.updateTemplate(template);
+	};
+
+	saveTemplate = () => {
+		//mockService('templates','create',this.state.template);
+	};
+
+	onEditLayoutEnd = () => {
+		this.dispatchStoreAction({
+			type: ActionTypes.EDIT_LAYOUT_END
+		});
+	};
+
+	getAllFonts = () => {
+		const template = this.getTemplateSelector();
+		const {layouts = []} = template;
+		const allFonts = [];
+		layouts.map(l => {
+			const {fontFamily, fontStyle, fontWeight} = l.properties;
+			if (l.type === 'text' || l.type === 'textPath') {
+				allFonts.push(`${fontFamily}:${fontWeight || 300}${fontStyle || 'normal'}`);
 			}
-			return t;
+			return false;
 		});
+		return allFonts;
+	};
+
+	onTogglePathBuilder = () => {
 		this.dispatchStoreAction({
-			type: ActionTypes.UPDATE_TODO,
-			payload: newTodos
+			type: ActionTypes.TOGGLE_SVG_PATH_BUILDER_OPEN
 		});
 	};
 
-	loadDummyPosts = async () => {
-		return this.serviceRequest(
-			SimpleServices.getDummyPosts,
-			{},
-			ActionTypes.LOAD_POSTS
-		);
-
+	updateScale = (scale) => {
+		this.dispatchStoreAction({
+			type: ActionTypes.UPDATE_SCALE,
+			payload: scale
+		});
 	};
 
-	getPostById = async (id = 1) => {
-		const post = await this.serviceRequest(
-			SimpleServices.getPostById,
-			{id}
-		);
-		return post;
+	setAllFontsLoaded = () => {
+		this.dispatchStoreAction({
+			type: ActionTypes.SET_ALL_FONTS_LOADED,
+		});
 	};
 
 
-
-	/* Selectors */
-	getVisibleToDosSelector = () => {
-		return selectors.getToDosSelector(this.store.getState());
+	getTemplateSelector = () => {
+		return selectors.getTemplateSelector(this.store.getState());
 	};
 
-	getEditToDoSelector = () => {
-		return selectors.getEditToDoSelector(this.store.getState());
+	getSelectedLayoutSelector = () => {
+		return selectors.getSelectedLayoutSelector(this.store.getState());
 	};
+
+	getIsSVGPathBuilderOpenSelector = () => {
+		return selectors.getIsSVGPathBuilderOpenSelector(this.store.getState());
+	};
+
+	getProductSelector = () => {
+		return selectors.getProductSelector(this.store.getState());
+	};
+
+	getScaleSelector = () => {
+		return selectors.getScaleSelector(this.store.getState());
+	};
+
+	isAddLayoutDialogOpenSelector = () => {
+		return selectors.isAddLayoutDialogOpenSelector(this.store.getState());
+	};
+
+	isAllFontLoadedSelector = () => {
+		return selectors.isAllFontLoadedSelector(this.store.getState());
+	}
 }

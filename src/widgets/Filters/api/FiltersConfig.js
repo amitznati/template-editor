@@ -1,3 +1,4 @@
 export default {
-	sliceName: 'filters'
+	sliceName: 'filters',
+	apiName: 'FiltersApi'
 };

@@ -1,3 +1,4 @@
 export default {
-	sliceName: 'AddLayoutDialog'
+	sliceName: 'AddLayoutDialog',
+	apiName: 'AddLayoutDialogApi'
 };

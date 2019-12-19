@@ -31,10 +31,10 @@
   },
   "scripts": {
     "eslint": "eslint \"./src/**/*.js\"",
-    "start:dev": "cross-env PORT=3008 react-scripts start",
+    "start:dev": "cross-env PORT=3008 react-app-rewired start",
     "start": "npm-run-all eslint start:dev",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -53,7 +53,8 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.8",
-    "eslint": "^6.5.1"
+    "eslint": "^6.5.1",
+    "react-app-rewired": "^2.1.5",
+    "redux-devtools-extension": "^2.13.8"
   }
 }

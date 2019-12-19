@@ -1,3 +1,4 @@
 export default {
-	sliceName: 'EditTemplateMainView'
+	sliceName: 'EditTemplateMainView',
+	apiName: 'EditTemplateMainViewApi'
 };
