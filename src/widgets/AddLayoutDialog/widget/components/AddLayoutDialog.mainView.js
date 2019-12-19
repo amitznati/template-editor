@@ -90,7 +90,7 @@ class AddLayoutDialogMainView extends React.Component {
 						{/* <ThemeImagesList isForSelect onSelect={this.onImageSelect.bind(this)}/> */}
 					</TabContainer>}
 					{value === 2 && <TabContainer>
-						<CoreText label="text" handleTextChange={this.onTextChanged} value={text}/>
+						<CoreText label="text" handleChange={this.onTextChanged} value={text}/>
 						{/* <ButtonBase >ADD</ButtonBase> */}
 						<Button variant="outlined" color="primary" onClick={this.onTextSelect}>
 						ADD
