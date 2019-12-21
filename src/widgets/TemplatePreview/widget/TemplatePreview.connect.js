@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
-import {getInstance} from '../../../sdk';
+import {getInstance} from 'sdk';
 import TemplatePreviewComponent from './TemplatePreview.component';
 
 const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
-
+const templatePreviewApi = getInstance().TemplatePreviewApi;
 const mapStateToProps = () => {
 	const {selectedLayout, selectedLayoutIndex} = editTemplateMainViewApi.getSelectedLayoutSelector();
 	const product = editTemplateMainViewApi.getProductSelector();
@@ -24,6 +24,7 @@ const mapDispatchToProps = () => ({
 	onLayoutClick: editTemplateMainViewApi.onLayoutClick,
 	onUpdateLayout: editTemplateMainViewApi.onUpdateLayout,
 	onEditLayoutEnd: editTemplateMainViewApi.onEditLayoutEnd,
+	onPathChange: templatePreviewApi.onPathChange
 
 });
 

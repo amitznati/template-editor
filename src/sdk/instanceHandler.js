@@ -42,6 +42,8 @@ export const getInstance = () => {
 	return apisInstance;
 };
 
+createStoreInstance();
+createInstance();
 
 export default {
 	getStoreInstance,

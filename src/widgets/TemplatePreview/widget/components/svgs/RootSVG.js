@@ -54,30 +54,13 @@ class DesignCanvas extends React.Component {
 			y: y ? getCM(y) : 0,
 			transform
 		};
-	}
+	};
 
 	methods = {
-		// onResize: (dx, dy) => {
-		// 	console.log('{dx, dy}', {dx, dy});
-		// },
-		// onRotate: (rad) => {
-		// 	this.updateNode({rotate: rad});
-		// },
 		onDrop: (e, el) => {
 			const newVals = this.getPropertiesFromActiveNode(el);
 			this.updateNode(newVals);
 		},
-		// onInit(el) {
-		// 	//console.log('init');
-		// },
-		// onMove: () => {
-		// 	const el = this.getActiveNode();
-		//  	const newVals = this.getPropertiesFromActiveNode(el);
-		// 	this.updateNode(newVals);
-		// },
-		// onDestroy(el) {
-		// 	console.log('is destroyed');
-		// }
 	};
 
 
@@ -89,7 +72,7 @@ class DesignCanvas extends React.Component {
 			...newVals
 		};
 		onUpdateLayout && onUpdateLayout(selectedLayout);
-	}
+	};
 
 	handleStageMouseDown = e => {
 		// clicked on stage - cler selection
