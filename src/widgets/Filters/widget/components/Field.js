@@ -108,7 +108,7 @@ export default function Field(props) {
 			<Icon>visibility</Icon>
 		</IconButton>
 	);
-	let fieldToReturn = undefined;
+	let fieldToReturn = null;
 	const createField = (f, i) => {
 		return (
 			<Grid key={`${filterKey}-${name}-${i}`} container direction="row" justify="flex-start" alignItems="center">

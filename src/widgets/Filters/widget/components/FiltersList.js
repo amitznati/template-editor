@@ -4,7 +4,6 @@ import {Grid, Paper} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {CoreSortableList} from '../../../core';
 import SelectFilterDropDown from './SelectFilterDropDown';
-import {primitivesData} from '../../Data';
 
 const useStyles = makeStyles(theme => ({
 	filter: {
@@ -17,9 +16,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function FiltersList(props) {
 	const classes = useStyles();
-	const {filters = [], onAttributeChange, onSortEnd, onSortChildrenEnd, onDeleteFilter} = props;
+	const {filters = [], onAttributeChange, onSortEnd, onSortChildrenEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter} = props;
 	const renderFilter = (filterToRender, filterChildren, index, onChangeFunc = onAttributeChange, onDeleteFunc) => {
-		const paperKey = `filter-field-${index}`;
+		const paperKey = `filter-${filterToRender.id}`;
 		return (
 			<Paper key={paperKey} square className={classes.filter}>
 				<Grid container alignItems="center" className={classes.layoutGrid}>
@@ -41,16 +40,17 @@ export default function FiltersList(props) {
 	const items = filters.map((filter, index) => {
 		let filterChildren = undefined;
 		if(filter.children) {
-			const filterData = primitivesData.find(f => f.groupName === filter.groupName);
+			const filtersNameList = getChildrenFiltersNamesList(filter);
 			const filterChildrenItems = filter.children.map((f, i) => {
-				const onChangeFunc = ({index, name, value}) => onAttributeChange({index, name, value, childIndex: i});
+				const onChangeFunc = ({name, value}) => onAttributeChange({index, name, value, childIndex: i});
 				const onDeleteFunc = () => onDeleteFilter(index, i);
 				return renderFilter(f, null, i, onChangeFunc, onDeleteFunc);
 			});
+			const onAddFilter = (filterItem) => onAddChildFilter(filterItem, filter);
 			filterChildren = (
 				<Grid container>
 					<Grid item xs={12}>
-						<SelectFilterDropDown filtersData={[...filterData.children]} />
+						<SelectFilterDropDown filtersNameList={filtersNameList} onAddFilter={onAddFilter} />
 					</Grid>
 					<Grid item xs={12}>
 						<CoreSortableList

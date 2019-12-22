@@ -1,30 +1,19 @@
 import {ActionTypes} from './FiltersApi';
+
 const initialState = {
-	toDos: [],
-	editToDo: ''
+	filters: []
 };
-const SUCCESS = '_SUCCESS';
+
 const reducer = (state = initialState, action) => {
 	let newState = {...state};
 	const payload = action && action.payload;
 	const type = action && action.type;
 	switch (type) {
-	case ActionTypes.ADD_TODO:
+	case ActionTypes.SET_FILTERS:
 		newState = {
 			...state,
-			editToDo: '',
-			toDos: [...state.toDos, {...payload}]
+			filters: [...payload],
 		};
-		break;
-	case ActionTypes.UPDATE_TODO: {
-		newState = {...state, toDos: [...payload]};
-		break;
-	}
-	case ActionTypes.CHANGE_EDIT_TODO:
-		newState = {...state, editToDo: payload};
-		break;
-	case `${ActionTypes.LOAD_POSTS}${SUCCESS}`:
-		newState = {...state, posts: payload};
 		break;
 	default:
 		return newState;

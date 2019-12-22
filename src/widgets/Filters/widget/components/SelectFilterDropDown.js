@@ -6,8 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 
-import {primitivesAttrs} from '../../Data';
-
 const useStyles = makeStyles(theme => ({
 	root: {
 		padding: '2px 4px',
@@ -32,24 +30,18 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function SelectFilterDropDown({onAdd, filtersData}) {
+export default function SelectFilterDropDown({onAddFilter, filtersNameList}) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({anchorEl: null});
 	const handleClose = () => setState({...state, anchorEl: null});
-	const handleSelect = (selectedName, selectedItem) => {setState({anchorEl: null, selectedName, selectedItem});};
+	const handleSelect = (selectedItem) => {setState({anchorEl: null, selectedItem});};
 	const handleAdd = () => {
 		const item = {...state.selectedItem};
-		onAdd(item);
-		setState({...state, selectedItem: '', selectedName: ''});
+		onAddFilter(item);
+		setState({...state, selectedItem: null});
 	};
-	const filtersList = filtersData.map(item => {
-		const groupData = primitivesAttrs[item.groupName];
-		let name = item.name;
-		if (item.groupName) {
-			// primitives
-			name = groupData.name;
-		}
-		return <MenuItem key={name} onClick={() => handleSelect(name, item)}>{name}</MenuItem>;
+	const filtersList = filtersNameList.map(item => {
+		return <MenuItem key={item.name} onClick={() => handleSelect(item)}>{item.name}</MenuItem>;
 	});
 	return (
 		<Paper className={classes.root}>
@@ -60,7 +52,7 @@ export default function SelectFilterDropDown({onAdd, filtersData}) {
 					aria-haspopup="true"
 					onClick={(e) => setState({...state, anchorEl: e.target})}
 				>
-					{state.selectedName || 'Select Filter'}
+					{state.selectedItem ? state.selectedItem.name : 'Select Filter'}
 				</Button>
 				<Menu
 					id="simple-menu"

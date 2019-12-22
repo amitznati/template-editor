@@ -3,15 +3,16 @@ import config from './FiltersConfig';
 
 const sliceSelector = state => state[config.sliceName];
 
-export const getToDosSelector = createSelector(sliceSelector, (slice) => {
-	return slice.toDos;
+export const getFiltersSelector = createSelector(sliceSelector, (slice) => {
+	return slice.filters;
 });
 
-export const getEditToDoSelector = createSelector(sliceSelector, (slice) => {
-	return slice.editToDo;
+export const getFiltersNamesListSelector = createSelector(sliceSelector, (slice) => {
+	return slice.filtersNamesList;
 });
+
 
 export default {
-	getToDosSelector,
-	getEditToDoSelector
+	getFiltersSelector,
+	getFiltersNamesListSelector
 };

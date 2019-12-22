@@ -1,77 +1,115 @@
 import BaseApi from '../../../sdk/BaseApi';
 import selectors from './FiltersSelectors';
-import SimpleServices from '../../../sdk/services/SimpleServices';
-
-export const VisibilityFilters = {
-	SHOW_ALL: 'SHOW_ALL',
-	SHOW_COMPLETED: 'SHOW_COMPLETED',
-	SHOW_ACTIVE: 'SHOW_ACTIVE'
-};
+import arrayMove from 'array-move';
+import {primitivesAttrs, primitivesData} from '../Data';
 
 export const ActionTypes = {
-	UPDATE_TODO: 'UPDATE_TODO',
-	ADD_TODO: 'ADD_TODO',
-	CHANGE_EDIT_TODO: 'CHANGE_EDIT_TODO',
-	LOAD_POSTS: 'LOAD_POSTS'
+	SET_FILTERS: 'SET_FILTERS'
 };
-let nextTodoId = 0;
+
 export default class FiltersApi extends BaseApi {
 
-	changeEditValue = (value) => {
-		this.dispatchStoreAction({
-			type: ActionTypes.CHANGE_EDIT_TODO,
-			payload: value
-		});
-	};
-
-	addTodo = () => {
-		const text = this.getEditToDoSelector();
-
-		this.dispatchStoreAction({
-			type: ActionTypes.ADD_TODO,
-			payload: {id: nextTodoId++, text}
-		});
-	};
-
-	toggleTodo = (id) => {
-		const todos = this.getVisibleToDosSelector();
-		const newTodos = todos.map((t) => {
-			if (t.id === id) {
-				t.completed = !t.completed;
+	onAttributeChange = ({index, name, value, childIndex}) => {
+		const filters = this.getFiltersSelector();
+		const newFilters = filters.map((f,i) => {
+			if (i === index) {
+				if (!isNaN(childIndex)) {
+					f.children[childIndex].params[name].value = value;
+				} else {
+					f.params[name].value = value;
+				}
 			}
-			return t;
+			return f;
 		});
+		this.setFilters(newFilters);
+	};
+	onSortEnd = ({oldIndex, newIndex}) => {
+		const filters = this.getFiltersSelector();
+		const newFilters = arrayMove(filters, oldIndex, newIndex);
+		this.setFilters(newFilters);
+	};
+	onSortChildrenEnd = ({oldIndex, newIndex, filterIndex}) => {
+		const filters = this.getFiltersSelector();
+		const newFilters = filters.map((f,i) => {
+			if (i === filterIndex) {
+				f.children = arrayMove(f.children, oldIndex, newIndex);
+			}
+			return f;
+		});
+		this.setFilters(newFilters);
+	};
+
+	onDeleteFilter = (index, childIndex) => {
+		const filters = this.getFiltersSelector();
+		let newFilters = [...filters];
+		if (!isNaN(childIndex)) {
+			newFilters[index].children.splice(childIndex,1);
+		} else {
+			newFilters.splice(index, 1);
+		}
+		this.setFilters(newFilters);
+	};
+
+	onAddFilter = (filterItem) => {
+		const filterToAdd = this.getFilterDataByGroupName(filterItem.groupName);
+		const filters = this.getFiltersSelector();
+		const sameGroupFilters = filters.filter(f => f.groupName === filterItem.groupName);
+		filterToAdd.id = `${filterToAdd.id}-${sameGroupFilters.length}`;
+		this.setFilters([...filters, filterToAdd]);
+	};
+
+	onAddChildFilter = (filterItem, filterParent) => {
+		const filterData = this.getFilterDataByGroupName(filterParent.groupName);
+		const childFilter = filterData.children.find(f => f.groupName === filterItem.groupName);
+		const clonedChild = JSON.parse(JSON.stringify(childFilter));
+		const sameGroupFilters = filterParent.children.filter(f => f.groupName === filterItem.groupName);
+		const filters = this.getFiltersSelector();
+		const newFilters = filters.map((f) => {
+			if (f.id === filterParent.id) {
+				clonedChild.id = `${clonedChild.id}-${sameGroupFilters.length}`;
+				f.children.push(clonedChild);
+			}
+			return f;
+		});
+		this.setFilters(newFilters);
+	};
+
+	setFilters = (filters) => {
 		this.dispatchStoreAction({
-			type: ActionTypes.UPDATE_TODO,
-			payload: newTodos
+			type: ActionTypes.SET_FILTERS,
+			payload: filters
 		});
 	};
 
-	loadDummyPosts = async () => {
-		return this.serviceRequest(
-			SimpleServices.getDummyPosts,
-			{},
-			ActionTypes.LOAD_POSTS
-		);
-
+	getChildrenFiltersNamesList = (filter) => {
+		const filterData = this.getFilterDataByGroupName(filter.groupName);
+		return this.getFiltersNamesListSelector(filterData);
 	};
 
-	getPostById = async (id = 1) => {
-		const post = await this.serviceRequest(
-			SimpleServices.getPostById,
-			{id}
-		);
-		return post;
+	getFiltersSelector = () => {
+		return selectors.getFiltersSelector(this.store.getState());
 	};
 
+	getFiltersNamesListSelector = (byFilter) => {
+		const filters = byFilter ? byFilter.children : primitivesData;
+		const filtersNamesList = filters.map(item => {
+			const groupData = primitivesAttrs[item.groupName];
+			if (item.groupName) {
+				return  {name: groupData.name, groupName: item.groupName};
+			}
+			return {};
+		});
 
-
-	/* Selectors */
-	getVisibleToDosSelector = () => {
-		return selectors.getToDosSelector(this.store.getState());
+		return filtersNamesList;
 	};
 
-	getEditToDoSelector = () => {
-		return selectors.getEditToDoSelector(this.store.getState());
+	getPrimitivesData = () => {
+		return [...primitivesData];
 	};
+
+	getFilterDataByGroupName = (groupName) => {
+		const data = this.getPrimitivesData();
+		const filter = data.find(f => f.groupName === groupName);
+		return JSON.parse(JSON.stringify(filter));
+	}
 }
