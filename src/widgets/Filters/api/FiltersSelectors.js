@@ -7,12 +7,7 @@ export const getFiltersSelector = createSelector(sliceSelector, (slice) => {
 	return slice.filters;
 });
 
-export const getFiltersNamesListSelector = createSelector(sliceSelector, (slice) => {
-	return slice.filtersNamesList;
-});
-
 
 export default {
-	getFiltersSelector,
-	getFiltersNamesListSelector
+	getFiltersSelector
 };

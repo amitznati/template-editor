@@ -142,7 +142,7 @@ export default function Filter(props) {
 										itemProps,
 										value: filter.params[name] && filter.params[name].value,
 										filterKey,
-										onAttributeChange: ({name,value}) => onAttributeChange({index: filterIndex,name, value }),
+										onAttributeChange,
 										ignoreVisible
 									}}
 								/>

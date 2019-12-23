@@ -9,3 +9,4 @@ export {default as GradientBuilder} from './GradientBuilder';
 export {default as CoreSortableList} from './CoreSortableList';
 export {default as CoreSelect} from './CoreSelect';
 export {default as CoreColorPickerButton} from './CoreColorPickerButton';
+export {default as CoreMenuSelect} from './CoreMenuSelect';

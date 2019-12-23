@@ -16,9 +16,9 @@ const mapDispatchToProps = () => ({
 	onDeleteFilter: filtersApi.onDeleteFilter,
 	onAttributeChange: filtersApi.onAttributeChange,
 	onSortEnd: filtersApi.onSortEnd,
-	onSortChildrenEnd: filtersApi.onSortChildrenEnd,
 	getChildrenFiltersNamesList: filtersApi.getChildrenFiltersNamesList,
-	onAddChildFilter: filtersApi.onAddChildFilter
+	onAddChildFilter: filtersApi.onAddChildFilter,
+	onAddParentFilter: filtersApi.onAddParentFilter
 });
 
 export default connect(

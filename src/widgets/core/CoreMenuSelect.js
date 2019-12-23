@@ -1,10 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import {Menu, Button, MenuItem} from '@material-ui/core';
+import {Menu, Button, MenuItem, Icon} from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -30,17 +29,21 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function SelectFilterDropDown({onAddFilter, filtersNameList}) {
+export default function CoreMenuSelect({onAdd = false, options = [], onDelete = false, onSelect}) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({anchorEl: null});
 	const handleClose = () => setState({...state, anchorEl: null});
-	const handleSelect = (selectedItem) => {setState({anchorEl: null, selectedItem});};
-	const handleAdd = () => {
+	const handleSelect = (selectedItem) => {
+		setState({anchorEl: null, selectedItem});
+		onSelect && onSelect(selectedItem);
+	};
+	const handleClick = (callback) => {
 		const item = {...state.selectedItem};
-		onAddFilter(item);
+		callback(item);
 		setState({...state, selectedItem: null});
 	};
-	const filtersList = filtersNameList.map(item => {
+
+	const list = options.map(item => {
 		return <MenuItem key={item.name} onClick={() => handleSelect(item)}>{item.name}</MenuItem>;
 	});
 	return (
@@ -61,19 +64,27 @@ export default function SelectFilterDropDown({onAddFilter, filtersNameList}) {
 					open={Boolean(state.anchorEl)}
 					onClose={handleClose}
 				>
-					{filtersList}
+					{list}
 				</Menu>
 			</div>
-
-			<Divider className={classes.divider} orientation="vertical" />
-			<IconButton
+			{onDelete && <IconButton
+				color="secondary"
+				className={classes.iconButton}
+				disabled={!state.selectedItem}
+				onClick={() => handleClick(onDelete)}
+			>
+				<Icon>delete</Icon>
+			</IconButton>}
+			{onAdd && <Divider className={classes.divider} orientation="vertical" />}
+			{onAdd && <IconButton
 				color="primary"
 				className={classes.iconButton}
-				onClick={handleAdd}
+				onClick={() => handleClick(onAdd)}
 				disabled={!state.selectedItem}
 			>
-				<AddIcon />
-			</IconButton>
+				<Icon>add</Icon>
+			</IconButton>}
+
 		</Paper>
 	);
 }

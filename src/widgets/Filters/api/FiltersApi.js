@@ -4,66 +4,65 @@ import arrayMove from 'array-move';
 import {primitivesAttrs, primitivesData} from '../Data';
 
 export const ActionTypes = {
-	SET_FILTERS: 'SET_FILTERS'
+	SET_FILTERS: 'SET_FILTERS',
+	ADD_PARENT_FILTER: 'ADD_PARENT_FILTER'
 };
 
 export default class FiltersApi extends BaseApi {
 
-	onAttributeChange = ({index, name, value, childIndex}) => {
-		const filters = this.getFiltersSelector();
-		const newFilters = filters.map((f,i) => {
-			if (i === index) {
-				if (!isNaN(childIndex)) {
-					f.children[childIndex].params[name].value = value;
-				} else {
-					f.params[name].value = value;
-				}
-			}
-			return f;
+	onAddParentFilter = () => {
+		this.dispatchStoreAction({
+			type: ActionTypes.ADD_PARENT_FILTER
 		});
-		this.setFilters(newFilters);
-	};
-	onSortEnd = ({oldIndex, newIndex}) => {
-		const filters = this.getFiltersSelector();
-		const newFilters = arrayMove(filters, oldIndex, newIndex);
-		this.setFilters(newFilters);
-	};
-	onSortChildrenEnd = ({oldIndex, newIndex, filterIndex}) => {
-		const filters = this.getFiltersSelector();
-		const newFilters = filters.map((f,i) => {
-			if (i === filterIndex) {
-				f.children = arrayMove(f.children, oldIndex, newIndex);
-			}
-			return f;
-		});
-		this.setFilters(newFilters);
 	};
 
-	onDeleteFilter = (index, childIndex) => {
-		const filters = this.getFiltersSelector();
+	onAttributeChange = ({parentFilterId, index, name, value, childIndex}) => {
+		const filters = this.getFiltersSelector(parentFilterId);
+		if (!isNaN(childIndex)) {
+			filters[index].children[childIndex].params[name].value = value;
+		} else {
+			filters[index].params[name].value = value;
+		}
+		this.setFilters(parentFilterId, filters);
+	};
+
+	onSortEnd = ({parentFilterId, oldIndex, newIndex, filterIndex}) => {
+		const filters = this.getFiltersSelector(parentFilterId);
+		let newFilters = [...filters];
+		if (!isNaN(filterIndex)) {
+			const newChildren = arrayMove(filters[filterIndex].children, oldIndex, newIndex);
+			newFilters[filterIndex].children = newChildren;
+		} else {
+			newFilters = arrayMove(filters, oldIndex, newIndex);
+		}
+		this.setFilters(parentFilterId, newFilters);
+	};
+
+	onDeleteFilter = ({parentFilterId, index, childIndex}) => {
+		const filters = this.getFiltersSelector(parentFilterId);
 		let newFilters = [...filters];
 		if (!isNaN(childIndex)) {
 			newFilters[index].children.splice(childIndex,1);
 		} else {
 			newFilters.splice(index, 1);
 		}
-		this.setFilters(newFilters);
+		this.setFilters(parentFilterId, newFilters);
 	};
 
-	onAddFilter = (filterItem) => {
+	onAddFilter = (parentFilterId, filterItem) => {
 		const filterToAdd = this.getFilterDataByGroupName(filterItem.groupName);
-		const filters = this.getFiltersSelector();
+		const filters = this.getFiltersSelector(parentFilterId);
 		const sameGroupFilters = filters.filter(f => f.groupName === filterItem.groupName);
 		filterToAdd.id = `${filterToAdd.id}-${sameGroupFilters.length}`;
-		this.setFilters([...filters, filterToAdd]);
+		this.setFilters(parentFilterId, [...filters, filterToAdd]);
 	};
 
-	onAddChildFilter = (filterItem, filterParent) => {
+	onAddChildFilter = (parentFilterId, filterItem, filterParent) => {
 		const filterData = this.getFilterDataByGroupName(filterParent.groupName);
 		const childFilter = filterData.children.find(f => f.groupName === filterItem.groupName);
 		const clonedChild = JSON.parse(JSON.stringify(childFilter));
 		const sameGroupFilters = filterParent.children.filter(f => f.groupName === filterItem.groupName);
-		const filters = this.getFiltersSelector();
+		const filters = this.getFiltersSelector(parentFilterId);
 		const newFilters = filters.map((f) => {
 			if (f.id === filterParent.id) {
 				clonedChild.id = `${clonedChild.id}-${sameGroupFilters.length}`;
@@ -71,13 +70,13 @@ export default class FiltersApi extends BaseApi {
 			}
 			return f;
 		});
-		this.setFilters(newFilters);
+		this.setFilters(parentFilterId, newFilters);
 	};
 
-	setFilters = (filters) => {
+	setFilters = (parentFilterId, filters) => {
 		this.dispatchStoreAction({
 			type: ActionTypes.SET_FILTERS,
-			payload: filters
+			payload: {filters, parentFilterId}
 		});
 	};
 
@@ -86,8 +85,9 @@ export default class FiltersApi extends BaseApi {
 		return this.getFiltersNamesListSelector(filterData);
 	};
 
-	getFiltersSelector = () => {
-		return selectors.getFiltersSelector(this.store.getState());
+	getFiltersSelector = (parentFilterId) => {
+		const filters = selectors.getFiltersSelector(this.store.getState());
+		return parentFilterId ? filters[parentFilterId].filters : filters;
 	};
 
 	getFiltersNamesListSelector = (byFilter) => {
@@ -103,13 +103,8 @@ export default class FiltersApi extends BaseApi {
 		return filtersNamesList;
 	};
 
-	getPrimitivesData = () => {
-		return [...primitivesData];
-	};
-
 	getFilterDataByGroupName = (groupName) => {
-		const data = this.getPrimitivesData();
-		const filter = data.find(f => f.groupName === groupName);
-		return JSON.parse(JSON.stringify(filter));
+		const filter = primitivesData.find(f => f.groupName === groupName);
+		return filter ? JSON.parse(JSON.stringify(filter)) : {};
 	}
 }

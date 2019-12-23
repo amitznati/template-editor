@@ -1,7 +1,7 @@
 import {ActionTypes} from './FiltersApi';
 
 const initialState = {
-	filters: []
+	filters: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,9 +12,27 @@ const reducer = (state = initialState, action) => {
 	case ActionTypes.SET_FILTERS:
 		newState = {
 			...state,
-			filters: [...payload],
+			filters: {
+				...state.filters,
+				[`${payload.parentFilterId}`]: {
+					...state.filters[payload.parentFilterId],
+					filters: [...payload.filters]
+				}},
 		};
 		break;
+	case ActionTypes.ADD_PARENT_FILTER: {
+		const id = `filter${Object.keys(state.filters).length + 1}`;
+		const newFilter = {
+			id,
+			name: id,
+			filters: []
+		};
+		newState = {
+			...state,
+			filters: {...state.filters, [`${id}`]: {...newFilter}}
+		};
+		break;
+	}
 	default:
 		return newState;
 	}

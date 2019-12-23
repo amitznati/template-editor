@@ -12,15 +12,15 @@ const svgOptions = (methods) => {
 		//proportions: true,
 		//rotationPoint: true,
 		themeColor: 'purple',
-		each: {
-			//move: true,
-			//rotate: true
-		},
-		snap: {
-			x: 0,
-			y: 0,
-			angle: 1
-		},
+		// each: {
+		// 	//move: true,
+		// 	//rotate: true
+		// },
+		// snap: {
+		// 	x: 0,
+		// 	y: 0,
+		// 	angle: 1
+		// },
 		cursorMove: 'move',
 		cursorRotate: 'crosshair',
 		cursorResize: 'pointer',
