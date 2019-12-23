@@ -16,11 +16,11 @@ const svgOptions = (methods) => {
 		// 	//move: true,
 		// 	//rotate: true
 		// },
-		// snap: {
-		// 	x: 0,
-		// 	y: 0,
-		// 	angle: 1
-		// },
+		snap: {
+			x: 0,
+			y: 0,
+			angle: 1
+		},
 		cursorMove: 'move',
 		cursorRotate: 'crosshair',
 		cursorResize: 'pointer',
@@ -42,6 +42,12 @@ class DesignCanvas extends React.Component {
 		return node;
 	};
 
+	refreshNode = () => {
+		this.currentLayout && this.currentLayout.disable();
+		const node = this.getActiveNode();
+		this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+	};
+
 	getPropertiesFromActiveNode = (el) => {
 		if (!el) return {};
 		const x = el.getAttribute('x');
@@ -59,8 +65,9 @@ class DesignCanvas extends React.Component {
 	methods = {
 		onDrop: (e, el) => {
 			const newVals = this.getPropertiesFromActiveNode(el);
+			this.refreshNode();
 			this.updateNode(newVals);
-		},
+		}
 	};
 
 
@@ -90,9 +97,7 @@ class DesignCanvas extends React.Component {
 	componentDidUpdate(prevProps) {
 		const {selectedLayoutIndex, isSVGPathBuilderOpen} = this.props;
 		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex) {
-			this.currentLayout && this.currentLayout.disable();
-			const node = this.getActiveNode();
-			this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+			this.refreshNode();
 		} else if (isSVGPathBuilderOpen !== prevProps.isSVGPathBuilderOpen) {
 			if (isSVGPathBuilderOpen) {
 				this.currentLayout && this.currentLayout.disable();
