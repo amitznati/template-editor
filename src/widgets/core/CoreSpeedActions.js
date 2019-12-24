@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function FilterSpeedActions(props)  {
+export default function CoreSpeedActions(props)  {
 	const {actions} = props;
 	const classes = useStyles();
 	const [actionOpen, setActionOpen] = React.useState(false);

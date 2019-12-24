@@ -1,22 +1,38 @@
 import React from 'react';
-import {Grid, Paper} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import FiltersList from './FiltersList';
-import EditFilterName from './Filters.EditFilterName';
-import {CoreMenuSelect} from '../../../core';
+import EditFilterHeader from './Filters.EditFilterHeader';
+import {CoreMenuSelect, CoreExpandableSortablePaper} from '../../../core';
 
-export default function NewFilter(props) {
-
-	const {parentFilter, filtersNameList, onAddFilter, onAttributeChange, onSortEnd, onSortChildrenEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter} = props;
-	const {id: parentFilterId, name: parentFilterName, filters} = parentFilter;
+export default function EditFilter(props) {
+	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
+	const {parentFilter, primitivesNameList, onAddFilter, onAttributeChange, onSortEnd, onSortChildrenEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter} = props;
+	const {id: parentFilterId, primitives: filters} = parentFilter;
 	const onAdd = (filterItem) => onAddFilter(parentFilterId, filterItem);
+	const actions = [
+		{ icon: 'file_copy', name: 'Duplicate' },
+		{ icon: 'delete', name: 'Delete' },
+		{ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: () => setIgnoreVisible(!ignoreVisible) },
+	];
+	const getHeader = () => {
+		return (
+			<EditFilterHeader
+				filter={parentFilter}
+				{...{
+					ignoreVisible
+				}}
+			/>
+		);
+	};
+
 	return (
-		<Paper style={{padding: '5px'}}>
+		<CoreExpandableSortablePaper
+			header={getHeader()}
+			actions={actions}
+		>
 			<Grid container>
 				<Grid item xs={12}>
-					<EditFilterName {...{parentFilterId, parentFilterName}} />
-				</Grid>
-				<Grid item xs={12}>
-					<CoreMenuSelect options={filtersNameList} onAdd={onAdd} />
+					<CoreMenuSelect options={primitivesNameList} onAdd={onAdd} />
 				</Grid>
 				<Grid item xs={12}>
 					<FiltersList
@@ -33,7 +49,7 @@ export default function NewFilter(props) {
 					/>
 				</Grid>
 			</Grid>
-		</Paper>
+		</CoreExpandableSortablePaper>
 	);
 
 }

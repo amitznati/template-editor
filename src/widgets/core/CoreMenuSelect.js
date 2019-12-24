@@ -44,7 +44,7 @@ export default function CoreMenuSelect({onAdd = false, options = [], onDelete = 
 	};
 
 	const list = options.map(item => {
-		return <MenuItem key={item.name} onClick={() => handleSelect(item)}>{item.name}</MenuItem>;
+		return <MenuItem key={`${item.id}-${item.name}`} onClick={() => handleSelect(item)}>{item.name}</MenuItem>;
 	});
 	return (
 		<Paper className={classes.root}>

@@ -6,8 +6,10 @@ const filtersApi = getInstance().FiltersApi;
 
 const mapStateToProps = () => {
 	return {
-		filtersNameList: filtersApi.getFiltersNamesListSelector(),
-		filters: filtersApi.getFiltersSelector()
+		presetsNames: filtersApi.getFiltersPresetsNames(),
+		primitivesNameList: filtersApi.getPrimitivesNamesListSelector(),
+		templateFiltersNamesList: filtersApi.getFiltersTemplateNames(),
+		layoutFilters: filtersApi.getLayoutFiltersSelector(),
 	};
 };
 
@@ -18,7 +20,8 @@ const mapDispatchToProps = () => ({
 	onSortEnd: filtersApi.onSortEnd,
 	getChildrenFiltersNamesList: filtersApi.getChildrenFiltersNamesList,
 	onAddChildFilter: filtersApi.onAddChildFilter,
-	onAddParentFilter: filtersApi.onAddParentFilter
+	onAddParentFilter: filtersApi.onAddParentFilter,
+	onAddFilterFromPresets: filtersApi.onAddFilterFromPresets
 });
 
 export default connect(

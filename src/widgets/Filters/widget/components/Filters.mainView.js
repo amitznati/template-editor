@@ -1,8 +1,8 @@
 import React from 'react';
-import {Grid} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import EditFilter from './Filters.EditFilter';
-import {CoreMenuSelect} from '../../../core';
+import {CoreMenuSelect, CoreSortableList} from '../../../core';
 
 const useStyles = makeStyles(theme => ({
 	marginB: {
@@ -11,29 +11,39 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function FiltersMainView(props) {
-	const {filters, onAddParentFilter, ...restProps} = props;
+	const {layoutFilters, presetsNames, onAddParentFilter, templateFiltersNamesList, onAddFilterFromPresets,  ...restProps} = props;
 	const classes = useStyles();
-	const filtersIds = Object.keys(filters).map(id => {
-		return {id, name: filters[id].name};
-	});
-	filtersIds.unshift({name: 'New Filter...'});
 
-	const filtersList = Object.keys(filters).map(id => {
+	const filtersList = layoutFilters.map(f => {
 		return (
-			<Grid key={id} item xs={12} className={classes.marginB}>
-				<EditFilter parentFilter={filters[id]} {...restProps} />
+			<Grid key={f.id} item xs={12} className={classes.marginB}>
+				<EditFilter parentFilter={f} {...restProps} />
 			</Grid>
 		);
 	});
 	return (
 		<Grid container>
 			<Grid item xs={12} className={classes.marginB}>
+				<Typography variant="subtitle1" gutterBottom>Presets Filters</Typography>
 				<CoreMenuSelect
-					options={filtersIds}
+					options={presetsNames}
+					onAdd={onAddFilterFromPresets}
+				/>
+			</Grid>
+			<Grid item xs={12} className={classes.marginB}>
+				<Typography variant="subtitle1" gutterBottom>Template Filters</Typography>
+				<CoreMenuSelect
+					options={templateFiltersNamesList}
 					onAdd={onAddParentFilter}
 				/>
 			</Grid>
-			{filtersList}
+			<Grid item xs={12}>
+				<Typography variant="subtitle1" gutterBottom>Layout Filters List</Typography>
+				<CoreSortableList
+					items={filtersList}
+					useDragHandle={true}
+				/>
+			</Grid>
 		</Grid>
 	);
 

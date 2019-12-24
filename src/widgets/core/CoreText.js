@@ -20,10 +20,10 @@ const CoreText = props => {
 };
 
 CoreText.propTypes = {
-	classes: PropTypes.object.isRequired,
-	value: PropTypes.any.isRequired,
+	classes: PropTypes.object,
+	value: PropTypes.any,
 	handleChange: PropTypes.func,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.string,
 	type: PropTypes.string
 };
 

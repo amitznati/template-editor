@@ -17,7 +17,7 @@ export default function FiltersList(props) {
 	const classes = useStyles();
 	const {parentFilterId, filters = [], onAttributeChange, onSortEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter} = props;
 	const renderFilter = (filterToRender, filterChildren, index, onChangeFunc, onDeleteFunc) => {
-		const paperKey = `filter-${parentFilterId}-${filterToRender.id}`;
+		const paperKey = `filter-${parentFilterId}-${filterToRender.id}-${index}`;
 		return (
 			<Paper key={paperKey} square className={classes.filter}>
 				<Grid container alignItems="center" className={classes.layoutGrid}>

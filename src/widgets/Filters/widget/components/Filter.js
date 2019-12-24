@@ -5,7 +5,7 @@ import {sortableHandle} from 'react-sortable-hoc';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {primitivesAttrs} from '../../Data';
-import FilterSpeedActions from './FilterSpeedActions';
+import CoreSpeedActions from '../../../core/CoreSpeedActions';
 import Field from './Field';
 
 
@@ -111,7 +111,7 @@ export default function Filter(props) {
 						<Grid container direction="row" justify="flex-start" alignItems="center">
 							{ignoreVisible && <Grid item xs={2}>
 								<IconButton onClick={(e) => {e.stopPropagation();} } size="small">
-									<Icon>{'visibility'}</Icon>
+									<Icon>visibility</Icon>
 								</IconButton>
 							</Grid>}
 							<Grid item xs={ignoreVisible ? 10 : 12}>
@@ -122,7 +122,7 @@ export default function Filter(props) {
 						</Grid>
 					</Grid>
 					<Grid item xs={1}>
-						<FilterSpeedActions {...{actions}} />
+						<CoreSpeedActions {...{actions}} />
 					</Grid>
 				</Grid>
 			</ExpansionPanelSummary>

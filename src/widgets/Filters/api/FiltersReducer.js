@@ -1,7 +1,9 @@
 import {ActionTypes} from './FiltersApi';
-
+import {presetsData} from './../Data';
 const initialState = {
-	filters: {}
+	templateFilters: [],
+	filtersPresets: JSON.parse(JSON.stringify(presetsData)),
+	layoutFilters: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -9,30 +11,26 @@ const reducer = (state = initialState, action) => {
 	const payload = action && action.payload;
 	const type = action && action.type;
 	switch (type) {
-	case ActionTypes.SET_FILTERS:
+	case ActionTypes.UPDATE_FILTERS:
 		newState = {
 			...state,
-			filters: {
-				...state.filters,
-				[`${payload.parentFilterId}`]: {
-					...state.filters[payload.parentFilterId],
-					filters: [...payload.filters]
-				}},
+			templateFilters: [...payload.filters]
 		};
 		break;
-	case ActionTypes.ADD_PARENT_FILTER: {
-		const id = `filter${Object.keys(state.filters).length + 1}`;
-		const newFilter = {
-			id,
-			name: id,
-			filters: []
-		};
+	case ActionTypes.ADD_NEW_FILTER_TO_TEMPLATE: {
 		newState = {
 			...state,
-			filters: {...state.filters, [`${id}`]: {...newFilter}}
+			templateFilters: [...state.templateFilters, payload.filter],
+			layoutFilters: [...state.layoutFilters, payload.filter.id]
 		};
 		break;
 	}
+	case ActionTypes.ADD_FILTER_TO_LAYOUT:
+		newState = {
+			...state,
+			layoutFilters: [...state.layoutFilters, payload.id]
+		};
+		break;
 	default:
 		return newState;
 	}

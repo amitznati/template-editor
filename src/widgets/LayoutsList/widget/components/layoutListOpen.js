@@ -34,6 +34,9 @@ const useStyles = theme => ({
 	},
 	fab: {
 		margin: theme.spacing(1),
+	},
+	panelDetails: {
+		padding: theme.spacing(2)
 	}
 });
 
@@ -134,7 +137,7 @@ function LayoutListOpen(props) {
 								>
 									<Typography className={classes.heading}>{field.title}</Typography>
 								</ExpansionPanelSummary>
-								<ExpansionPanelDetails>
+								<ExpansionPanelDetails className={classes.panelDetails}>
 									{renderProperties(field.id)}
 								</ExpansionPanelDetails>
 							</ExpansionPanel>
