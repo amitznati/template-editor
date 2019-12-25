@@ -21,7 +21,8 @@ const mapDispatchToProps = () => ({
 	getChildrenFiltersNamesList: filtersApi.getChildrenFiltersNamesList,
 	onAddChildFilter: filtersApi.onAddChildFilter,
 	onAddParentFilter: filtersApi.onAddParentFilter,
-	onAddFilterFromPresets: filtersApi.onAddFilterFromPresets
+	onAddFilterFromPresets: filtersApi.onAddFilterFromPresets,
+	onSelectSingleChild: filtersApi.onSelectSingleChild
 });
 
 export default connect(

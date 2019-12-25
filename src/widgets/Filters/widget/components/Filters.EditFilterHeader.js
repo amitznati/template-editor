@@ -25,10 +25,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function EditFilterName({filter, ignoreVisible}) {
-	// const classes = useStyles();
+	const classes = useStyles();
 
 	return (
-		<Grid container direction="row" justify="flex-start" alignItems="center">
+		<Grid className={classes.grid} container direction="row" justify="flex-start" alignItems="center">
 			{ignoreVisible && <Grid item xs={2}>
 				<IconButton onClick={(e) => {e.stopPropagation();} } size="small">
 					<Icon>visibility</Icon>

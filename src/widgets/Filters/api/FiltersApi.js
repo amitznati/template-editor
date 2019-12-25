@@ -13,6 +13,13 @@ export const ActionTypes = {
 
 export default class FiltersApi extends BaseApi {
 
+	updateFilters = (filters) => {
+		this.dispatchStoreAction({
+			type: ActionTypes.UPDATE_FILTERS,
+			payload: {filters}
+		});
+	};
+
 	getNextFilterId = () => {
 		const templateFilters = this.getTemplateFiltersSelector();
 		let nextIdNumber = 1;
@@ -118,11 +125,14 @@ export default class FiltersApi extends BaseApi {
 	};
 
 	onAddFilter = (parentFilterId, filterItem) => {
-		const filterToAdd = this.getFilterDataByGroupName(filterItem.groupName);
-		const filters = this.getPrimitivesByFilterId(parentFilterId);
-		const sameGroupFilters = filters.filter(f => f.groupName === filterItem.groupName);
-		filterToAdd.id = `${filterToAdd.id}-${sameGroupFilters.length}`;
-		this.setPrimitives(parentFilterId, [...filters, filterToAdd]);
+		const primitiveToAdd = this.getFilterDataByGroupName(filterItem.groupName);
+		const primitives = this.getPrimitivesByFilterId(parentFilterId);
+		const sameGroupPrimitives = primitives.filter(f => f.groupName === filterItem.groupName);
+		if (sameGroupPrimitives.length) {
+			primitiveToAdd.id = `${primitiveToAdd.id}-${sameGroupPrimitives.length}`;
+			primitiveToAdd.params.result.value = primitiveToAdd.id;
+		}
+		this.setPrimitives(parentFilterId, [...primitives, primitiveToAdd]);
 	};
 
 	onAddChildFilter = (parentFilterId, filterItem, filterParent) => {
@@ -139,6 +149,23 @@ export default class FiltersApi extends BaseApi {
 			return f;
 		});
 		this.setPrimitives(parentFilterId, newFilters);
+	};
+
+	onSelectSingleChild = ({parentFilterId, primitive, childPrimitive}) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+			if (f.id === parentFilterId) {
+				f.primitives.forEach(parentPrimitive => {
+					if (parentPrimitive.id === primitive.id) {
+						parentPrimitive.children.forEach(c => {
+							c.disabled = childPrimitive.id !== c.id;
+						});
+					}
+				});
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
 	};
 
 	setPrimitives = (parentFilterId, primitives) => {

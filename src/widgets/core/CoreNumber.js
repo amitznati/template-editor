@@ -19,10 +19,10 @@ const CoreNumber = props => {
 };
 
 CoreNumber.propTypes = {
-	classes: PropTypes.object.isRequired,
-	value: PropTypes.any.isRequired,
+	classes: PropTypes.object,
+	value: PropTypes.any,
 	onChange: PropTypes.func,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.string,
 	type: PropTypes.string,
 	onFocus: PropTypes.func
 };

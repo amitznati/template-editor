@@ -1,13 +1,23 @@
 import React from 'react';
 import {Grid} from '@material-ui/core';
-import FiltersList from './FiltersList';
+import FiltersPrimitivesList from './Filters.PrimitivesList';
 import EditFilterHeader from './Filters.EditFilterHeader';
 import {CoreMenuSelect, CoreExpandableSortablePaper} from '../../../core';
 
-export default function EditFilter(props) {
+export default function EditFilter({
+	parentFilter,
+	primitivesNameList,
+	onAddFilter,
+	onAttributeChange,
+	onSortEnd,
+	onSortChildrenEnd,
+	onDeleteFilter,
+	getChildrenFiltersNamesList,
+	onAddChildFilter,
+	onSelectSingleChild
+}) {
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
-	const {parentFilter, primitivesNameList, onAddFilter, onAttributeChange, onSortEnd, onSortChildrenEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter} = props;
-	const {id: parentFilterId, primitives: filters} = parentFilter;
+	const {id: parentFilterId, primitives} = parentFilter;
 	const onAdd = (filterItem) => onAddFilter(parentFilterId, filterItem);
 	const actions = [
 		{ icon: 'file_copy', name: 'Duplicate' },
@@ -35,16 +45,17 @@ export default function EditFilter(props) {
 					<CoreMenuSelect options={primitivesNameList} onAdd={onAdd} />
 				</Grid>
 				<Grid item xs={12}>
-					<FiltersList
+					<FiltersPrimitivesList
 						{...{
-							filters,
+							primitives,
 							onAttributeChange,
 							onSortEnd,
 							onSortChildrenEnd,
 							onDeleteFilter,
 							getChildrenFiltersNamesList,
 							onAddChildFilter,
-							parentFilterId
+							parentFilterId,
+							onSelectSingleChild
 						}}
 					/>
 				</Grid>

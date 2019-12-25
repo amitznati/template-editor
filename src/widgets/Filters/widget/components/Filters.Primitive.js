@@ -1,12 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton, Icon} from '@material-ui/core';
+import {Grid, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton, Icon, ExpansionPanelActions, Divider} from '@material-ui/core';
 import {sortableHandle} from 'react-sortable-hoc';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {primitivesAttrs} from '../../Data';
 import CoreSpeedActions from '../../../core/CoreSpeedActions';
-import Field from './Field';
+import FiltersField from './Filters.Field';
 
 
 const DragHandle = sortableHandle(() => <ReorderIcon style={{cursor: 'move'}}/>);
@@ -43,9 +43,9 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function Filter(props) {
+export default function FiltersPrimitive(props) {
 	const classes = useStyles();
-	const {filter, onAttributeChange, filterIndex, onDeleteFilter} = props;
+	const {filter, onAttributeChange, filterIndex, onDeleteFilter, singleChild, inList} = props;
 
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const itemProps = primitivesAttrs[filter.groupName];
@@ -93,14 +93,15 @@ export default function Filter(props) {
 	const toggleIgnoreVisibility = () => {
 		setIgnoreVisible(!ignoreVisible);
 	};
-	const actions = [
-		{ icon: 'file_copy', name: 'Duplicate' },
-		{ icon: 'delete', name: 'Delete' , callback: onDeleteFilter},
-		{ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: toggleIgnoreVisibility },
-	];
+	const actions = [];
+	if (!singleChild) {
+		actions.push({ icon: 'file_copy', name: 'Duplicate' });
+		actions.push({ icon: 'delete', name: 'Delete' , callback: onDeleteFilter});
+	}
+	actions.push({ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: toggleIgnoreVisibility });
 
 	return (
-		<ExpansionPanel className={classes.root}>
+		<ExpansionPanel className={classes.root} disabled={filter.disabled}>
 			<ExpansionPanelSummary
 				expandIcon={<ExpandMoreIcon/>}
 				className={classes.noPadding}
@@ -136,14 +137,15 @@ export default function Filter(props) {
 						const col = itemProps.inputsData[name].col;
 						return (
 							<Grid className={classes.filter} key={key} item xs={col || 4}>
-								<Field
+								<FiltersField
 									{...{
 										name,
 										itemProps,
 										value: filter.params[name] && filter.params[name].value,
 										filterKey,
 										onAttributeChange,
-										ignoreVisible
+										ignoreVisible,
+										inList
 									}}
 								/>
 							</Grid>
@@ -156,6 +158,10 @@ export default function Filter(props) {
 					}
 				</Grid>
 			</ExpansionPanelDetails>
+			<Divider />
+			<ExpansionPanelActions>
+				<Typography variant="subtitle1">{`result="${filter.params.result.value}"`}</Typography>
+			</ExpansionPanelActions>
 		</ExpansionPanel>
 	);
 }

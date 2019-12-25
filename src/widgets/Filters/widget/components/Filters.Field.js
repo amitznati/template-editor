@@ -1,20 +1,20 @@
 import React from 'react';
 import {Grid, IconButton, Icon, TextField} from '@material-ui/core';
 import {CoreColorPickerButton, CoreNumber, CoreSelect, CoreText} from '../../../core';
-export default function Field(props) {
+export default function FiltersField(props) {
 
-	const {name, itemProps, value, filterKey, ignoreVisible, onAttributeChange} = props;
-	const renderTextField = (name) => {
-		const key = `${filterKey}-${name}-field`;
+	const {name, itemProps, value, filterKey, ignoreVisible, onAttributeChange, inList} = props;
+	const key = `${filterKey}-${name}-field`;
+	const renderTextField = () => {
 		return <CoreText key={key}
 			handleChange={(v) => onAttributeChange && onAttributeChange({name, value: v })}
 			label={name}
 			value={value}
 		/>;
 	};
-	const renderNumberField = (name) => {
-		const key = `${filterKey}-${name}-field`;
-		if (itemProps.inputsData[name].double) {
+	const renderNumberField = () => {
+		const {double, min, max, step} = itemProps.inputsData[name];
+		if (double) {
 			const values = value.split(' ');
 			const key1 = `${key}-1`;
 			const key2 = `${key}-2`;
@@ -23,26 +23,27 @@ export default function Field(props) {
 					key={key1}
 					label={name + '-1'}
 					value={values[0]}
+					inputProps={{min, max, step}}
 					onChange={(v) => onAttributeChange({name, value: `${v} ${values[1]}` })}
 				/>,
 				<CoreNumber
 					key={key2}
 					label={name + '-2'}
 					value={values[1]}
+					inputProps={{min, max, step}}
 					onChange={(v) => onAttributeChange({name, value: `${values[0]} ${v}` })}
 				/>
 			];
 		}
 		return <CoreNumber
 			label={name}
-			key={key}
-			value={value}
+			inputProps={{min, max, step}}
+			{...{key, value}}
 			onChange={(value) => onAttributeChange({name, value })}
 		/>;
 	};
 
-	const renderSelectField = (name) => {
-		const key = `${filterKey}-${name}-field`;
+	const renderSelectField = () => {
 		if (itemProps.inputsData[name].double) {
 			const options1 = itemProps[itemProps.inputsData[name].valuesKeys[0]];
 			const options2 = itemProps[itemProps.inputsData[name].valuesKeys[1]];
@@ -66,7 +67,7 @@ export default function Field(props) {
 				/>
 			];
 		}
-		const options = itemProps[name];
+		const options = ['in','in2'].includes(name)? inList : itemProps[name];
 		return <CoreSelect
 			label={name}
 			value={value}
@@ -77,8 +78,7 @@ export default function Field(props) {
 
 	};
 
-	const renderColorField = (name) => {
-		const key = `${filterKey}-${name}-field`;
+	const renderColorField = () => {
 		return (
 			<CoreColorPickerButton
 				key={key}
@@ -89,8 +89,7 @@ export default function Field(props) {
 		);
 	};
 
-	const renderTextAreaField = (name) => {
-		const key = `${filterKey}-${name}-field`;
+	const renderTextAreaField = () => {
 		return (
 			<TextField
 				label={name}
@@ -103,6 +102,7 @@ export default function Field(props) {
 			/>
 		);
 	};
+
 	const ignoreIcon = ignoreVisible && (
 		<IconButton size="small" onClick={(e) => {e.stopPropagation();} } >
 			<Icon>visibility</Icon>
@@ -121,31 +121,28 @@ export default function Field(props) {
 			</Grid>
 		);
 	};
-	if(!['in', 'in2'].includes(name)) {
-		const type = itemProps.inputsData[name].type;
-		switch (type) {
-		case 'text':
-			fieldToReturn = renderTextField(name);
-			break;
-		case 'select':
-			fieldToReturn = renderSelectField(name);
-			break;
-		case 'number':
-			fieldToReturn = renderNumberField(name);
-			break;
-		case 'color':
-			fieldToReturn = renderColorField(name);
-			break;
-		case 'textarea':
-			fieldToReturn = renderTextAreaField(name);
-			break;
-		default:
-			return null;
-		}
-		if (Array.isArray(fieldToReturn)) {
-			return fieldToReturn.map(createField);
-		}
-		return createField(fieldToReturn);
+	const type = itemProps.inputsData[name].type;
+	switch (type) {
+	case 'text':
+		fieldToReturn = renderTextField(name);
+		break;
+	case 'select':
+		fieldToReturn = renderSelectField(name);
+		break;
+	case 'number':
+		fieldToReturn = renderNumberField(name);
+		break;
+	case 'color':
+		fieldToReturn = renderColorField(name);
+		break;
+	case 'textarea':
+		fieldToReturn = renderTextAreaField(name);
+		break;
+	default:
+		fieldToReturn = null;
 	}
-	return null;
+	if (Array.isArray(fieldToReturn)) {
+		return fieldToReturn.map(createField);
+	}
+	return createField(fieldToReturn, 0);
 }
