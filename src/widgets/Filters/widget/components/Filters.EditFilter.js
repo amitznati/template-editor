@@ -3,6 +3,7 @@ import {Grid} from '@material-ui/core';
 import FiltersPrimitivesList from './Filters.PrimitivesList';
 import EditFilterHeader from './Filters.EditFilterHeader';
 import {CoreMenuSelect, CoreExpandableSortablePaper} from '../../../core';
+import FilterFields from './Filters.filterFields';
 
 export default function EditFilter({
 	parentFilter,
@@ -11,10 +12,12 @@ export default function EditFilter({
 	onAttributeChange,
 	onSortEnd,
 	onSortChildrenEnd,
-	onDeleteFilter,
+	onDeletePrimitive,
 	getChildrenFiltersNamesList,
 	onAddChildFilter,
-	onSelectSingleChild
+	onSelectSingleChild,
+	onFilterAttributeChange,
+	onFilterNameChange
 }) {
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const {id: parentFilterId, primitives} = parentFilter;
@@ -24,12 +27,14 @@ export default function EditFilter({
 		{ icon: 'delete', name: 'Delete' },
 		{ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: () => setIgnoreVisible(!ignoreVisible) },
 	];
+
 	const getHeader = () => {
 		return (
 			<EditFilterHeader
 				filter={parentFilter}
 				{...{
-					ignoreVisible
+					ignoreVisible,
+					onNameChange: (value) => onFilterNameChange({filterId: parentFilterId, value})
 				}}
 			/>
 		);
@@ -42,7 +47,10 @@ export default function EditFilter({
 		>
 			<Grid container>
 				<Grid item xs={12}>
-					<CoreMenuSelect options={primitivesNameList} onAdd={onAdd} />
+					<FilterFields params={parentFilter.params} onFilterAttributeChange={({name, value}) => onFilterAttributeChange({filterId: parentFilterId, name, value})} />
+				</Grid>
+				<Grid item xs={12}>
+					<CoreMenuSelect options={primitivesNameList} onAdd={onAdd} placeHolder="Select Element..."/>
 				</Grid>
 				<Grid item xs={12}>
 					<FiltersPrimitivesList
@@ -51,7 +59,7 @@ export default function EditFilter({
 							onAttributeChange,
 							onSortEnd,
 							onSortChildrenEnd,
-							onDeleteFilter,
+							onDeletePrimitive,
 							getChildrenFiltersNamesList,
 							onAddChildFilter,
 							parentFilterId,

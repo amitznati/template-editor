@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function EditFilterName({filter, ignoreVisible}) {
+export default function EditFilterName({filter, ignoreVisible, onNameChange}) {
 	const classes = useStyles();
 
 	return (
@@ -38,6 +38,7 @@ export default function EditFilterName({filter, ignoreVisible}) {
 				<CoreText
 					label="Filter Name"
 					value={filter.name}
+					handleChange={onNameChange}
 				/>
 			</Grid>
 		</Grid>

@@ -28,6 +28,7 @@ export default function FiltersMainView(props) {
 				<CoreMenuSelect
 					options={presetsNames}
 					onAdd={onAddFilterFromPresets}
+					placeHolder="Add Filter From Presets..."
 				/>
 			</Grid>
 			<Grid item xs={12} className={classes.marginB}>
@@ -35,6 +36,7 @@ export default function FiltersMainView(props) {
 				<CoreMenuSelect
 					options={templateFiltersNamesList}
 					onAdd={onAddParentFilter}
+					placeHolder="Add Filter From Template..."
 				/>
 			</Grid>
 			<Grid item xs={12}>

@@ -17,19 +17,20 @@ const useStyles = makeStyles(theme => ({
 export default function FiltersPrimitivesList(props) {
 	const classes = useStyles();
 	const {parentFilterId, primitives = [], onAttributeChange, onSortEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter, onSelectSingleChild} = props;
-	const fullInList = primitives.map((p,i) => {return {id: p.id, index: i}});
+	const fullInList = primitives.map((p,i) => {return {id: p.id, index: i};});
+	const defaultInList = ['SourceGraphic', 'SourceAlpha', 'BackgroundImage', 'BackgroundAlpha', 'FillPaint', 'StrokePaint'];
 	const renderFilter = (primitiveToRender, filterChildren, index, onChangeFunc, onDeleteFunc, key, singleChild) => {
 		return (
 			<Paper key={key} square className={classes.filter}>
 				<Grid container alignItems="center" className={classes.layoutGrid}>
 					<Grid item xs={12}>
 						<FiltersPrimitive {...{
-							filter: primitiveToRender,
+							primitive: primitiveToRender,
 							filterIndex: index,
 							onAttributeChange: onChangeFunc,
-							onDeleteFilter: onDeleteFunc,
+							onDeletePrimitive: onDeleteFunc,
 							singleChild,
-							inList: fullInList.filter(i => i.index < index).map(i => i.id)
+							inList: fullInList.filter(i => i.index < index).map(i => i.id).concat(defaultInList)
 						}}>
 							{filterChildren}
 						</FiltersPrimitive>

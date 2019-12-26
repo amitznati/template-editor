@@ -11,6 +11,16 @@ export const ActionTypes = {
 	ADD_FILTER_TO_LAYOUT: 'ADD_FILTER_TO_LAYOUT'
 };
 
+const filterInitParams = {
+	x: '-20%',
+	y: '-20%',
+	width: '140%',
+	height: '140%',
+	filterUnits: 'objectBoundingBox',
+	primitiveUnits: 'userSpaceOnUse',
+	'color-interpolation-filters': 'linearRGB'
+};
+
 export default class FiltersApi extends BaseApi {
 
 	updateFilters = (filters) => {
@@ -36,10 +46,12 @@ export default class FiltersApi extends BaseApi {
 
 	createNewFilter = () => {
 		const id = this.getNextFilterId();
+		const clonedParams = JSON.parse(JSON.stringify(filterInitParams));
 		return {
 			id,
 			name: id,
-			primitives: []
+			primitives: [],
+			params: clonedParams
 		};
 	};
 
@@ -47,7 +59,9 @@ export default class FiltersApi extends BaseApi {
 		const filtersPresets = this.getFiltersPresetsSelector();
 		const preset = filtersPresets.find(f => f.id === id);
 		const clonedFilter = JSON.parse(JSON.stringify(preset));
+		const clonedParams = JSON.parse(JSON.stringify(filterInitParams));
 		clonedFilter.id = this.getNextFilterId();
+		clonedFilter.params = clonedParams;
 		return clonedFilter;
 	};
 
@@ -101,6 +115,28 @@ export default class FiltersApi extends BaseApi {
 		this.setPrimitives(parentFilterId, filters);
 	};
 
+	onFilterAttributeChange = ({filterId, name, value}) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+			if (f.id === filterId) {
+				f.params[name] = value;
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
+	};
+
+	onFilterNameChange = ({filterId, value}) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+			if (f.id === filterId) {
+				f.name = value;
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
+	};
+
 	onSortEnd = ({parentFilterId, oldIndex, newIndex, filterIndex}) => {
 		const filters = this.getPrimitivesByFilterId(parentFilterId);
 		let newFilters = [...filters];
@@ -113,15 +149,15 @@ export default class FiltersApi extends BaseApi {
 		this.setPrimitives(parentFilterId, newFilters);
 	};
 
-	onDeleteFilter = ({parentFilterId, index, childIndex}) => {
-		const filters = this.getPrimitivesByFilterId(parentFilterId);
-		let newFilters = [...filters];
+	onDeletePrimitive = ({parentFilterId, index, childIndex}) => {
+		const primitives = this.getPrimitivesByFilterId(parentFilterId);
+		let newPrimitives = [...primitives];
 		if (!isNaN(childIndex)) {
-			newFilters[index].children.splice(childIndex,1);
+			newPrimitives[index].children.splice(childIndex,1);
 		} else {
-			newFilters.splice(index, 1);
+			newPrimitives.splice(index, 1);
 		}
-		this.setPrimitives(parentFilterId, newFilters);
+		this.setPrimitives(parentFilterId, newPrimitives);
 	};
 
 	onAddFilter = (parentFilterId, filterItem) => {

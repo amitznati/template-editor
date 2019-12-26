@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function CoreMenuSelect({onAdd = false, options = [], onDelete = false, onSelect}) {
+export default function CoreMenuSelect({onAdd = false, options = [], onDelete = false, onSelect, placeHolder = 'Select...'}) {
 	const classes = useStyles();
 	const [state, setState] = React.useState({anchorEl: null});
 	const handleClose = () => setState({...state, anchorEl: null});
@@ -55,7 +55,7 @@ export default function CoreMenuSelect({onAdd = false, options = [], onDelete = 
 					aria-haspopup="true"
 					onClick={(e) => setState({...state, anchorEl: e.target})}
 				>
-					{state.selectedItem ? state.selectedItem.name : 'Select Filter'}
+					{state.selectedItem ? state.selectedItem.name : placeHolder}
 				</Button>
 				<Menu
 					id="simple-menu"

@@ -15,14 +15,16 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = () => ({
 	onAddFilter: filtersApi.onAddFilter,
-	onDeleteFilter: filtersApi.onDeleteFilter,
+	onDeletePrimitive: filtersApi.onDeletePrimitive,
 	onAttributeChange: filtersApi.onAttributeChange,
 	onSortEnd: filtersApi.onSortEnd,
 	getChildrenFiltersNamesList: filtersApi.getChildrenFiltersNamesList,
 	onAddChildFilter: filtersApi.onAddChildFilter,
 	onAddParentFilter: filtersApi.onAddParentFilter,
 	onAddFilterFromPresets: filtersApi.onAddFilterFromPresets,
-	onSelectSingleChild: filtersApi.onSelectSingleChild
+	onSelectSingleChild: filtersApi.onSelectSingleChild,
+	onFilterAttributeChange: filtersApi.onFilterAttributeChange,
+	onFilterNameChange: filtersApi.onFilterNameChange
 });
 
 export default connect(

@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		padding: theme.spacing(1, 1),
 	},
-	filter: {
+	primitive: {
 		display: 'flex',
 		padding: theme.spacing(1)
 	},
@@ -45,11 +45,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function FiltersPrimitive(props) {
 	const classes = useStyles();
-	const {filter, onAttributeChange, filterIndex, onDeleteFilter, singleChild, inList} = props;
+	const {primitive, onAttributeChange, primitiveIndex, onDeletePrimitive, singleChild, inList} = props;
 
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
-	const itemProps = primitivesAttrs[filter.groupName];
-	const filterKey = `filter-field-${itemProps.name}-${filterIndex}`;
+	const itemProps = primitivesAttrs[primitive.groupName];
+	const primitiveKey = `primitive-field-${itemProps.name}-${primitiveIndex}`;
 	const dependencies = [];
 
 	Object.keys(itemProps.inputsData).forEach((name) => {
@@ -71,7 +71,7 @@ export default function FiltersPrimitive(props) {
 		function checkEnable(checkName, checkDependencies) {
 			let isEnable = false;
 			checkDependencies.forEach(d => {
-				const enableValue = filter.params[d.name].value;
+				const enableValue = primitive.params[d.name].value;
 				const isEnableDep = d.dependencies.find(dep => dep.value === enableValue && dep[checkName].includes(name));
 				if (isEnableDep) {
 					isEnable = true;
@@ -96,12 +96,12 @@ export default function FiltersPrimitive(props) {
 	const actions = [];
 	if (!singleChild) {
 		actions.push({ icon: 'file_copy', name: 'Duplicate' });
-		actions.push({ icon: 'delete', name: 'Delete' , callback: onDeleteFilter});
+		actions.push({ icon: 'delete', name: 'Delete' , callback: onDeletePrimitive});
 	}
 	actions.push({ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: toggleIgnoreVisibility });
 
 	return (
-		<ExpansionPanel className={classes.root} disabled={filter.disabled}>
+		<ExpansionPanel className={classes.root} disabled={primitive.disabled}>
 			<ExpansionPanelSummary
 				expandIcon={<ExpandMoreIcon/>}
 				className={classes.noPadding}
@@ -133,16 +133,16 @@ export default function FiltersPrimitive(props) {
 						if (!isEnable(name)) {
 							return null;
 						}
-						const key = `${filterKey}-${name}`;
+						const key = `${primitiveKey}-${name}`;
 						const col = itemProps.inputsData[name].col;
 						return (
-							<Grid className={classes.filter} key={key} item xs={col || 4}>
+							<Grid className={classes.primitive} key={key} item xs={col || 4}>
 								<FiltersField
 									{...{
 										name,
 										itemProps,
-										value: filter.params[name] && filter.params[name].value,
-										filterKey,
+										value: primitive.params[name] && primitive.params[name].value,
+										primitiveKey,
 										onAttributeChange,
 										ignoreVisible,
 										inList
@@ -158,10 +158,11 @@ export default function FiltersPrimitive(props) {
 					}
 				</Grid>
 			</ExpansionPanelDetails>
-			<Divider />
-			<ExpansionPanelActions>
-				<Typography variant="subtitle1">{`result="${filter.params.result.value}"`}</Typography>
-			</ExpansionPanelActions>
+
+			{primitive.params.result && <Divider />}
+			{primitive.params.result && <ExpansionPanelActions>
+				<Typography variant="subtitle1">{`result="${primitive.params.result.value}"`}</Typography>
+			</ExpansionPanelActions>}
 		</ExpansionPanel>
 	);
 }
