@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {Text, TextPath, RootSVG} from './svgs';
 import PathBuilder from './TemplatePreview.pathBuilder';
+import Defs from './svgs/Defs';
 
 const styles = theme => ({
 	templateRoot: {
@@ -41,7 +42,7 @@ class TemplatePreviewMainView extends React.Component {
 	};
 
 	render() {
-		const {product, classes, isSVGPathBuilderOpen, PathBuilderProps, SVGRootProps} = this.props;
+		const {product, classes, isSVGPathBuilderOpen, PathBuilderProps, SVGRootProps, templateFilters} = this.props;
 		const {
 			layouts,
 			productH,
@@ -59,6 +60,7 @@ class TemplatePreviewMainView extends React.Component {
 					<RootSVG
 						{...SVGRootProps}
 					>
+						<Defs templateFilters={templateFilters} />
 						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
 					</RootSVG>
 					{isSVGPathBuilderOpen &&

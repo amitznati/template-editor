@@ -17,14 +17,15 @@ export default function EditFilter({
 	onAddChildFilter,
 	onSelectSingleChild,
 	onFilterAttributeChange,
-	onFilterNameChange
+	onFilterNameChange,
+	removeFilterFromLayout
 }) {
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const {id: parentFilterId, primitives} = parentFilter;
 	const onAdd = (filterItem) => onAddFilter(parentFilterId, filterItem);
 	const actions = [
 		{ icon: 'file_copy', name: 'Duplicate' },
-		{ icon: 'delete', name: 'Delete' },
+		{ icon: 'delete', name: 'Delete', callback: () => removeFilterFromLayout(parentFilterId)},
 		{ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: () => setIgnoreVisible(!ignoreVisible) },
 	];
 

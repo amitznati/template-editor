@@ -18,7 +18,7 @@ const filterInitParams = {
 	height: '140%',
 	filterUnits: 'objectBoundingBox',
 	primitiveUnits: 'userSpaceOnUse',
-	'color-interpolation-filters': 'linearRGB'
+	colorInterpolationFilters: 'linearRGB'
 };
 
 export default class FiltersApi extends BaseApi {
@@ -141,8 +141,7 @@ export default class FiltersApi extends BaseApi {
 		const filters = this.getPrimitivesByFilterId(parentFilterId);
 		let newFilters = [...filters];
 		if (!isNaN(filterIndex)) {
-			const newChildren = arrayMove(filters[filterIndex].children, oldIndex, newIndex);
-			newFilters[filterIndex].children = newChildren;
+			newFilters[filterIndex].children = arrayMove(filters[filterIndex].children, oldIndex, newIndex);
 		} else {
 			newFilters = arrayMove(filters, oldIndex, newIndex);
 		}
@@ -170,6 +169,13 @@ export default class FiltersApi extends BaseApi {
 		}
 		this.setPrimitives(parentFilterId, [...primitives, primitiveToAdd]);
 	};
+
+	removeFilterFromLayout = (filterId) => {
+		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
+		const {selectedLayout} = editTemplateMainViewApi.getSelectedLayoutSelector();
+		selectedLayout.properties.filters = selectedLayout.properties.filters.filter(f => f !== filterId);
+		editTemplateMainViewApi.onUpdateLayout(selectedLayout);
+	}
 
 	onAddChildFilter = (parentFilterId, filterItem, filterParent) => {
 		const filterData = this.getFilterDataByGroupName(filterParent.groupName);
@@ -231,15 +237,13 @@ export default class FiltersApi extends BaseApi {
 
 	getPrimitivesNamesListSelector = (byFilter) => {
 		const filters = byFilter ? byFilter.children : primitivesData;
-		const filtersNamesList = filters.map(item => {
+		return  filters.map(item => {
 			const groupData = primitivesAttrs[item.groupName];
 			if (item.groupName) {
 				return  {name: groupData.name, groupName: item.groupName, id: item.id};
 			}
 			return {};
 		});
-
-		return filtersNamesList;
 	};
 
 	getFilterDataByGroupName = (groupName) => {
@@ -249,13 +253,12 @@ export default class FiltersApi extends BaseApi {
 
 	getFiltersPresetsNames = () => {
 		const filtersPresets = this.getFiltersPresetsSelector();
-		const filtersNamesToReturn = filtersPresets.map(f => {
+		return  filtersPresets.map(f => {
 			return {
 				name: f.name,
 				id: f.id
 			};
 		});
-		return filtersNamesToReturn;
 	};
 
 	getFiltersTemplateNames = () => {

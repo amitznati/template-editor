@@ -11,7 +11,8 @@ const mapComponentProps = (props) => {
 		selectedLayoutIndex,
 		onLayoutClick,
 		onUpdateLayout,
-		onPathChange
+		onPathChange,
+		templateFilters
 	} = props;
 	const {layouts = []} = template;
 	return {
@@ -23,6 +24,7 @@ const mapComponentProps = (props) => {
 		templateX: getPX(product.templateFrame.x, scale),
 		templateY: getPX(product.templateFrame.y, scale),
 		product,
+		templateFilters,
 		SVGRootProps: {
 			onEditLayoutEnd,
 			selectedLayoutIndex,

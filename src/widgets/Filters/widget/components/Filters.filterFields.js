@@ -31,7 +31,7 @@ const filterFields = [
 	{name: 'height', label: 'Height', type: 'text'},
 	{name: 'filterUnits', label: 'Filter Units', type: 'select', options: ['userSpaceOnUse', 'objectBoundingBox']},
 	{name: 'primitiveUnits', label: 'Primitive Units', type: 'select', options: ['userSpaceOnUse', 'objectBoundingBox']},
-	{name: 'color-interpolation-filters', label: 'color-interpolation-filters', type: 'select', options: ['sRGB', 'linearRGB']}
+	{name: 'colorInterpolationFilters', label: 'color-interpolation-filters', type: 'select', options: ['sRGB', 'linearRGB']}
 ];
 
 export default function FilterFields({params, onFilterAttributeChange}) {

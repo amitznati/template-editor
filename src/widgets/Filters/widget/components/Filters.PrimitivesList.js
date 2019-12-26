@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function FiltersPrimitivesList(props) {
 	const classes = useStyles();
-	const {parentFilterId, primitives = [], onAttributeChange, onSortEnd, onDeleteFilter, getChildrenFiltersNamesList, onAddChildFilter, onSelectSingleChild} = props;
+	const {parentFilterId, primitives = [], onAttributeChange, onSortEnd, onDeletePrimitive, getChildrenFiltersNamesList, onAddChildFilter, onSelectSingleChild} = props;
 	const fullInList = primitives.map((p,i) => {return {id: p.id, index: i};});
 	const defaultInList = ['SourceGraphic', 'SourceAlpha', 'BackgroundImage', 'BackgroundAlpha', 'FillPaint', 'StrokePaint'];
 	const renderFilter = (primitiveToRender, filterChildren, index, onChangeFunc, onDeleteFunc, key, singleChild) => {
@@ -48,7 +48,7 @@ export default function FiltersPrimitivesList(props) {
 			const filtersNameList = getChildrenFiltersNamesList(primitive);
 			const filterChildrenItems = primitive.children.map((childPrimitive, i) => {
 				const onChangeFunc = ({name, value}) => onAttributeChange({parentFilterId, index, name, value, childIndex: i});
-				const onDeleteFunc = () => onDeleteFilter({parentFilterId, index, childIndex: i});
+				const onDeleteFunc = () => onDeletePrimitive({parentFilterId, index, childIndex: i});
 				const onSelectChild = () => {
 					onSelectSingleChild({
 						parentFilterId,
@@ -89,7 +89,7 @@ export default function FiltersPrimitivesList(props) {
 
 			);
 		}
-		const onDeleteFunc = () => onDeleteFilter({parentFilterId, index});
+		const onDeleteFunc = () => onDeletePrimitive({parentFilterId, index});
 		const onChangeFunc = ({name, value}) => onAttributeChange({parentFilterId, index, name, value});
 		return renderFilter(primitive, filterChildren, index, onChangeFunc, onDeleteFunc, parentKey);
 	});

@@ -24,7 +24,8 @@ const mapDispatchToProps = () => ({
 	onAddFilterFromPresets: filtersApi.onAddFilterFromPresets,
 	onSelectSingleChild: filtersApi.onSelectSingleChild,
 	onFilterAttributeChange: filtersApi.onFilterAttributeChange,
-	onFilterNameChange: filtersApi.onFilterNameChange
+	onFilterNameChange: filtersApi.onFilterNameChange,
+	removeFilterFromLayout: filtersApi.removeFilterFromLayout
 });
 
 export default connect(
