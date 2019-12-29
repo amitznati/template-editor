@@ -15,13 +15,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function SimpleSelect({...props}) {
 	const classes = useStyles();
-	const {value, onChange, options} = props;
+	const {value, onChange, options, disabled} = props;
 	function handleChange(event) {
 		onChange && onChange(event.target.value);
 	}
 
 	return (
-		<FormControl fullWidth className={classes.formControl}>
+		<FormControl fullWidth className={classes.formControl} disabled={disabled}>
 			<InputLabel htmlFor="age-simple">{props.label}</InputLabel>
 			<Select
 				value={value}

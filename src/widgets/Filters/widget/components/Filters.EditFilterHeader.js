@@ -24,21 +24,21 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function EditFilterName({filter, ignoreVisible, onNameChange}) {
+export default function EditFilterName({filter, ignoreVisible, onFilterNameChange, onIgnoreFilter}) {
 	const classes = useStyles();
 
 	return (
 		<Grid className={classes.grid} container direction="row" justify="flex-start" alignItems="center">
 			{ignoreVisible && <Grid item xs={2}>
-				<IconButton onClick={(e) => {e.stopPropagation();} } size="small">
-					<Icon>visibility</Icon>
+				<IconButton onClick={(e) => {e.stopPropagation(); onIgnoreFilter(filter.id);} } size="small">
+					<Icon>{filter.isIgnore ? 'visibility_off' : 'visibility'}</Icon>
 				</IconButton>
 			</Grid>}
 			<Grid item xs={ignoreVisible ? 10 : 12}>
 				<CoreText
 					label="Filter Name"
 					value={filter.name}
-					handleChange={onNameChange}
+					handleChange={(value) => onFilterNameChange({filterId: filter.id, value})}
 				/>
 			</Grid>
 		</Grid>

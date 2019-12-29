@@ -145,7 +145,8 @@ export default function FiltersPrimitive(props) {
 										primitiveKey,
 										onAttributeChange,
 										ignoreVisible,
-										inList
+										inList,
+										disabled: primitive.params[name] && primitive.params[name].isIgnore
 									}}
 								/>
 							</Grid>

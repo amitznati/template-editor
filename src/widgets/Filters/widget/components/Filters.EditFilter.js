@@ -18,7 +18,9 @@ export default function EditFilter({
 	onSelectSingleChild,
 	onFilterAttributeChange,
 	onFilterNameChange,
-	removeFilterFromLayout
+	removeFilterFromLayout,
+	onIgnoreFilterAttribute,
+	onIgnoreFilter
 }) {
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const {id: parentFilterId, primitives} = parentFilter;
@@ -35,7 +37,8 @@ export default function EditFilter({
 				filter={parentFilter}
 				{...{
 					ignoreVisible,
-					onNameChange: (value) => onFilterNameChange({filterId: parentFilterId, value})
+					onFilterNameChange,
+					onIgnoreFilter
 				}}
 			/>
 		);
@@ -45,10 +48,16 @@ export default function EditFilter({
 		<CoreExpandableSortablePaper
 			header={getHeader()}
 			actions={actions}
+			disabled={parentFilter.isIgnore}
 		>
 			<Grid container>
 				<Grid item xs={12}>
-					<FilterFields params={parentFilter.params} onFilterAttributeChange={({name, value}) => onFilterAttributeChange({filterId: parentFilterId, name, value})} />
+					<FilterFields
+						params={parentFilter.params}
+						onFilterAttributeChange={({name, value}) => onFilterAttributeChange({filterId: parentFilterId, name, value})}
+						ignoreVisible={ignoreVisible}
+						onIgnoreFilterAttribute={(name) => onIgnoreFilterAttribute({filterId: parentFilterId, name})}
+					/>
 				</Grid>
 				<Grid item xs={12}>
 					<CoreMenuSelect options={primitivesNameList} onAdd={onAdd} placeHolder="Select Element..."/>

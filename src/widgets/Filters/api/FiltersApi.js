@@ -3,22 +3,24 @@ import selectors from './FiltersSelectors';
 import arrayMove from 'array-move';
 import {primitivesAttrs, primitivesData} from '../Data';
 import {getInstance} from '../../../sdk';
+import {toCamelCaseString} from 'utils';
 
 export const ActionTypes = {
 	UPDATE_FILTERS: 'UPDATE_FILTERS',
 	ADD_NEW_FILTER_TO_TEMPLATE: 'ADD_NEW_FILTER_TO_TEMPLATE',
 	ADD_PRESET_FILTER_TO_TEMPLATE: 'ADD_PRESET_FILTER_TO_TEMPLATE',
-	ADD_FILTER_TO_LAYOUT: 'ADD_FILTER_TO_LAYOUT'
+	ADD_FILTER_TO_LAYOUT: 'ADD_FILTER_TO_LAYOUT',
+	SET_CONVERTED_FILTER: 'SET_CONVERTED_FILTER'
 };
 
 const filterInitParams = {
-	x: '-20%',
-	y: '-20%',
-	width: '140%',
-	height: '140%',
-	filterUnits: 'objectBoundingBox',
-	primitiveUnits: 'userSpaceOnUse',
-	colorInterpolationFilters: 'linearRGB'
+	x: {value: '-20%'},
+	y: {value: '-20%'},
+	width: {value: '140%'},
+	height: {value: '140%'},
+	filterUnits: {value: 'objectBoundingBox'},
+	primitiveUnits: {value: 'userSpaceOnUse'},
+	colorInterpolationFilters: {value: 'linearRGB'}
 };
 
 export default class FiltersApi extends BaseApi {
@@ -78,6 +80,13 @@ export default class FiltersApi extends BaseApi {
 		editTemplateMainViewApi.onUpdateLayout(selectedLayout);
 	};
 
+	removeFilterFromLayout = (filterId) => {
+		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
+		const {selectedLayout} = editTemplateMainViewApi.getSelectedLayoutSelector();
+		selectedLayout.properties.filters = selectedLayout.properties.filters.filter(f => f !== filterId);
+		editTemplateMainViewApi.onUpdateLayout(selectedLayout);
+	};
+
 	onAddFilterFromPresets = (item) => {
 		const filter = this.createFilterFromPreset(item.id);
 		this.dispatchStoreAction({
@@ -119,7 +128,30 @@ export default class FiltersApi extends BaseApi {
 		const filters = this.getTemplateFiltersSelector();
 		const newFilters = filters.map(f => {
 			if (f.id === filterId) {
-				f.params[name] = value;
+				f.params[name].value = value;
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
+	};
+
+	onIgnoreFilterAttribute = ({filterId, name}) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+			if (f.id === filterId) {
+				f.params[name].isIgnore = !f.params[name].isIgnore;
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
+	};
+
+	onIgnoreFilter = (filterId) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+			if (f.id === filterId) {
+				f.isIgnore = !f.isIgnore;
+				// TODO f.isIgnore ? this.removeFilterFromLayout(f.id) : this.addFilterIdToLayout(f.id);
 			}
 			return f;
 		});
@@ -170,13 +202,6 @@ export default class FiltersApi extends BaseApi {
 		this.setPrimitives(parentFilterId, [...primitives, primitiveToAdd]);
 	};
 
-	removeFilterFromLayout = (filterId) => {
-		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
-		const {selectedLayout} = editTemplateMainViewApi.getSelectedLayoutSelector();
-		selectedLayout.properties.filters = selectedLayout.properties.filters.filter(f => f !== filterId);
-		editTemplateMainViewApi.onUpdateLayout(selectedLayout);
-	}
-
 	onAddChildFilter = (parentFilterId, filterItem, filterParent) => {
 		const filterData = this.getFilterDataByGroupName(filterParent.groupName);
 		const childFilter = filterData.children.find(f => f.groupName === filterItem.groupName);
@@ -208,6 +233,108 @@ export default class FiltersApi extends BaseApi {
 			return f;
 		});
 		this.updateFilters(newFilters);
+	};
+
+	onImportFilter = () => {
+		const filter = this.getConvertedFilterSelector();
+		filter.id = this.getNextFilterId();
+		this.dispatchStoreAction({
+			type: ActionTypes.ADD_NEW_FILTER_TO_TEMPLATE,
+			payload: {filter: filter}
+		});
+		this.addFilterIdToLayout(filter.id);
+	};
+
+	mergeImportedToData = (importedElement, primitive) => {
+		Object.keys(primitive.params).forEach(paramName => {
+			primitive.params[paramName].isIgnore = true;
+		});
+		importedElement.attributes && Object.keys(importedElement.attributes).forEach(attrName => {
+			primitive.params[toCamelCaseString(attrName)] = {value: importedElement.attributes[attrName], isIgnore: false};
+		});
+	};
+
+	mapPrimitive = (filter) => {
+		const primitives = [];
+		const primitivesNameList = this.getPrimitivesNamesListSelector();
+		const filterObjElements = filter.elements.filter(el => el.type === 'element');
+		filterObjElements.forEach(el => {
+			const groupNameObj = primitivesNameList.find(p => p.name === el.name);
+			if (groupNameObj) {
+				const primitive = this.getFilterDataByGroupName(groupNameObj.groupName);
+				primitive.id = (el.attributes && el.attributes.result) || primitive.groupName;
+				this.mergeImportedToData(el, primitive);
+				if (el.elements && primitive.children) {
+					const primitivesChildrenNameList = this.getChildrenFiltersNamesList(groupNameObj);
+					const {hasSingleChild} = primitivesAttrs[primitive.groupName];
+					if (hasSingleChild) {
+						primitive.children.forEach(childPrimitive => {
+							childPrimitive.disabled = true;
+						});
+						el.elements.forEach(childEl => {
+							const childGroupNameObj = primitivesChildrenNameList.find(p => p.name === childEl.name);
+							if (childGroupNameObj) {
+								primitive.children.forEach(p => {
+									if (p.groupName === childGroupNameObj.groupName) {
+										p.disabled = false;
+										this.mergeImportedToData(childEl, p);
+									}
+								});
+							}
+						});
+					} else {
+						primitive.children = el.elements.map((childEl) => {
+							const childGroupNameObj = primitivesChildrenNameList.find(p => p.name === childEl.name);
+							const childPrimitive = this.getChildData(childGroupNameObj.groupName, primitive.groupName);
+							childPrimitive.id = childEl.attributes && childEl.attributes.id;
+							this.mergeImportedToData(childEl, childPrimitive);
+							return childPrimitive;
+						});
+					}
+				}
+				primitives.push(primitive);
+			}
+		});
+		return primitives;
+	};
+
+	mapFilterObj = (filterObj) => {
+		if(!filterObj || !filterObj.elements || filterObj.elements.length > 1
+			|| filterObj.elements[0].type !== 'element' || filterObj.elements[0].name !== 'filter'
+			|| !filterObj.elements[0].elements || filterObj.elements[0].elements.length === 0) return false;
+		const filter = filterObj.elements[0];
+		const filterToReturn = this.createNewFilter();
+		filterToReturn.name = 'imported filter';
+		Object.keys(filterToReturn.params).forEach(paramName => {
+			filterToReturn.params[paramName].isIgnore = true;
+		});
+		Object.keys(filter.attributes).forEach(attrName => {
+			filterToReturn.params[attrName] = {value: filter.attributes[attrName], isIgnore: false};
+		});
+
+		filterToReturn.primitives = this.mapPrimitive(filter);
+		return filterToReturn;
+	};
+
+	onConvert = (xml) => {
+		try {
+			const convert = require('xml-js');
+			const result1 = convert.xml2json(xml, {compact: false, spaces: 4});
+			const filterObj = JSON.parse(result1);
+			const mappedFilter = this.mapFilterObj(filterObj);
+			if (mappedFilter) {
+				this.setConvertedFilter(mappedFilter);
+			}
+		} catch (e) {
+			this.setConvertedFilter(`Error: '\n' ${e.message}`);
+		}
+	};
+
+	setConvertedFilter = (mappedFilter) => {
+		this.dispatchStoreAction({
+			type: ActionTypes.SET_CONVERTED_FILTER,
+			payload: mappedFilter
+		});
 	};
 
 	setPrimitives = (parentFilterId, primitives) => {
@@ -251,6 +378,12 @@ export default class FiltersApi extends BaseApi {
 		return filter ? JSON.parse(JSON.stringify(filter)) : {};
 	};
 
+	getChildData = (childGroupName, parentGroupName) => {
+		const parentPrimitive = this.getFilterDataByGroupName(parentGroupName);
+		const childPrimitive = parentPrimitive.children.find(c => c.groupName === childGroupName);
+		return JSON.parse(JSON.stringify(childPrimitive));
+	};
+
 	getFiltersPresetsNames = () => {
 		const filtersPresets = this.getFiltersPresetsSelector();
 		return  filtersPresets.map(f => {
@@ -288,4 +421,8 @@ export default class FiltersApi extends BaseApi {
 		const templateFilters = this.getTemplateFiltersSelector();
 		return templateFilters.filter(f => ids.includes(f.id));
 	};
+
+	getConvertedFilterSelector = () => {
+		return selectors.getConvertedFilterSelector(this.store.getState());
+	}
 }

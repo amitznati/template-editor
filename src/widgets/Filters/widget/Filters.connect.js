@@ -10,6 +10,7 @@ const mapStateToProps = () => {
 		primitivesNameList: filtersApi.getPrimitivesNamesListSelector(),
 		templateFiltersNamesList: filtersApi.getFiltersTemplateNames(),
 		layoutFilters: filtersApi.getLayoutFiltersSelector(),
+		convertedFilter: filtersApi.getConvertedFilterSelector()
 	};
 };
 
@@ -25,7 +26,11 @@ const mapDispatchToProps = () => ({
 	onSelectSingleChild: filtersApi.onSelectSingleChild,
 	onFilterAttributeChange: filtersApi.onFilterAttributeChange,
 	onFilterNameChange: filtersApi.onFilterNameChange,
-	removeFilterFromLayout: filtersApi.removeFilterFromLayout
+	removeFilterFromLayout: filtersApi.removeFilterFromLayout,
+	onImportFilter: filtersApi.onImportFilter,
+	onConvert: filtersApi.onConvert,
+	onIgnoreFilterAttribute: filtersApi.onIgnoreFilterAttribute,
+	onIgnoreFilter: filtersApi.onIgnoreFilter
 });
 
 export default connect(

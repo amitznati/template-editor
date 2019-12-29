@@ -18,10 +18,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function CoreExpandableSortablePaper({header, actions, children}) {
+export default function CoreExpandableSortablePaper({header, actions, children, disabled}) {
 	const classes = useStyles();
 	return (
-		<ExpansionPanel className={classes.root}>
+		<ExpansionPanel className={classes.root} disabled={disabled}>
 			<ExpansionPanelSummary
 				expandIcon={<ExpandMoreIcon/>}
 				className={classes.noPadding}

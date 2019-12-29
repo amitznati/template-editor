@@ -31,6 +31,12 @@ const reducer = (state = initialState, action) => {
 			layoutFilters: [...state.layoutFilters, payload.id]
 		};
 		break;
+	case ActionTypes.SET_CONVERTED_FILTER:
+		newState = {
+			...state,
+			convertedFilter: payload
+		};
+		break;
 	default:
 		return newState;
 	}

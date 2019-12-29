@@ -15,8 +15,13 @@ export const getLayoutFiltersSelector = createSelector(sliceSelector, (slice) =>
 	return slice.layoutFilters;
 });
 
+export const getConvertedFilterSelector = createSelector(sliceSelector, (slice) => {
+	return slice.convertedFilter;
+});
+
 export default {
 	getTemplateFiltersSelector,
 	getFiltersPresetsSelector,
-	getLayoutFiltersSelector
+	getLayoutFiltersSelector,
+	getConvertedFilterSelector
 };

@@ -1,8 +1,9 @@
 import React from 'react';
-import {Grid, Typography} from '@material-ui/core';
+import {Grid, Typography, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import EditFilter from './Filters.EditFilter';
 import {CoreMenuSelect, CoreSortableList} from '../../../core';
+import ImportModal from './Filters.importModal';
 
 const useStyles = makeStyles(theme => ({
 	marginB: {
@@ -11,9 +12,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function FiltersMainView(props) {
-	const {layoutFilters, presetsNames, onAddParentFilter, templateFiltersNamesList, onAddFilterFromPresets,  ...restProps} = props;
+	const {
+		layoutFilters,
+		presetsNames,
+		onAddParentFilter,
+		templateFiltersNamesList,
+		onAddFilterFromPresets,
+		...restProps
+	} = props;
 	const classes = useStyles();
-
+	const [importOpen, setImportOpen] = React.useState(false);
 	const filtersList = layoutFilters.map(f => {
 		return (
 			<Grid key={f.id} item xs={12} className={classes.marginB}>
@@ -23,6 +31,17 @@ export default function FiltersMainView(props) {
 	});
 	return (
 		<Grid container>
+			<Grid item xs={12} className={classes.marginB}>
+				<Button onClick={() => setImportOpen(!importOpen)}>Import</Button>
+				<ImportModal
+					open={importOpen}
+					onClose={() => setImportOpen(!importOpen)}
+					primitivesNameList={restProps.primitivesNameList}
+					onImport={() => {restProps.onImportFilter(); setImportOpen(false);}}
+					onConvert={restProps.onConvert}
+					convertedFilter={restProps.convertedFilter}
+				/>
+			</Grid>
 			<Grid item xs={12} className={classes.marginB}>
 				<Typography variant="subtitle1" gutterBottom>Presets Filters</Typography>
 				<CoreMenuSelect

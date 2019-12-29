@@ -3,19 +3,20 @@ import {Grid, IconButton, Icon, TextField} from '@material-ui/core';
 import {CoreColorPickerButton, CoreNumber, CoreSelect, CoreText} from '../../../core';
 export default function FiltersField(props) {
 
-	const {name, itemProps, value, filterKey, ignoreVisible, onAttributeChange, inList} = props;
+	const {name, itemProps, value, filterKey, ignoreVisible, onAttributeChange, inList, disabled} = props;
 	const key = `${filterKey}-${name}-field`;
 	const renderTextField = () => {
 		return <CoreText key={key}
 			handleChange={(v) => onAttributeChange && onAttributeChange({name, value: v })}
 			label={name}
 			value={value}
+			disabled={disabled}
 		/>;
 	};
 	const renderNumberField = () => {
 		const {double, min, max, step} = itemProps.inputsData[name];
 		if (double) {
-			const values = value.split(' ');
+			const values = value ? value.split(' ') : [];
 			const key1 = `${key}-1`;
 			const key2 = `${key}-2`;
 			return [
@@ -25,6 +26,7 @@ export default function FiltersField(props) {
 					value={values[0]}
 					inputProps={{min, max, step}}
 					onChange={(v) => onAttributeChange({name, value: `${v} ${values[1]}` })}
+					disabled={disabled}
 				/>,
 				<CoreNumber
 					key={key2}
@@ -32,13 +34,14 @@ export default function FiltersField(props) {
 					value={values[1]}
 					inputProps={{min, max, step}}
 					onChange={(v) => onAttributeChange({name, value: `${values[0]} ${v}` })}
+					disabled={disabled}
 				/>
 			];
 		}
 		return <CoreNumber
 			label={name}
 			inputProps={{min, max, step}}
-			{...{key, value}}
+			{...{key, value, disabled}}
 			onChange={(value) => onAttributeChange({name, value })}
 		/>;
 	};
@@ -47,7 +50,7 @@ export default function FiltersField(props) {
 		if (itemProps.inputsData[name].double) {
 			const options1 = itemProps[itemProps.inputsData[name].valuesKeys[0]];
 			const options2 = itemProps[itemProps.inputsData[name].valuesKeys[1]];
-			const values = value.split(' ');
+			const values = value ? value.split(' ') : [];
 			const key1 = `${key}-1`;
 			const key2 = `${key}-2`;
 			return [
@@ -57,6 +60,7 @@ export default function FiltersField(props) {
 					value={values[0]}
 					options={options1.map(o => {return {id: o, name: o};})}
 					onChange={(v) => onAttributeChange({name, value: `${v} ${values[1]}` })}
+					disabled={disabled}
 				/>,
 				<CoreSelect
 					key={key2}
@@ -64,6 +68,7 @@ export default function FiltersField(props) {
 					value={values[1]}
 					options={options2.map(o => {return {id: o, name: o};})}
 					onChange={(v) => onAttributeChange({name, value: `${values[0]} ${v}` })}
+					disabled={disabled}
 				/>
 			];
 		}
@@ -74,6 +79,7 @@ export default function FiltersField(props) {
 			key={key}
 			options={options.map(o => {return {id: o, name: o};})}
 			onChange={(value) => onAttributeChange({name, value})}
+			disabled={disabled}
 		/>;
 
 	};
@@ -85,6 +91,7 @@ export default function FiltersField(props) {
 				btnText={name}
 				color={value}
 				handleChange={(value) => onAttributeChange({name, value})}
+				disabled={disabled}
 			/>
 		);
 	};
@@ -99,6 +106,7 @@ export default function FiltersField(props) {
 				value={value}
 				variant="outlined"
 				onChange={(e) => onAttributeChange({name, value: e.target.value })}
+				disabled={disabled}
 			/>
 		);
 	};

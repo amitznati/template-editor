@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from './../../styles/styles';
 
 const CoreText = props => {
-	const {value, handleChange, label, type = 'text', onFocus} = props;
+	const {value, handleChange, label, type = 'text', onFocus, disabled} = props;
 	return (
 		<FormControl fullWidth >
 			<TextField
@@ -14,6 +14,7 @@ const CoreText = props => {
 				value={value}
 				onFocus={onFocus}
 				onChange={(e) => handleChange && handleChange(e.target.value)}
+				disabled={disabled}
 			/>
 		</FormControl>
 	);

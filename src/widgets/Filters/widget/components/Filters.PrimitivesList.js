@@ -30,7 +30,7 @@ export default function FiltersPrimitivesList(props) {
 							onAttributeChange: onChangeFunc,
 							onDeletePrimitive: onDeleteFunc,
 							singleChild,
-							inList: fullInList.filter(i => i.index < index).map(i => i.id).concat(defaultInList)
+							inList: fullInList.map(i => i.id).concat(defaultInList)
 						}}>
 							{filterChildren}
 						</FiltersPrimitive>

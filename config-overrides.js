@@ -4,6 +4,7 @@ module.exports = (config /*, env */) => {
 		sdk: PATH.resolve(__dirname, 'src/sdk'),
 		widgets: PATH.resolve(__dirname, 'src/widgets'),
 		mocks: PATH.resolve(__dirname, 'src/mocks'),
+		utils: PATH.resolve(__dirname, 'src/sdk/utils'),
 		['core']: PATH.resolve(__dirname, 'src/widgets/core'),
 		['add-layout-dialog']: PATH.resolve(__dirname, 'src/widgets/AddLayoutDialog'),
 		['edit-template-main-view']: PATH.resolve(__dirname, 'src/widgets/EditTemplateMainView'),
