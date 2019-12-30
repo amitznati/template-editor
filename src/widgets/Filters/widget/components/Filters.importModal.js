@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
 export default function ImportModal({open, onClose, onImport, onConvert, convertedFilter}) {
 	const classes = useStyles();
 	const [xml, setXml] = React.useState('');
+	const disabled = !convertedFilter || convertedFilter.Error;
 	return (
 		<Dialog fullWidth className={classes.root} onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
 			<Button onClick={onClose} color="primary">Close</Button>
@@ -35,7 +36,7 @@ export default function ImportModal({open, onClose, onImport, onConvert, convert
 				value={JSON.stringify(convertedFilter)}
 				variant="outlined"
 			/>
-			<Button onClick={onImport} disabled={!convertedFilter} color="primary">Import</Button>
+			<Button onClick={onImport} disabled={disabled} color="primary">Import</Button>
 		</Dialog>
 	);
 }

@@ -242,6 +242,7 @@ export default class FiltersApi extends BaseApi {
 			type: ActionTypes.ADD_NEW_FILTER_TO_TEMPLATE,
 			payload: {filter: filter}
 		});
+		this.setConvertedFilter(null);
 		this.addFilterIdToLayout(filter.id);
 	};
 
@@ -250,7 +251,7 @@ export default class FiltersApi extends BaseApi {
 			primitive.params[paramName].isIgnore = true;
 		});
 		importedElement.attributes && Object.keys(importedElement.attributes).forEach(attrName => {
-			primitive.params[toCamelCaseString(attrName)] = {value: importedElement.attributes[attrName], isIgnore: false};
+			primitive.params[toCamelCaseString(attrName.replace(':','-'))] = {value: importedElement.attributes[attrName], isIgnore: false};
 		});
 	};
 
@@ -266,12 +267,13 @@ export default class FiltersApi extends BaseApi {
 				this.mergeImportedToData(el, primitive);
 				if (el.elements && primitive.children) {
 					const primitivesChildrenNameList = this.getChildrenFiltersNamesList(groupNameObj);
+					const childFilterObjElements = el.elements.filter(el => el.type === 'element');
 					const {hasSingleChild} = primitivesAttrs[primitive.groupName];
 					if (hasSingleChild) {
 						primitive.children.forEach(childPrimitive => {
 							childPrimitive.disabled = true;
 						});
-						el.elements.forEach(childEl => {
+						childFilterObjElements.forEach(childEl => {
 							const childGroupNameObj = primitivesChildrenNameList.find(p => p.name === childEl.name);
 							if (childGroupNameObj) {
 								primitive.children.forEach(p => {
@@ -283,7 +285,7 @@ export default class FiltersApi extends BaseApi {
 							}
 						});
 					} else {
-						primitive.children = el.elements.map((childEl) => {
+						primitive.children = childFilterObjElements.map((childEl) => {
 							const childGroupNameObj = primitivesChildrenNameList.find(p => p.name === childEl.name);
 							const childPrimitive = this.getChildData(childGroupNameObj.groupName, primitive.groupName);
 							childPrimitive.id = childEl.attributes && childEl.attributes.id;
@@ -326,7 +328,8 @@ export default class FiltersApi extends BaseApi {
 				this.setConvertedFilter(mappedFilter);
 			}
 		} catch (e) {
-			this.setConvertedFilter(`Error: '\n' ${e.message}`);
+			console.log(e);
+			this.setConvertedFilter({Error: e.message});
 		}
 	};
 
