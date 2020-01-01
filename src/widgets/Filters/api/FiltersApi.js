@@ -158,6 +158,23 @@ export default class FiltersApi extends BaseApi {
 		this.updateFilters(newFilters);
 	};
 
+	onIgnoreAttribute = ({name, primitiveIndex, filterId, childIndex}) => {
+		const filters  = this.getTemplateFiltersSelector();
+		const newFilters = filters.map(f => {
+
+			if (f.id === filterId) {
+				if (!isNaN(childIndex)) {
+					f.primitives[primitiveIndex].children[childIndex].params[name].isIgnore =
+						!f.primitives[primitiveIndex].children[childIndex].params[name].isIgnore;
+				} else {
+					f.primitives[primitiveIndex].params[name].isIgnore = !f.primitives[primitiveIndex].params[name].isIgnore;
+				}
+			}
+			return f;
+		});
+		this.updateFilters(newFilters);
+	};
+
 	onFilterNameChange = ({filterId, value}) => {
 		const filters = this.getTemplateFiltersSelector();
 		const newFilters = filters.map(f => {
@@ -328,7 +345,6 @@ export default class FiltersApi extends BaseApi {
 				this.setConvertedFilter(mappedFilter);
 			}
 		} catch (e) {
-			console.log(e);
 			this.setConvertedFilter({Error: e.message});
 		}
 	};

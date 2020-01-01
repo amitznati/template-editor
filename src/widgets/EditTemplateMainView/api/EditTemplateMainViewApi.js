@@ -23,7 +23,7 @@ const defaultPosition = {
 };
 
 const defaultFontProps = {
-	fontSize: 40, fontFamily: 'Raleway',fontStyle: 'italic', fontWeight: '100'
+	fontSize: 160, fontFamily: 'Raleway',fontStyle: 'normal', fontWeight: '300'
 };
 
 const layoutsTemplate = (type,payload) => {
@@ -106,13 +106,13 @@ export default class EditTemplateMainViewApi extends BaseApi {
 		this.updateTemplate(template);
 	};
 
-	handleAddClose = (type,payload) => {
+	handleAddClose = ({type,value}) => {
 		if(!type) {
 			this.toggleAddLayoutDialog(false);
 			return;
 		}
 		const template = this.getTemplateSelector();
-		template.layouts.push(layoutsTemplate(type,payload));
+		template.layouts.push(layoutsTemplate(type,value));
 		this.toggleAddLayoutDialog(false);
 		this.updateTemplate(template);
 	};

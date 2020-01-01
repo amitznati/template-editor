@@ -16,10 +16,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function FiltersPrimitivesList(props) {
 	const classes = useStyles();
-	const {parentFilterId, primitives = [], onAttributeChange, onSortEnd, onDeletePrimitive, getChildrenFiltersNamesList, onAddChildFilter, onSelectSingleChild} = props;
+	const {parentFilterId, primitives = [], onAttributeChange, onSortEnd, onDeletePrimitive, getChildrenFiltersNamesList, onAddChildFilter, onSelectSingleChild, onIgnoreAttribute} = props;
 	const fullInList = primitives.map((p,i) => {return {id: p.id, index: i};});
 	const defaultInList = ['SourceGraphic', 'SourceAlpha', 'BackgroundImage', 'BackgroundAlpha', 'FillPaint', 'StrokePaint'];
-	const renderFilter = (primitiveToRender, filterChildren, index, onChangeFunc, onDeleteFunc, key, singleChild) => {
+	const renderFilter = (primitiveToRender, filterChildren, index, onChangeFunc, onDeleteFunc, key, singleChild, onIgnoreAttributeFunc) => {
 		return (
 			<Paper key={key} square className={classes.filter}>
 				<Grid container alignItems="center" className={classes.layoutGrid}>
@@ -30,7 +30,8 @@ export default function FiltersPrimitivesList(props) {
 							onAttributeChange: onChangeFunc,
 							onDeletePrimitive: onDeleteFunc,
 							singleChild,
-							inList: fullInList.map(i => i.id).concat(defaultInList)
+							inList: fullInList.map(i => i.id).concat(defaultInList),
+							onIgnoreAttribute: onIgnoreAttributeFunc
 						}}>
 							{filterChildren}
 						</FiltersPrimitive>
@@ -49,6 +50,7 @@ export default function FiltersPrimitivesList(props) {
 			const filterChildrenItems = primitive.children.map((childPrimitive, i) => {
 				const onChangeFunc = ({name, value}) => onAttributeChange({parentFilterId, index, name, value, childIndex: i});
 				const onDeleteFunc = () => onDeletePrimitive({parentFilterId, index, childIndex: i});
+				const onIgnoreAttributeFunc = (name) => onIgnoreAttribute({name, filterId: parentFilterId, primitiveIndex: index, childIndex: i});
 				const onSelectChild = () => {
 					onSelectSingleChild({
 						parentFilterId,
@@ -59,7 +61,7 @@ export default function FiltersPrimitivesList(props) {
 
 				const key = `filter-${parentFilterId}-${childPrimitive.id}-${i}`;
 				if (!hasSingleChild) {
-					return renderFilter(childPrimitive, null, i, onChangeFunc, onDeleteFunc, key ,false);
+					return renderFilter(childPrimitive, null, i, onChangeFunc, onDeleteFunc, key ,false, onIgnoreAttributeFunc);
 				}
 				return (
 					<Grid container key={key} alignItems="center">
@@ -91,7 +93,8 @@ export default function FiltersPrimitivesList(props) {
 		}
 		const onDeleteFunc = () => onDeletePrimitive({parentFilterId, index});
 		const onChangeFunc = ({name, value}) => onAttributeChange({parentFilterId, index, name, value});
-		return renderFilter(primitive, filterChildren, index, onChangeFunc, onDeleteFunc, parentKey);
+		const onIgnoreAttributeFunc = (name) => onIgnoreAttribute({name, filterId: parentFilterId, primitiveIndex: index});
+		return renderFilter(primitive, filterChildren, index, onChangeFunc, onDeleteFunc, parentKey, false, onIgnoreAttributeFunc);
 	});
 	const onSort = ({oldIndex, newIndex}) => onSortEnd({parentFilterId, oldIndex, newIndex});
 	return (

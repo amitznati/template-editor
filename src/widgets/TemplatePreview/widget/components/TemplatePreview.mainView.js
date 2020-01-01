@@ -42,7 +42,7 @@ class TemplatePreviewMainView extends React.Component {
 	};
 
 	render() {
-		const {product, classes, isSVGPathBuilderOpen, PathBuilderProps, SVGRootProps, templateFilters} = this.props;
+		const {product, classes, PathBuilderProps, SVGRootProps, templateFilters} = this.props;
 		const {
 			layouts,
 			productH,
@@ -63,7 +63,7 @@ class TemplatePreviewMainView extends React.Component {
 						<Defs templateFilters={templateFilters} />
 						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
 					</RootSVG>
-					{isSVGPathBuilderOpen &&
+					{SVGRootProps.isSVGPathBuilderOpen &&
 						<div style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: 0, left: 0}}>
 							<PathBuilder
 								{...PathBuilderProps}

@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function FiltersPrimitive(props) {
 	const classes = useStyles();
-	const {primitive, onAttributeChange, primitiveIndex, onDeletePrimitive, singleChild, inList} = props;
+	const {primitive, onAttributeChange, primitiveIndex, onDeletePrimitive, singleChild, inList, onIgnoreAttribute} = props;
 
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const itemProps = primitivesAttrs[primitive.groupName];
@@ -135,6 +135,11 @@ export default function FiltersPrimitive(props) {
 						}
 						const key = `${primitiveKey}-${name}`;
 						const col = itemProps.inputsData[name].col;
+						let type = itemProps.inputsData[name].type;
+						if (itemProps.inputsData[name].variants) {
+							const variantValue = primitive.params[itemProps.inputsData[name].variants.key].value;
+							type = itemProps.inputsData[name].variants.types[variantValue];
+						}
 						return (
 							<Grid className={classes.primitive} key={key} item xs={col || 4}>
 								<FiltersField
@@ -146,7 +151,9 @@ export default function FiltersPrimitive(props) {
 										onAttributeChange,
 										ignoreVisible,
 										inList,
-										disabled: primitive.params[name] && primitive.params[name].isIgnore
+										disabled: primitive.params[name] && primitive.params[name].isIgnore,
+										type,
+										onIgnoreAttribute
 									}}
 								/>
 							</Grid>

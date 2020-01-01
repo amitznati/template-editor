@@ -1,20 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
 import {Dialog, Paper,Grid, DialogTitle, DialogActions,DialogContent, Button, Toolbar, AppBar, Tabs, Tab, Typography, IconButton} from '@material-ui/core';
 import {logos} from 'mocks';
-import { CoreText } from 'core';
-function TabContainer(props) {
-	return (
-		<Typography component="div" >
-			{props.children}
-		</Typography>
-	);
-}
+import TextTab from './AddLayoutDialog.textTab';
 
-TabContainer.propTypes = {
-	children: PropTypes.node.isRequired,
-};
 const types = [
 	'logo','image','text','shape'
 ];
@@ -23,10 +12,6 @@ class AddLayoutDialogMainView extends React.Component {
 		value: 0,
 		text: ''
 	};
-
-	onTextChanged = (text) => {
-		this.setState({text});
-	}
 
 	handleClose = () => {
 		this.props.onClose();
@@ -40,19 +25,15 @@ class AddLayoutDialogMainView extends React.Component {
 		this.props.onClose(types[this.state.value],{url});
 	}
 
-	onTextSelect = () => {
-		this.props.onClose('text', this.state.text);
-	}
-
 	render() {
-		const {open, /* classes, onClose, selectedValue,*/ ...other } = this.props;
-		const {value, text} = this.state;
+		const {open, onClose } = this.props;
+		const {value} = this.state;
 		return (
 			<Dialog
 				onClose={this.handleClose}
 				fullScreen
 				open={open}
-				aria-labelledby="simple-dialog-title" {...other}>
+				aria-labelledby="simple-dialog-title">
 				<DialogTitle id="simple-dialog-title">
 					<AppBar position="static">
 						<Toolbar>
@@ -72,7 +53,7 @@ class AddLayoutDialogMainView extends React.Component {
 					</AppBar>
 				</DialogTitle>
 				<DialogContent>
-					{value === 0 && <TabContainer>
+					{value === 0 &&
 						<Grid container>
 							{logos.map((l,i) => {
 								return (
@@ -83,21 +64,10 @@ class AddLayoutDialogMainView extends React.Component {
 									</Grid>
 								);
 							})}
-						</Grid>
-
-					</TabContainer>}
-					{value === 1 && <TabContainer>
-						{/* <ThemeImagesList isForSelect onSelect={this.onImageSelect.bind(this)}/> */}
-					</TabContainer>}
-					{value === 2 && <TabContainer>
-						<CoreText label="text" handleChange={this.onTextChanged} value={text}/>
-						{/* <ButtonBase >ADD</ButtonBase> */}
-						<Button variant="outlined" color="primary" onClick={this.onTextSelect}>
-						ADD
-						</Button>
-					</TabContainer>
-					}
-					{value === 3 && <TabContainer>Shape</TabContainer>}
+						</Grid>}
+					{value === 1 && <div></div>}
+					{value === 2 && <TextTab onSelect={onClose} />}
+					{value === 3 && <div>Shape</div>}
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={this.handleClose} color="primary">
@@ -108,12 +78,5 @@ class AddLayoutDialogMainView extends React.Component {
 		);
 	}
 }
-
-AddLayoutDialogMainView.propTypes = {
-	//classes: PropTypes.object.isRequired,
-	onClose: PropTypes.func,
-	selectedValue: PropTypes.string,
-	open: PropTypes.bool.isRequired
-};
 
 export default AddLayoutDialogMainView;

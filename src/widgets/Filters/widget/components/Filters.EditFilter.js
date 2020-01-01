@@ -20,7 +20,8 @@ export default function EditFilter({
 	onFilterNameChange,
 	removeFilterFromLayout,
 	onIgnoreFilterAttribute,
-	onIgnoreFilter
+	onIgnoreFilter,
+	onIgnoreAttribute
 }) {
 	const [ignoreVisible, setIgnoreVisible] = React.useState(false);
 	const {id: parentFilterId, primitives} = parentFilter;
@@ -73,7 +74,8 @@ export default function EditFilter({
 							getChildrenFiltersNamesList,
 							onAddChildFilter,
 							parentFilterId,
-							onSelectSingleChild
+							onSelectSingleChild,
+							onIgnoreAttribute
 						}}
 					/>
 				</Grid>

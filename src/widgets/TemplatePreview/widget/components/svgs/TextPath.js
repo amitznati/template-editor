@@ -19,7 +19,8 @@ const TextPath = (props) => {
 	const {layout, index} = props;
 	const {fontFamily, fontSize, fontWeight, x, y, text, fill,
 		transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0},
-		pathData
+		pathData,
+		filters
 	} = layout.properties;
 	const {selectedFillColorType, gradientData} = fill;
 	let layouFill = fill.fill;
@@ -33,6 +34,13 @@ const TextPath = (props) => {
 	if (selectedFillColorType === 'Gradient' && gradientData) {
 		layouFill = `url(#Gradient-${index})`;
 		shapes.push(getGradientDef(`Gradient-${index}`, gradientData));
+	}
+
+	const styleFilter = {};
+	if (filters.length) {
+		styleFilter.style = {
+			filter: filters.map(f => `url(#${f})`).join(' ')
+		};
 	}
 
 	const textProperties = {
@@ -50,6 +58,7 @@ const TextPath = (props) => {
 	shapes.push(
 		<text
 			{...textProperties}
+			{...styleFilter}
 			className={cx('drag-svg')}
 			ref={textRef}
 			key={`path_${index}`}

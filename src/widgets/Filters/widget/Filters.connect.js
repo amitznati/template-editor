@@ -30,7 +30,8 @@ const mapDispatchToProps = () => ({
 	onImportFilter: filtersApi.onImportFilter,
 	onConvert: filtersApi.onConvert,
 	onIgnoreFilterAttribute: filtersApi.onIgnoreFilterAttribute,
-	onIgnoreFilter: filtersApi.onIgnoreFilter
+	onIgnoreFilter: filtersApi.onIgnoreFilter,
+	onIgnoreAttribute: filtersApi.onIgnoreAttribute
 });
 
 export default connect(

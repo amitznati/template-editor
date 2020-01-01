@@ -3,8 +3,9 @@ import {Grid, IconButton, Icon, TextField} from '@material-ui/core';
 import {CoreColorPickerButton, CoreNumber, CoreSelect, CoreText} from '../../../core';
 export default function FiltersField(props) {
 
-	const {name, itemProps, value, filterKey, ignoreVisible, onAttributeChange, inList, disabled} = props;
+	const {name, type, itemProps, value, filterKey, ignoreVisible, onAttributeChange, inList, disabled, onIgnoreAttribute} = props;
 	const key = `${filterKey}-${name}-field`;
+	const fieldData = itemProps.inputsData[name];
 	const renderTextField = () => {
 		return <CoreText key={key}
 			handleChange={(v) => onAttributeChange && onAttributeChange({name, value: v })}
@@ -14,7 +15,7 @@ export default function FiltersField(props) {
 		/>;
 	};
 	const renderNumberField = () => {
-		const {double, min, max, step} = itemProps.inputsData[name];
+		const {double, min, max, step} = fieldData;
 		if (double) {
 			const values = value ? value.split(' ') : [];
 			const key1 = `${key}-1`;
@@ -47,16 +48,16 @@ export default function FiltersField(props) {
 	};
 
 	const renderSelectField = () => {
-		if (itemProps.inputsData[name].double) {
-			const options1 = itemProps[itemProps.inputsData[name].valuesKeys[0]];
-			const options2 = itemProps[itemProps.inputsData[name].valuesKeys[1]];
+		if (fieldData.double) {
+			const options1 = itemProps[fieldData.valuesKeys[0]];
+			const options2 = itemProps[fieldData.valuesKeys[1]];
 			const values = value ? value.split(' ') : [];
 			const key1 = `${key}-1`;
 			const key2 = `${key}-2`;
 			return [
 				<CoreSelect
 					key={key1}
-					label={itemProps.inputsData[name].valuesKeys[0]}
+					label={fieldData.valuesKeys[0]}
 					value={values[0]}
 					options={options1.map(o => {return {id: o, name: o};})}
 					onChange={(v) => onAttributeChange({name, value: `${v} ${values[1]}` })}
@@ -64,7 +65,7 @@ export default function FiltersField(props) {
 				/>,
 				<CoreSelect
 					key={key2}
-					label={itemProps.inputsData[name].valuesKeys[1]}
+					label={fieldData.valuesKeys[1]}
 					value={values[1]}
 					options={options2.map(o => {return {id: o, name: o};})}
 					onChange={(v) => onAttributeChange({name, value: `${values[0]} ${v}` })}
@@ -72,7 +73,7 @@ export default function FiltersField(props) {
 				/>
 			];
 		}
-		const options = ['in','in2'].includes(name)? inList : itemProps[name];
+		const options = ['in','in2'].includes(name) ? inList : itemProps[name];
 		return <CoreSelect
 			label={name}
 			value={value}
@@ -112,8 +113,8 @@ export default function FiltersField(props) {
 	};
 
 	const ignoreIcon = ignoreVisible && (
-		<IconButton size="small" onClick={(e) => {e.stopPropagation();} } >
-			<Icon>visibility</Icon>
+		<IconButton size="small" onClick={(e) => {e.stopPropagation(); onIgnoreAttribute(name);}} >
+			<Icon>{disabled ? 'visibility_off' : 'visibility'}</Icon>
 		</IconButton>
 	);
 	let fieldToReturn = null;
@@ -123,13 +124,13 @@ export default function FiltersField(props) {
 				{ignoreIcon && <Grid item xs={3}>
 					{ignoreIcon}
 				</Grid>}
-				<Grid item xs={ignoreIcon ? 9 : 12}>
+				<Grid item style={{textDecoration: disabled ? 'line-through' : 'none'}} xs={ignoreIcon ? 9 : 12}>
 					{f}
 				</Grid>
 			</Grid>
 		);
 	};
-	const type = itemProps.inputsData[name].type;
+
 	switch (type) {
 	case 'text':
 		fieldToReturn = renderTextField(name);
