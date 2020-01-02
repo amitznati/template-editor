@@ -1,13 +1,43 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {Grid, Button} from '@material-ui/core';
+import {Button, Drawer, Hidden, Typography, Icon, IconButton, Toolbar, AppBar, CssBaseline} from '@material-ui/core';
 import {TemplatePreview, AddLayoutDialog, LayoutsList} from 'widgets';
 import {CoreSlider} from 'core';
 import FontLoader from '../../../../sdk/services/fontLoader';
 import withRoot from '../../../../withRoot';
 
+const drawerWidth = 500;
+
 const styles = theme => ({
+	root: {
+		display: 'flex',
+	},
+	drawer: {
+		[theme.breakpoints.up('sm')]: {
+			width: drawerWidth,
+			flexShrink: 0,
+		},
+	},
+	appBar: {
+		[theme.breakpoints.up('sm')]: {
+			width: `calc(100% - ${drawerWidth}px)`,
+			marginLeft: drawerWidth,
+		},
+	},
+	menuButton: {
+		marginRight: theme.spacing(2),
+		[theme.breakpoints.up('sm')]: {
+			display: 'none',
+		},
+	},
+	toolbar: theme.mixins.toolbar,
+	drawerPaper: {
+		width: drawerWidth,
+	},
+	content: {
+		flexGrow: 1,
+		padding: theme.spacing(3),
+	},
 	section: {
 		padding: '20px 0'
 	},
@@ -41,23 +71,49 @@ class EditTemplateMainViewMainView extends React.Component {
 		} = this.props;
 
 		return (
-			<Grid container className={classes.rootGrid}>
+			<div className={classes.root}>
+				<CssBaseline />
 				<AddLayoutDialog
 					open={isAddLayoutDialogOpen}
 					onClose={handleAddClose}
 				/>
-				<Grid item xs={12} className={classes.section}>
-					<Button variant="outlined" color="primary" onClick={saveTemplate}>
-						Save
-					</Button>
-				</Grid>
-				<Grid item md={3} className={classes.section}>
-					<Button variant="outlined" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
-					+ Add Layout
-					</Button>
-					<LayoutsList />
-				</Grid>
-				<Grid item md={9} className={classes.section}>
+				<AppBar position="fixed" className={classes.appBar}>
+					<Toolbar>
+						<IconButton
+							color="inherit"
+							onClick={saveTemplate}
+						>
+							<Icon>save</Icon>
+						</IconButton>
+						<IconButton
+							color="inherit"
+							onClick={toggleAddLayoutDialog}
+						>
+							<Icon>add</Icon>
+						</IconButton>
+						<Typography variant="h6" noWrap>
+							SVG Template Editor
+						</Typography>
+					</Toolbar>
+				</AppBar>
+				<nav className={classes.drawer} aria-label="mailbox folders">
+					<Hidden xsDown implementation="css">
+						<Drawer
+							classes={{
+								paper: classes.drawerPaper,
+							}}
+							variant="permanent"
+							open
+						>
+							<Button variant="outlined" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
+								+ Add Layout
+							</Button>
+							<LayoutsList />
+						</Drawer>
+					</Hidden>
+				</nav>
+				<main className={classes.content}>
+					<div className={classes.toolbar} />
 					<CoreSlider
 						label="Scale"
 						value={scale}
@@ -67,7 +123,7 @@ class EditTemplateMainViewMainView extends React.Component {
 					/>
 					<div className={classes.templatePaper}>
 						{allFontsLoaded &&
-							<TemplatePreview />
+						<TemplatePreview />
 						}
 						{allFonts && allFonts.length && <FontLoader
 							fontProvider="google"
@@ -75,13 +131,10 @@ class EditTemplateMainViewMainView extends React.Component {
 							onActive={setAllFontsLoaded}
 						/>}
 					</div>
-				</Grid>
-			</Grid>
+				</main>
+			</div>
 		);
 	}
 }
-EditTemplateMainViewMainView.propTypes = {
-	classes: PropTypes.object.isRequired,
-};
 
 export default withRoot(withStyles(styles)(EditTemplateMainViewMainView));
