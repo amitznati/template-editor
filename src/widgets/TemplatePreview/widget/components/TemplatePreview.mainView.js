@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {Text, TextPath, RootSVG} from './svgs';
+import {Text, TextPath, Image, RootSVG} from './svgs';
 import PathBuilder from './TemplatePreview.pathBuilder';
 import Defs from './svgs/Defs';
 
@@ -36,9 +36,14 @@ class TemplatePreviewMainView extends React.Component {
 		return TextPath({layout, index});
 	}
 
+	renderImage(layout, index) {
+		return Image({layout, index});
+	}
+
 	renderLayout = {
 		text: this.renderText.bind(this),
-		textPath: this.renderTextPath.bind(this)
+		textPath: this.renderTextPath.bind(this),
+		image: this.renderImage.bind(this)
 	};
 
 	render() {

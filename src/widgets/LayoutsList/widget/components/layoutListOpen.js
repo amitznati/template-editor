@@ -59,6 +59,9 @@ function LayoutListOpen(props) {
 		],
 		textPath: [
 			allFields.font, allFields.position, allFields.color, allFields.path, allFields.filters
+		],
+		image: [
+			allFields.position, allFields.filters
 		]
 	};
 

@@ -134,7 +134,7 @@ class EditTemplateMainViewMainView extends React.Component {
 								onActive={setAllFontsLoaded}
 							/>
 						}
-						{allFontsLoaded &&
+						{(allFontsLoaded || !allFonts || allFonts.length === 0) &&
 							<TemplatePreview />
 						}
 					</div>

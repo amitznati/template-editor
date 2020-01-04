@@ -18,8 +18,8 @@ export const ActionTypes = {
 	UPDATE_SCALE: 'UPDATE_SCALE',
 	SET_ALL_FONTS_LOADED: 'SET_ALL_FONTS_LOADED'
 };
-const defaultPosition = {
-	x: 5, y: 10, transform: {}
+const defaultProperties = {
+	x: 5, y: 10, transform: {}, filters: []
 };
 
 const defaultFontProps = {
@@ -33,7 +33,7 @@ const layoutsTemplate = (type,payload) => {
 			type: 'image',
 			properties: {
 				src: payload.url,
-				x:8,y:8,height: 5,width:5, rotation: 0, scaleX: 1, scaleY: 1
+				...defaultProperties
 			}
 		};
 	case 'text':
@@ -41,12 +41,10 @@ const layoutsTemplate = (type,payload) => {
 			type: 'text',
 			properties: {
 				text: payload,
-				...defaultPosition,
+				...defaultProperties,
 				...defaultFontProps,
 				strokeWidth: 0, stroke: '',
 				fill: {fill: 'black'},
-				filters: []
-
 			}
 		};
 	case 'textPath': {
@@ -56,11 +54,10 @@ const layoutsTemplate = (type,payload) => {
 			type: 'textPath',
 			properties: {
 				text: payload,
-				x: 5, y: 10, transform: {},
+				...defaultProperties,
 				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
 				pathData: {path: `M ${x} ${y} L ${x + 400} ${y}`, points: [{x, y}, {x: x + 400, y}], closePath: false},
-				filters: []
 			}
 		};
 	}
@@ -112,7 +109,7 @@ export default class EditTemplateMainViewApi extends BaseApi {
 			return;
 		}
 		const template = this.getTemplateSelector();
-		template.layouts.push(layoutsTemplate(type,value));
+		template.layouts.push(JSON.parse(JSON.stringify(layoutsTemplate(type,value))));
 		this.toggleAddLayoutDialog(false);
 		this.updateTemplate(template);
 	};
@@ -144,9 +141,6 @@ export default class EditTemplateMainViewApi extends BaseApi {
 				allFonts.push(`${fontFamily}:${fontWeight || 300}${fontStyle || 'normal'}`);
 			}
 		});
-		if (allFonts.length === 0) {
-			this.setAllFontsLoaded();
-		}
 		return allFonts;
 	};
 

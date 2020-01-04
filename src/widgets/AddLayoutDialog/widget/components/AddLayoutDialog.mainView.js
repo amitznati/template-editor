@@ -3,6 +3,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import {Dialog, Paper,Grid, DialogTitle, DialogActions,DialogContent, Button, Toolbar, AppBar, Tabs, Tab, Typography, IconButton} from '@material-ui/core';
 import {logos} from 'mocks';
 import TextTab from './AddLayoutDialog.textTab';
+import ImageTab from './AddLayoutDialog.imageTab';
 
 const types = [
 	'logo','image','text','shape'
@@ -65,7 +66,7 @@ class AddLayoutDialogMainView extends React.Component {
 								);
 							})}
 						</Grid>}
-					{value === 1 && <div></div>}
+					{value === 1 && <ImageTab onSelect={onClose} />}
 					{value === 2 && <TextTab onSelect={onClose} />}
 					{value === 3 && <div>Shape</div>}
 				</DialogContent>
