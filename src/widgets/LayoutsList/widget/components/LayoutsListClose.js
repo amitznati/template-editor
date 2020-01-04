@@ -15,7 +15,7 @@ const styles = theme => ({
 	layoutPaper: {
 		margin: theme.spacing(1, 0),
 		marginLeft: 0,
-		padding: theme.spacing(1),
+		padding: theme.spacing(1)
 	},
 	layoutGrid: {
 		//height: '50px'

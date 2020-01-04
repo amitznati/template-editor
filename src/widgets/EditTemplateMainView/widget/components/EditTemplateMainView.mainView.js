@@ -33,7 +33,8 @@ const styles = theme => ({
 	toolbar: theme.mixins.toolbar,
 	drawerPaper: {
 		width: drawerWidth,
-		background: '#ececec'
+		background: '#ececec',
+		zIndex: 'auto'
 	},
 	content: {
 		flexGrow: 1,
