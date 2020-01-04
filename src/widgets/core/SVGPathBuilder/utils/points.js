@@ -74,7 +74,7 @@ export function getPoints(path) {
 			break;
 		case 'a': point = A(...values);
 			break;
-		default: 
+		default:
 			break;
 		}
 
@@ -104,7 +104,7 @@ function getPathArray(path) {
 				newPathArr.push(current.trim());
 			}
 		}
-		
+
 	}
 	return newPathArr;
 }
@@ -171,8 +171,8 @@ export function pathToObject(path) {
 			}
 			break;
 		}
-		case 'z': return points;
-		default: 
+		case 'z': return {points, isClose: true};
+		default:
 			return [];
 		}
 		if (point) {
@@ -180,5 +180,5 @@ export function pathToObject(path) {
 		}
 	}
 
-	return points;
+	return {points};
 }

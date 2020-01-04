@@ -219,7 +219,7 @@ export default class FiltersApi extends BaseApi {
 		this.setPrimitives(parentFilterId, [...primitives, primitiveToAdd]);
 	};
 
-	onAddChildFilter = (parentFilterId, filterItem, filterParent) => {
+	onAddChildFilter = (filterItem, filterParent, parentFilterId) => {
 		const filterData = this.getFilterDataByGroupName(filterParent.groupName);
 		const childFilter = filterData.children.find(f => f.groupName === filterItem.groupName);
 		const clonedChild = JSON.parse(JSON.stringify(childFilter));

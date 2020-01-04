@@ -14,7 +14,7 @@ class AddLayoutDialogMainView extends React.Component {
 	};
 
 	handleClose = () => {
-		this.props.onClose();
+		this.props.onClose({});
 	};
 
 	handleChange = (event, value) => {

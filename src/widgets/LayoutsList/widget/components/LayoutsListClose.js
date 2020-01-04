@@ -13,7 +13,7 @@ const DragHandle = sortableHandle(() => <ReorderIcon style={{cursor: 'move'}}/>)
 const styles = theme => ({
 
 	layoutPaper: {
-		margin: theme.spacing(1),
+		margin: theme.spacing(1, 0),
 		marginLeft: 0,
 		padding: theme.spacing(1),
 	},

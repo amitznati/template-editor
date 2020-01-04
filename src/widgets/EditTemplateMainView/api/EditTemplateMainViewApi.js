@@ -59,7 +59,7 @@ const layoutsTemplate = (type,payload) => {
 				x: 5, y: 10, transform: {},
 				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
-				pathData: {path: `M ${x} ${y} L ${x + 200} ${y}`, points: [{x, y}, {x: x + 200, y}]},
+				pathData: {path: `M ${x} ${y} L ${x + 400} ${y}`, points: [{x, y}, {x: x + 400, y}], closePath: false},
 				filters: []
 			}
 		};
@@ -81,7 +81,7 @@ export default class EditTemplateMainViewApi extends BaseApi {
 	toggleAddLayoutDialog = (isOpen) => {
 		this.dispatchStoreAction({
 			type: ActionTypes.TOGGLE_ADD_LAYOUT_DIALOG,
-			payload: isOpen
+			payload: !!isOpen
 		});
 	};
 
@@ -138,13 +138,15 @@ export default class EditTemplateMainViewApi extends BaseApi {
 		const template = this.getTemplateSelector();
 		const {layouts = []} = template;
 		const allFonts = [];
-		layouts.map(l => {
+		layouts.forEach(l => {
 			const {fontFamily, fontStyle, fontWeight} = l.properties;
 			if (l.type === 'text' || l.type === 'textPath') {
 				allFonts.push(`${fontFamily}:${fontWeight || 300}${fontStyle || 'normal'}`);
 			}
-			return false;
 		});
+		if (allFonts.length === 0) {
+			this.setAllFontsLoaded();
+		}
 		return allFonts;
 	};
 

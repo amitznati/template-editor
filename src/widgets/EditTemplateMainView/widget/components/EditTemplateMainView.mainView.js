@@ -33,6 +33,7 @@ const styles = theme => ({
 	toolbar: theme.mixins.toolbar,
 	drawerPaper: {
 		width: drawerWidth,
+		background: '#ececec'
 	},
 	content: {
 		flexGrow: 1,
@@ -50,7 +51,10 @@ const styles = theme => ({
 	rootGrid: {
 		// minHeight: '100%',
 		padding: theme.spacing(1)
-	}
+	},
+	grow: {
+		flexGrow: 1,
+	},
 });
 
 
@@ -79,6 +83,10 @@ class EditTemplateMainViewMainView extends React.Component {
 				/>
 				<AppBar position="fixed" className={classes.appBar}>
 					<Toolbar>
+						<Typography variant="h6" noWrap>
+							SVG Template Editor
+						</Typography>
+						<div className={classes.grow} />
 						<IconButton
 							color="inherit"
 							onClick={saveTemplate}
@@ -91,9 +99,6 @@ class EditTemplateMainViewMainView extends React.Component {
 						>
 							<Icon>add</Icon>
 						</IconButton>
-						<Typography variant="h6" noWrap>
-							SVG Template Editor
-						</Typography>
 					</Toolbar>
 				</AppBar>
 				<nav className={classes.drawer} aria-label="mailbox folders">
@@ -105,7 +110,7 @@ class EditTemplateMainViewMainView extends React.Component {
 							variant="permanent"
 							open
 						>
-							<Button variant="outlined" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
+							<Button variant="contained" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
 								+ Add Layout
 							</Button>
 							<LayoutsList />
@@ -122,14 +127,16 @@ class EditTemplateMainViewMainView extends React.Component {
 						handleSliderChange={(v)=> updateScale(Number(Number(v).toFixed(2)))}
 					/>
 					<div className={classes.templatePaper}>
-						{allFontsLoaded &&
-						<TemplatePreview />
+						{allFonts && allFonts.length > 0 &&
+							<FontLoader
+								fontProvider="google"
+								fontFamilies={allFonts}
+								onActive={setAllFontsLoaded}
+							/>
 						}
-						{allFonts && allFonts.length && <FontLoader
-							fontProvider="google"
-							fontFamilies={allFonts}
-							onActive={setAllFontsLoaded}
-						/>}
+						{allFontsLoaded &&
+							<TemplatePreview />
+						}
 					</div>
 				</main>
 			</div>

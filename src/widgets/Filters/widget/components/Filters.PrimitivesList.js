@@ -74,7 +74,7 @@ export default function FiltersPrimitivesList(props) {
 					</Grid>
 				);
 			});
-			const onAddFilter = (filterItem) => onAddChildFilter(filterItem, primitive);
+			const onAddFilter = (filterItem) => onAddChildFilter(filterItem, primitive, parentFilterId);
 			filterChildren = (
 				<Grid container>
 					{!hasSingleChild && <Grid item xs={12}>

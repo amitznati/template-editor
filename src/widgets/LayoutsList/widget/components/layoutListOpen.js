@@ -28,7 +28,7 @@ const useStyles = theme => ({
 		color: theme.palette.text.secondary,
 	},
 	paper: {
-		margin: theme.spacing(1),
+		margin: theme.spacing(1, 0),
 		marginLeft: 0,
 		borderRadius: 0
 	},
@@ -68,11 +68,12 @@ function LayoutListOpen(props) {
 	};
 
 	const onPathChanged = (path) => {
-		const points = pathToObject(path);
+		const {points, isClose} = pathToObject(path);
 		const newPathData = {
 			...layout.properties.pathData,
 			points,
-			path
+			path,
+			closePath: isClose
 		};
 		onPropertyChange('pathData', newPathData);
 	};

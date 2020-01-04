@@ -40,8 +40,8 @@ class SVGPathBuilder extends Component {
 				size: props.gridSize,
 			},
 			points: props.initialPoints,
-			closePath: false,
-			path: this.handlePathChange(props.initialPoints, false)
+			closePath: props.closePath,
+			path: this.handlePathChange(props.initialPoints, props.closePath)
 		};
 	}
 
@@ -66,7 +66,7 @@ class SVGPathBuilder extends Component {
 		const {onChange} = this.props;
 		const path = getPath(points,closePath);
 		if(onChange) {
-			onChange({points, path});
+			onChange({points, path, closePath});
 		}
 		return path;
 	};
