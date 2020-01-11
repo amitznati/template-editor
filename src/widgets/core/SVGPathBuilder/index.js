@@ -165,13 +165,20 @@ class SVGPathBuilder extends Component {
 		const {mouseStart, elementStart, element} = dragData;
 		const svg = this.svg.current;
 		let pt = svg.createSVGPoint();
-		var current = this.cursorPoint(e);
+		const current = this.cursorPoint(e);
 		pt.x = current.x - mouseStart.x;
 		pt.y = current.y - mouseStart.y;
-		var m = element.getTransformToElement(svg).inverse();
+		const m = element.getTransformToElement(svg).inverse();
 		m.e = m.f = 0;
 		pt = pt.matrixTransform(m);
-		return {x: elementStart.x+pt.x, y: elementStart.y+pt.y};
+		const retPoint = {x: elementStart.x+pt.x, y: elementStart.y+pt.y};
+		if (this.state.grid.snap) {
+			const w = this.props.w/this.props.scale;
+			const spacing = w / this.state.grid.size;
+			retPoint.x -= (retPoint.x % spacing);
+			retPoint.y -= (retPoint.y % spacing);
+		}
+		return retPoint;
 	};
 
 	drag = (e, index, object = 'point', n = false) => {
