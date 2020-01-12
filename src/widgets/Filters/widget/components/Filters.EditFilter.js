@@ -49,7 +49,7 @@ export default function EditFilter({
 		<CoreExpandableSortablePaper
 			header={getHeader()}
 			actions={actions}
-			disabled={parentFilter.isIgnore}
+
 		>
 			<Grid container>
 				<Grid item xs={12}>

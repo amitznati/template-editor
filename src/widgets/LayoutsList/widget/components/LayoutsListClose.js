@@ -1,34 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {Grid,Paper, Fab} from '@material-ui/core';
-import {sortableHandle} from 'react-sortable-hoc';
-import ReorderIcon from '@material-ui/icons/Reorder';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {Grid} from '@material-ui/core';
 import {ImageLayoutHeader, TextLayoutHeader} from './layoutsHeaders';
-import {CoreSortableList} from './../../../core';
-
-const DragHandle = sortableHandle(() => <ReorderIcon style={{cursor: 'move'}}/>);
+import {CoreExpandableSortablePaper, CoreSortableList} from './../../../core';
 
 const styles = theme => ({
 
 	layoutPaper: {
 		margin: theme.spacing(1, 0),
 		marginLeft: 0,
-		padding: theme.spacing(1)
 	},
 	layoutGrid: {
 		//height: '50px'
 	}
 });
-class LayoutsListClose extends React.Component {
+function LayoutsListClose({classes, layouts, onSortEnd, onLayoutClick, setIgnoreLayout, onDeleteLayout}) {
 
-	onDeleteLayout(e,i){
-		e.stopPropagation();
-		this.props.onDeleteLayout(i);
-
-	}
-	getLayoutHeader(l,i){
+	const getLayoutHeader = (l,i) => {
 		switch(l.type) {
 		case 'image':
 			return <ImageLayoutHeader key={i} layout={l}/>;
@@ -36,53 +24,50 @@ class LayoutsListClose extends React.Component {
 		case 'textPath':
 			return <TextLayoutHeader key={i} layout={l}/>;
 		default:
-			return '';
+			return  '';
 		}
-	}
-	renderLayout(l,i) {
-		const {classes} = this.props;
+	};
+
+	const renderLayout = (l,i) => {
+		const actions = [
+			{ icon: 'file_copy', name: 'Duplicate' },
+			{ icon: 'delete', name: 'Delete', callback: (e) => {e.stopPropagation(); onDeleteLayout(i);} },
+			{ icon: l.isIgnore ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: () => setIgnoreLayout(i) },
+		];
 		return (
-			<Paper square className={classes.layoutPaper}>
-				<Grid container alignItems="center" className={classes.layoutGrid}>
-					<Grid item xs={2}><DragHandle/></Grid>
-					<Grid item xs={8}>
-						{this.getLayoutHeader(l,i)}
-					</Grid>
-					<Grid item xs={2}>
-						<Fab size='small'>
-							<DeleteIcon onClick={(e)=>this.onDeleteLayout(e,i)}/>
-						</Fab>
-					</Grid>
-				</Grid>
-			</Paper>
+			<div className={classes.layoutPaper}>
+				<CoreExpandableSortablePaper
+					header={getLayoutHeader(l,i)}
+					actions={actions}
+					disabled={l.isIgnore}
+				>
+					something
+				</CoreExpandableSortablePaper>
+			</div>
 
 		);
 
-	}
+	};
 
-	render() {
-		const {layouts, onSortEnd, onLayoutClick} = this.props;
-		const items = layouts.map((l,i) => this.renderLayout(l,i));
-		return (
-			<Grid container >
-				<Grid item xs={12} >
-					<CoreSortableList
-						items={items}
-						useDragHandle={true}
-						onItemClick={onLayoutClick}
-						onSortEnd={onSortEnd}
-					/>
-				</Grid>
+	const items = layouts.map((l,i) => renderLayout(l,i));
+	const onItemClick = (index) => {
+		if (!layouts[index].isIgnore) {
+			onLayoutClick(index);
+		}
+	};
+
+	return (
+		<Grid container >
+			<Grid item xs={12} >
+				<CoreSortableList
+					items={items}
+					useDragHandle={true}
+					onItemClick={onItemClick}
+					onSortEnd={onSortEnd}
+				/>
 			</Grid>
-		);
-	}
+		</Grid>
+	);
 }
-LayoutsListClose.propTypes = {
-	classes: PropTypes.object.isRequired,
-	layouts: PropTypes.array.isRequired,
-	onSortEnd: PropTypes.func,
-	onLayoutClick: PropTypes.func,
-	onDeleteLayout: PropTypes.func
-};
 
 export default withStyles(styles)(LayoutsListClose);

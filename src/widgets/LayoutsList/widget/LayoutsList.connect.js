@@ -22,7 +22,8 @@ const mapDispatchToProps = () => ({
 	onUpdateLayout: editTemplateMainViewApi.onUpdateLayout,
 	onBack: editTemplateMainViewApi.onEditLayoutEnd,
 	onDeleteLayout: editTemplateMainViewApi.onDeleteLayout,
-	onSortEnd: editTemplateMainViewApi.onSortEnd
+	onSortEnd: editTemplateMainViewApi.onSortEnd,
+	setIgnoreLayout: editTemplateMainViewApi.setIgnoreLayout
 
 });
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import {Icon} from '@material-ui/core';
 
@@ -28,8 +27,8 @@ export default function CoreSpeedActions(props)  {
 		<SpeedDial
 			ariaLabel="SpeedDial example"
 			className={classes.speedDial}
-			FabProps={{color: 'default', size: 'small'}}
-			icon={<MoreVertIcon />}
+			FabProps={{color: 'secondary', size: 'small'}}
+			icon={<Icon>more_vert</Icon>}
 			onClose={() => setActionOpen(false)}
 			// onOpen={() => setActionOpen(true)}
 			onClick={(e) => {setActionOpen(!actionOpen); e.stopPropagation();}}

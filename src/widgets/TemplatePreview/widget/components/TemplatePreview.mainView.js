@@ -57,6 +57,9 @@ class TemplatePreviewMainView extends React.Component {
 			templateX,
 			templateY
 		} = this.props;
+		const renderedLayouts = layouts.filter(l => !l.isIgnore).map((l,i) => {
+			return this.renderLayout[l.type](l,i);
+		});
 		return (
 			<div style={{height: productH,width: productW, position: 'relative'}}>
 				<img className={classes.productImage} src={product.image} alt="product" style={{height: productH,width: productW}}/>
@@ -65,7 +68,7 @@ class TemplatePreviewMainView extends React.Component {
 						{...SVGRootProps}
 					>
 						<Defs templateFilters={templateFilters} />
-						{layouts.map((l,i) => this.renderLayout[l.type](l,i))}
+						{renderedLayouts}
 					</RootSVG>
 					{SVGRootProps.isSVGPathBuilderOpen &&
 						<div style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: 0, left: 0}}>

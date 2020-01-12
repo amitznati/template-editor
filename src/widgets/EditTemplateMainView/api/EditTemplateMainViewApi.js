@@ -131,6 +131,12 @@ export default class EditTemplateMainViewApi extends BaseApi {
 		});
 	};
 
+	setIgnoreLayout = (index) => {
+		const template = this.getTemplateSelector();
+		template.layouts[index].isIgnore = !template.layouts[index].isIgnore;
+		this.updateTemplate(template);
+	};
+
 	getAllFonts = () => {
 		const template = this.getTemplateSelector();
 		const {layouts = []} = template;
