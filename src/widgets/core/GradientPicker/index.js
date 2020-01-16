@@ -1,34 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { SketchPicker } from 'react-color';
-import { Grid, ClickAwayListener } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { Grid, ClickAwayListener} from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
-import {GradientBuilder, CoreNumber, CoreSelect} from './../../../core';
+import {CoreNumber, CoreSelect} from 'core';
+import GradientBuilder from './GradientBuilder';
+import withRoot from '../../../withRoot';
 
-const styles = {
+const styles = theme => ({
 	popover: {
 		position: 'absolute',
 		zIndex: '2'
 	},
-	cover: {
-		position: 'fixed',
-		top: '0px',
-		right: '0px',
-		bottom: '0px',
-		left: '0px',
-	},
-};
+	margin: {
+		margin: theme.spacing(1),
+	}
+});
 
-// eslint-disable-next-line react/prop-types
 const getRgba = (rgba) => {
 	return `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
 };
 
-// eslint-disable-next-line react/prop-types
-const WrappedSketchPicker = ({ onSelect, ...rest }) => {
+const WrappedSketchPicker = ({ onSelect, classes, ...rest }) => {
 	if (rest && rest.isActive) {
 		return (
-			<div style={ styles.popover }>
+			<div className={ classes.popover }>
 				<SketchPicker { ...rest } onChange={ c => onSelect(getRgba(c.rgb))} />
 			</div>
 		);
@@ -38,19 +34,9 @@ const WrappedSketchPicker = ({ onSelect, ...rest }) => {
 
 
 class GradientPicker extends React.Component {
-	constructor(props){
-		super(props);
-		this.gradientRef = React.createRef();
-	}
-	componentDidMount(){
-		const {onPaletteChange, gradientData} = this.props;
-		if (onPaletteChange) {
-			onPaletteChange(gradientData);
-		}
-	}
 
 	handleAngleChange = (angle) => {
-		const {gradientData: {StartX: cx, StartY: cy, EndX, EndY}} = this.props;
+		const {StartX: cx, StartY: cy, EndX, EndY} = this.props.gradientData;
 		const p = {x: EndX, y: EndY};
 		const c = Math.cos(angle * Math.PI / 180.0);
 		const s = Math.sin(angle * Math.PI / 180.0);
@@ -72,8 +58,8 @@ class GradientPicker extends React.Component {
 	};
 
 	handleChange = (values) => {
-		const {onPaletteChange, gradientData} = this.props;
 		let newValues = values;
+		const {gradientData, onPaletteChange} = this.props;
 		if (values.Angle) {
 			newValues = this.handleAngleChange(values.Angle);
 		}
@@ -83,20 +69,20 @@ class GradientPicker extends React.Component {
 	};
 
 	render() {
-		const {gradientData} = this.props;
-		const {palette, activeId, isActive, gradientType, spreadMethod } = gradientData;
+		const {gradientData, classes} = this.props;
+		const {palette, activeId, isActive, gradientType, spreadMethod} = gradientData;
 		return (
-			<div ref={this.gradientRef}>
+			<div>
 				<Grid container style={{margin: '15px 0'}}>
 					<Grid item xs={12}>
 						<ToggleButtonGroup size="medium"
 							exclusive
 							value={gradientType}
-							onChange={(event, gradientType) =>this.handleChange({gradientType})}>
+							onChange={(event, gradientType) => this.handleChange({gradientType})}>
 							<ToggleButton value="Linear">
-							Linear
+								Linear
 								<i className="material-icons">
-								linear_scale
+									linear_scale
 								</i>
 							</ToggleButton>
 							<ToggleButton value="Radial">
@@ -124,84 +110,59 @@ class GradientPicker extends React.Component {
 								width: 200,
 								disableAlpha: false,
 								isActive: isActive,
+								classes
 							}}
 						/>
 					</GradientBuilder>
 				</ClickAwayListener>
 
-				<ClickAwayListener onClickAway={() => this.handleChange({gradientPointsOnFocus: false})}>
+				<div>
 					<Grid container>
 						{['StartX', 'StartY', 'EndX', 'EndY'].map(name => {
 							return (
-								<Grid item md={3} key={name}>
+								<Grid item md={3} key={name} className={classes.margin}>
 									<CoreNumber
 										type="number"
 										label={name}
-										inputProps={{ min: '0', max: '1', step: '0.01' }}
+										inputProps={{min: '0', max: '1', step: '0.01'}}
 										margin="normal"
 										value={gradientData[name]}
 										onChange={(v) => this.handleChange({[name]: v})}
-										onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
 									/>
 								</Grid>
 							);
 						})}
 						<Grid item md={6}>
 							<CoreSelect
-								options={['pad', 'reflect', 'repeat'].map(o => {return {id: o, name: o};})}
+								options={['pad', 'reflect', 'repeat'].map(o => {
+									return {id: o, name: o};
+								})}
 								label="Spread Method"
 								value={spreadMethod}
 								onChange={(v) => this.handleChange({spreadMethod: v})}
 							/>
 						</Grid>
 						{gradientType === 'Radial' &&
-							['Angle', 'EndRadius'].map(name => {
-								return (
-									<Grid item md={3} key={name}>
-										<CoreNumber
-											type="number"
-											label={name}
-											inputProps={{step: '0.1' }}
-											value={gradientData[name]}
-											onChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
-											onFocus={() => this.handleChange({gradientPointsOnFocus: true})}
-										/>
-									</Grid>
-								);
-							})
+						['Angle', 'EndRadius'].map(name => {
+							return (
+								<Grid item md={3} key={name} className={classes.margin}>
+									<CoreNumber
+										type="number"
+										label={name}
+										inputProps={{step: '0.1'}}
+										value={gradientData[name]}
+										onChange={(v) => this.handleChange({[name]: v < 0 ? 0 : v})}
+									/>
+								</Grid>
+							);
+						})
 						}
 					</Grid>
-				</ClickAwayListener>
+				</div>
 			</div>
 
 		);
 	}
 }
 
-GradientPicker.propTypes = {
-	onPaletteChange: PropTypes.func.isRequired,
-	gradientData: PropTypes.object
-};
-
-GradientPicker.defaultProps = {
-	gradientData: {
-		gradientType: 'Linear',
-		StartX: 0.5,
-		StartY: 0.5,
-		EndX: 0.5,
-		EndY: 0.1,
-		palette: [
-			{ pos: 0, color: 'rgba(255,0,18,1)' },
-			{ pos: 1, color: 'rgba(30,0,255,1)' }
-		],
-		activeId: 1,
-		isActive: false,
-		gradientPointsOnFocus: false,
-		Angle: 0,
-		EndRadius: 0.5,
-		spreadMethod: 'pad'
-	}
-};
-
-
-export default GradientPicker;
+export default withRoot(withStyles(styles)(GradientPicker));

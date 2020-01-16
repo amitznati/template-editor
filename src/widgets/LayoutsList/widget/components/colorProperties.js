@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Grid, Button} from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
+import {Gradients} from 'widgets';
 import { CoreColorPicker } from '../../../core';
-import GradientPicker from './GradientPicker';
 
 class ColorProperties extends React.Component {
 
@@ -57,27 +57,8 @@ class ColorProperties extends React.Component {
 		);
 	};
 
-	onGradientChange = (data) => {
-		const {onPropertyChange, fill} = this.props;
-		const {palette} = data;
-		const layoutPalette = [];
-		palette.map(p => {
-			layoutPalette.push({pos: Number(p.pos), color: p.color});
-			return false;
-		});
-		fill.gradientData = {...data, palette: layoutPalette};
-		onPropertyChange && onPropertyChange('fill', fill);
-	};
-
 	renderFillGradientField = () => {
-		const {fill} = this.props;
-		const {gradientData} = fill;
-		return (
-			<GradientPicker
-				onPaletteChange={this.onGradientChange}
-				gradientData={gradientData}
-			/>
-		);
+		return <Gradients />;
 	};
 
 	fillColorFields = {
@@ -88,7 +69,7 @@ class ColorProperties extends React.Component {
 	handleFillColorTypeChange = (event, selectedFillColorType) => {
 		const {fill, onPropertyChange} = this.props;
 		fill.selectedFillColorType = selectedFillColorType || 'Fill';
-		onPropertyChange && onPropertyChange('fill', fill);
+		onPropertyChange && onPropertyChange('fill', {selectedFillColorType, fill: 'black'});
 	};
 
 	render() {
@@ -102,11 +83,13 @@ class ColorProperties extends React.Component {
 				<Grid item>
 					<ToggleButtonGroup size="medium" exclusive value={selectedFillColorType} onChange={this.handleFillColorTypeChange}>
 						<ToggleButton value="Fill">
+							Fill
 							<i className="material-icons">
 								format_color_fill
 							</i>
 						</ToggleButton>
 						<ToggleButton value="Gradient">
+							Gradient
 							<i className="material-icons" style={{transform: 'rotate(-90deg)'}}>
 								gradient
 							</i>

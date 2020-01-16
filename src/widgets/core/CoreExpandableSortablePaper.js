@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function CoreExpandableSortablePaper({header, actions, children, disabled}) {
+export default function CoreExpandableSortablePaper({header, actions, children, disabled, sortable = true}) {
 	const classes = useStyles();
 	return (
 		<ExpansionPanel className={classes.root} disabled={disabled} >
@@ -28,7 +28,7 @@ export default function CoreExpandableSortablePaper({header, actions, children, 
 				className={classes.noPadding}
 			>
 				<Grid container justify="center" alignItems="center">
-					<Grid item xs={1}><DragHandle/></Grid>
+					{sortable && <Grid item xs={1}><DragHandle/></Grid>}
 					<Grid item xs={10}>
 						{header}
 					</Grid>

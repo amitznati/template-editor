@@ -1,13 +1,14 @@
 import {ActionTypes} from './EditTemplateMainViewApi';
 import {products} from 'mocks';
 const initialState = {
-	template: {layouts: []}, //call(apis.TEMPLATES,methods.BYID,1),
+	template: {templateGradients: [], templateFilters: [], layouts: []},
 	product: products[0],
 	selectedLayout: {selectedLayout: null, selectedLayoutIndex: -1},
 	isAddLayoutDialogOpen: false,
 	scale: 0.5,
 	allFontsLoaded: false,
-	isSVGPathBuilderOpen: false
+	isSVGPathBuilderOpen: false,
+	templateGradients: []
 };
 // const SUCCESS = '_SUCCESS';
 const reducer = (state = initialState, action) => {
@@ -20,6 +21,18 @@ const reducer = (state = initialState, action) => {
 		break;
 	case ActionTypes.UPDATE_TEMPLATE:
 		newState = {...state, template: {...payload}};
+		break;
+	case ActionTypes.UPDATE_TEMPLATE_GRADIENTS:
+		newState = {
+			...state,
+			template: {...state.template, templateGradients: [...payload]}
+		};
+		break;
+	case ActionTypes.UPDATE_TEMPLATE_FILTERS:
+		newState = {
+			...state,
+			template: {...state.template, templateFilters: [...payload]}
+		};
 		break;
 	case ActionTypes.TOGGLE_ADD_LAYOUT_DIALOG:
 		newState = {...state, isAddLayoutDialogOpen: payload};

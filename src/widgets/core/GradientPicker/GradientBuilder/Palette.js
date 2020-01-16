@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {getGradientDef} from './index';
 import './Palette.css';
-import DraggableCircle from '../CoreDraggableElement';
+import DraggableCircle from '../../CoreDraggableElement';
 
 const Palette = ({  width, height, gradientData, onPointMove }) => {
 
@@ -16,7 +16,7 @@ const Palette = ({  width, height, gradientData, onPointMove }) => {
 		}
 		const movingId = o.srcElement.parentElement.getAttribute('id');
 		switch (movingId) {
-		case 'point-S': 
+		case 'point-S':
 			onPointMove({StartX: o.offsetX / width, StartY: o.offsetY / height});
 			break;
 		case 'point-E':
@@ -36,8 +36,8 @@ const Palette = ({  width, height, gradientData, onPointMove }) => {
 				{[{x: StartX, y: StartY, text: 'S'}, {x: EndX, y: EndY, text: 'E'}].map(point => {
 					return (
 						<DraggableCircle
-							key={`point-${point.text}`} 
-							id={`point-${point.text}`} 
+							key={`point-${point.text}`}
+							id={`point-${point.text}`}
 							containerId="draggable-container"
 							{...{onDrag}}
 							transform={`matrix(1,0,0,1,${point.x*width},${point.y*height})`}
@@ -46,8 +46,8 @@ const Palette = ({  width, height, gradientData, onPointMove }) => {
 								fill='black'
 								r={ 8 } />
 							<text
-								x={-4} 
-								y={4} 
+								x={-4}
+								y={4}
 								fill="white">
 								{point.text}
 							</text>

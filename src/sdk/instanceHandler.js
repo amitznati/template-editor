@@ -5,10 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 /* Widgets */
 import widgets from './widgetsList';
 
-let storeInstance;
-
-
-const createStoreInstance = () => {
+const _createStoreInstance = () => {
 	const reducerMap = {};
 	widgets.forEach((widget) => {
 		reducerMap[widget.config.sliceName] = widget.reducer;
@@ -18,32 +15,24 @@ const createStoreInstance = () => {
 		composeWithDevTools()
 	);
 };
-export const getStoreInstance = () => {
-	if (!storeInstance) {
-		storeInstance = createStoreInstance();
-	}
-	return storeInstance;
-};
+const storeInstance = _createStoreInstance();
 
-let apisInstance;
-const createInstance = () => {
+const _createInstance = () => {
 	const apis = {};
 	widgets.forEach((widget) => {
 		const api = widget.api;
-		apis[widget.config.apiName] = new api(getStoreInstance());
+		apis[widget.config.apiName] = new api(storeInstance);
 	});
 	return apis;
 };
+const apisInstance = _createInstance();
 
 export const getInstance = () => {
-	if (!apisInstance) {
-		apisInstance = createInstance();
-	}
 	return apisInstance;
 };
-
-createStoreInstance();
-createInstance();
+export const getStoreInstance = () => {
+	return storeInstance;
+};
 
 export default {
 	getStoreInstance,

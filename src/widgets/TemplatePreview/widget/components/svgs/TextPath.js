@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import {getPX} from '../../../../../sdk/utils';
-import {getGradientDef} from '../../../../core/GradientBuilder';
 
 const getPathDef = (id, pathData) => {
 	const path = pathData.path;
@@ -22,19 +21,13 @@ const TextPath = (props) => {
 		pathData,
 		filters
 	} = layout.properties;
-	const {selectedFillColorType, gradientData} = fill;
-	let layouFill = fill.fill;
+	let layoutFill = fill.fill;
 	const shapes = [];
 	const layoutProperties = {
 		//x: pathData.path ? 0 : getPX(x),
 		//y: pathData.path ? 0 : getPX(y),
 		transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`,
 	};
-
-	if (selectedFillColorType === 'Gradient' && gradientData) {
-		layouFill = `url(#Gradient-${index})`;
-		shapes.push(getGradientDef(`Gradient-${index}`, gradientData));
-	}
 
 	const styleFilter = {};
 	if (filters.length) {
@@ -47,7 +40,7 @@ const TextPath = (props) => {
 		fontFamily,
 		fontSize,
 		fontWeight,
-		fill: layouFill,
+		fill: layoutFill,
 		...layoutProperties
 	};
 	if (!pathData.path) {

@@ -5,13 +5,15 @@ import TemplatePreviewComponent from './TemplatePreview.component';
 const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
 const templatePreviewApi = getInstance().TemplatePreviewApi;
 const filtersApi = getInstance().FiltersApi;
-const mapStateToProps = () => {
+const gradientsApi = getInstance().GradientsApi;
+const mapStateToProps = (state, props) => {
 	const {selectedLayout, selectedLayoutIndex} = editTemplateMainViewApi.getSelectedLayoutSelector();
 	const product = editTemplateMainViewApi.getProductSelector();
 	const template = editTemplateMainViewApi.getTemplateSelector();
-	const scale = editTemplateMainViewApi.getScaleSelector();
+	const scale = props.scale || editTemplateMainViewApi.getScaleSelector();
 	const isSVGPathBuilderOpen = editTemplateMainViewApi.getIsSVGPathBuilderOpenSelector();
 	const templateFilters = filtersApi.getTemplateFiltersSelector();
+	const templateGradients = gradientsApi.getTemplateGradients();
 	return {
 		template,
 		scale,
@@ -19,7 +21,9 @@ const mapStateToProps = () => {
 		isSVGPathBuilderOpen,
 		selectedLayout,
 		selectedLayoutIndex,
-		templateFilters
+		templateFilters,
+		editLayouts: props.editLayouts,
+		templateGradients
 	};
 };
 

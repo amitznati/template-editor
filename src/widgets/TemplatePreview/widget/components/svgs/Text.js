@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import {getPX} from '../../../../../sdk/utils';
-import {getGradientDef} from '../../../../core/GradientBuilder';
-
 
 const Text = (props) => {
 
@@ -13,19 +11,13 @@ const Text = (props) => {
 		transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0},
 		filters
 	} = layout.properties;
-	const {selectedFillColorType, gradientData} = fill;
-	let layouFill = fill.fill;
+	const layoutFill = fill.fill;
 	const shapes = [];
 	const layoutProperties = {
 		x: getPX(x),
 		y: getPX(y),
 		transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`,
 	};
-
-	if (selectedFillColorType === 'Gradient' && gradientData) {
-		layouFill = `url(#Gradient-${index})`;
-		shapes.push(getGradientDef(`Gradient-${index}`, gradientData));
-	}
 
 	const styleFilter = {};
 	if (filters.length) {
@@ -38,7 +30,7 @@ const Text = (props) => {
 		fontFamily,
 		fontSize,
 		fontWeight,
-		fill: layouFill,
+		fill: layoutFill,
 		...layoutProperties
 	};
 

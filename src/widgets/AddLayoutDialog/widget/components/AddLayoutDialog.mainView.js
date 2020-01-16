@@ -2,6 +2,8 @@ import React from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import {Dialog, Paper,Grid, DialogTitle, DialogActions,DialogContent, Button, Toolbar, AppBar, Tabs, Tab, Typography, IconButton} from '@material-ui/core';
 import {logos} from 'mocks';
+import {ShapesBuilder} from 'widgets';
+
 import TextTab from './AddLayoutDialog.textTab';
 import ImageTab from './AddLayoutDialog.imageTab';
 
@@ -68,7 +70,7 @@ class AddLayoutDialogMainView extends React.Component {
 						</Grid>}
 					{value === 1 && <ImageTab onSelect={onClose} />}
 					{value === 2 && <TextTab onSelect={onClose} />}
-					{value === 3 && <div>Shape</div>}
+					{value === 3 && <ShapesBuilder />}
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={this.handleClose} color="primary">

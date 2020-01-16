@@ -26,10 +26,13 @@ const filterInitParams = {
 export default class FiltersApi extends BaseApi {
 
 	updateFilters = (filters) => {
-		this.dispatchStoreAction({
-			type: ActionTypes.UPDATE_FILTERS,
-			payload: {filters}
-		});
+		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
+		editTemplateMainViewApi.updateTemplateFilters(filters);
+	};
+
+	getTemplateFiltersSelector = () => {
+		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
+		return editTemplateMainViewApi.getTemplateFiltersSelector();
 	};
 
 	getNextFilterId = () => {
@@ -87,31 +90,25 @@ export default class FiltersApi extends BaseApi {
 		editTemplateMainViewApi.onUpdateLayout(selectedLayout);
 	};
 
+	addFilterToTemplate = (filter) => {
+		const filters = this.getTemplateFiltersSelector();
+		filters.push(filter);
+		this.updateFilters(filters);
+	};
+
 	onAddFilterFromPresets = (item) => {
 		const filter = this.createFilterFromPreset(item.id);
-		this.dispatchStoreAction({
-			type: ActionTypes.ADD_NEW_FILTER_TO_TEMPLATE,
-			payload: {filter: filter}
-		});
+		this.addFilterToTemplate(filter);
 		this.addFilterIdToLayout(filter.id);
 	};
 
 	onAddParentFilter = (item) => {
+		let filterToAdd = item;
 		if (item && item.id === 'new') {
-			const newFilter = this.createNewFilter();
-			this.dispatchStoreAction({
-				type: ActionTypes.ADD_NEW_FILTER_TO_TEMPLATE,
-				payload: {filter: newFilter}
-			});
-			this.addFilterIdToLayout(newFilter.id);
-		} else {
-			this.dispatchStoreAction({
-				type: ActionTypes.ADD_FILTER_TO_LAYOUT,
-				payload: {id: item.id}
-			});
-			this.addFilterIdToLayout(item.id);
+			filterToAdd = this.createNewFilter();
+			this.addFilterToTemplate(filterToAdd);
 		}
-
+		this.addFilterIdToLayout(filterToAdd.id);
 	};
 
 	onAttributeChange = ({parentFilterId, index, name, value, childIndex}) => {
@@ -206,6 +203,18 @@ export default class FiltersApi extends BaseApi {
 			newPrimitives.splice(index, 1);
 		}
 		this.setPrimitives(parentFilterId, newPrimitives);
+	};
+
+	removeFilterFromTemplate = (filter) => {
+		const filters = this.getTemplateFiltersSelector();
+		const newFilters = filters.filter(f => f.id !== filter.id);
+		this.updateFilters(newFilters);
+		const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
+		const template = editTemplateMainViewApi.getTemplateSelector();
+		template.layouts.forEach(l => {
+			l.properties.filters = l.properties.filters.filter(id => id !== filter.id);
+		});
+		editTemplateMainViewApi.updateTemplate(template);
 	};
 
 	onAddFilter = (parentFilterId, filterItem) => {
@@ -425,10 +434,6 @@ export default class FiltersApi extends BaseApi {
 		});
 		filtersNamesToReturn.unshift({name: 'New Filter...', id: 'new'});
 		return filtersNamesToReturn;
-	};
-
-	getTemplateFiltersSelector = () => {
-		return selectors.getTemplateFiltersSelector(this.store.getState());
 	};
 
 	getFiltersPresetsSelector = () => {

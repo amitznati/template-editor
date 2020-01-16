@@ -40,7 +40,7 @@ export default function CoreMenuSelect({onAdd = false, options = [], onDelete = 
 	const handleClick = (callback) => {
 		const item = {...state.selectedItem};
 		callback(item);
-		setState({...state, selectedItem: null});
+		handleSelect(null);
 	};
 
 	const list = options.map(item => {

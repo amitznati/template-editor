@@ -31,7 +31,7 @@ function LayoutsListClose({classes, layouts, onSortEnd, onLayoutClick, setIgnore
 	const renderLayout = (l,i) => {
 		const actions = [
 			{ icon: 'file_copy', name: 'Duplicate' },
-			{ icon: 'delete', name: 'Delete', callback: (e) => {e.stopPropagation(); onDeleteLayout(i);} },
+			{ icon: 'delete', name: 'Delete', callback: () => onDeleteLayout(i) },
 			{ icon: l.isIgnore ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: () => setIgnoreLayout(i) },
 		];
 		return (

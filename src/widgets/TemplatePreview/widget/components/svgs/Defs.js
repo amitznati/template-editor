@@ -28,7 +28,32 @@ const filterTags = {
 	turbulence: 'feTurbulence'
 };
 
-export default function Defs({templateFilters}) {
+export const GradientDef = ({id, gradientData}) => {
+	const {gradientType, EndY, EndX, StartX, StartY, EndRadius, palette, spreadMethod} = gradientData;
+	const stops = palette.map((point, index) => {
+		return <stop key={`stop-${index}`} offset={point.pos} stopColor={point.color} />;
+	});
+	switch (gradientType) {
+	case 'Linear': {
+		return (
+			<linearGradient spreadMethod={spreadMethod} id={ id } x1={StartX} y1={StartY} x2={EndX} y2={EndY}>
+				{stops}
+			</linearGradient>
+		);
+	}
+	case 'Radial': {
+		return (
+			<radialGradient spreadMethod={spreadMethod} id={id} cx={StartX} cy={StartY} r={EndRadius} fx={EndX} fy={EndY}>
+				{stops}
+			</radialGradient>
+		);
+	}
+	default:
+		return '';
+	}
+};
+
+export default function Defs({templateFilters, templateGradients}) {
 
 	const renderFilterPrimitives = primitives => {
 		return primitives && primitives.map((p, i) => {
@@ -62,9 +87,14 @@ export default function Defs({templateFilters}) {
 			</filter>
 		);
 	});
+
+	const gradientsDefs = templateGradients.map(g => {
+		return <GradientDef key={g.id} id={g.id} gradientData={g.gradientData}/>;
+	});
 	return (
 		<defs>
 			{filtersDefs}
+			{gradientsDefs}
 		</defs>
 	);
 

@@ -16,7 +16,9 @@ export const ActionTypes = {
 	EDIT_LAYOUT_END: 'EDIT_LAYOUT_END',
 	TOGGLE_SVG_PATH_BUILDER_OPEN: 'TOGGLE_SVG_PATH_BUILDER_OPEN',
 	UPDATE_SCALE: 'UPDATE_SCALE',
-	SET_ALL_FONTS_LOADED: 'SET_ALL_FONTS_LOADED'
+	SET_ALL_FONTS_LOADED: 'SET_ALL_FONTS_LOADED',
+	UPDATE_TEMPLATE_GRADIENTS: 'UPDATE_TEMPLATE_GRADIENTS',
+	UPDATE_TEMPLATE_FILTERS: 'UPDATE_TEMPLATE_FILTERS'
 };
 const defaultProperties = {
 	x: 5, y: 10, transform: {}, filters: []
@@ -80,6 +82,29 @@ export default class EditTemplateMainViewApi extends BaseApi {
 			type: ActionTypes.TOGGLE_ADD_LAYOUT_DIALOG,
 			payload: !!isOpen
 		});
+	};
+
+
+	updateTemplateGradients = (gradients) => {
+		this.dispatchStoreAction({
+			type: ActionTypes.UPDATE_TEMPLATE_GRADIENTS,
+			payload: gradients
+		});
+	};
+
+	getTemplateGradientsSelector = () => {
+		return selectors.templateGradientsSelector(this.store.getState());
+	};
+
+	updateTemplateFilters = (filters) => {
+		this.dispatchStoreAction({
+			type: ActionTypes.UPDATE_TEMPLATE_FILTERS,
+			payload: filters
+		});
+	};
+
+	getTemplateFiltersSelector = () => {
+		return selectors.templateFiltersSelector(this.store.getState());
 	};
 
 	onLayoutClick = (index) => {

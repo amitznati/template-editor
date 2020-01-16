@@ -8,7 +8,7 @@ export default function FiltersField(props) {
 	const fieldData = itemProps.inputsData[name];
 	const renderTextField = () => {
 		return <CoreText key={key}
-			handleChange={(v) => onAttributeChange && onAttributeChange({name, value: v })}
+			handleChange={(v) => onAttributeChange({name, value: v })}
 			label={name}
 			value={value}
 			disabled={disabled}

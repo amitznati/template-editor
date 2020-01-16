@@ -27,6 +27,14 @@ export const isAddLayoutDialogOpenSelector = createSelector(sliceSelector, (slic
 	return slice.isAddLayoutDialogOpen;
 });
 
+export const templateGradientsSelector = createSelector(sliceSelector, (slice) => {
+	return slice.template.templateGradients;
+});
+
+export const templateFiltersSelector = createSelector(sliceSelector, (slice) => {
+	return slice.template.templateFilters;
+});
+
 export const isAllFontLoadedSelector = createSelector(sliceSelector, (slice) => {
 	return slice.allFontsLoaded;
 });
@@ -38,5 +46,7 @@ export default {
 	getProductSelector,
 	getScaleSelector,
 	isAddLayoutDialogOpenSelector,
-	isAllFontLoadedSelector
+	isAllFontLoadedSelector,
+	templateGradientsSelector,
+	templateFiltersSelector
 };
