@@ -40,7 +40,11 @@ class ColorProperties extends React.Component {
 		return (
 			<Grid container>
 				<Grid item >
-					<Button aria-describedby={id} size="large" onClick={this.handleColorOpen} style={{background: color}}>
+					<Button
+						aria-describedby={id}
+						size="large"
+						onClick={this.handleColorOpen}
+						style={{background: color, marginTop: '16px', color: 'white', WebkitTextStrokeColor: 'black', WebkitTextStrokeWidth: '0.5px'}}>
 						fill color
 					</Button>
 					<CoreColorPicker
