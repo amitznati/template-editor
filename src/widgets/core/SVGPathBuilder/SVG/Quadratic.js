@@ -10,7 +10,8 @@ function Quadratic(props) {
 		p2y,
 		t,
 		index,
-		drag
+		drag,
+		scale
 	} = props;
 
 	let anchor = (<g />);
@@ -23,10 +24,12 @@ function Quadratic(props) {
 					x1={ p1x }
 					y1={ p1y }
 					x2={ x }
+					style={{strokeWidth: 1 / scale}}
 					y2={ y } />
 
 				<line
 					className="ad-Anchor-line"
+					style={{strokeWidth: 1 / scale}}
 					x1={ x }
 					y1={ y }
 					x2={ p2x }
@@ -34,10 +37,11 @@ function Quadratic(props) {
 
 				<circle
 					className="ad-Anchor-point"
+					style={{strokeWidth: 4 / scale}}
 					onMouseDown={ (e) => drag(e, index, 'quadratic') }
 					cx={ x }
 					cy={ y }
-					r={ 6 } />
+					r={ 6 / scale } />
 			</g>
 		);
 	}

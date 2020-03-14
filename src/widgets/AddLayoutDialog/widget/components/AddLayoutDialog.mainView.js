@@ -7,9 +7,6 @@ import {ShapesBuilder} from 'widgets';
 import TextTab from './AddLayoutDialog.textTab';
 import ImageTab from './AddLayoutDialog.imageTab';
 
-const types = [
-	'logo','image','text','shape'
-];
 class AddLayoutDialogMainView extends React.Component {
 	state = {
 		value: 0,
@@ -23,10 +20,6 @@ class AddLayoutDialogMainView extends React.Component {
 	handleChange = (event, value) => {
 		this.setState({ value });
 	};
-
-	onImageSelect(url) {
-		this.props.onClose(types[this.state.value],{url});
-	}
 
 	render() {
 		const {open, onClose } = this.props;

@@ -67,9 +67,19 @@ class TemplatePreviewMainView extends React.Component {
 			return this.renderLayout[l.type](l,i);
 		});
 		return (
-			<div style={{height: productH,width: productW, position: 'relative'}}>
-				<img className={classes.productImage} src={product.image} alt="product" style={{height: productH,width: productW}}/>
-				<div id="templateDiv" style={{height: templateH,width: templateW, position: 'absolute', overflow: 'hidden', bottom: templateY, left: templateX}}>
+			<div style={{height: productH,width: productW, position: 'relative', margin: 'auto', background: product.image ? '' : 'white'}}>
+				{product.image && <img className={classes.productImage} src={product.image} alt="product" style={{height: productH,width: productW}}/>}
+				<div
+					id="templateDiv"
+					style={{
+						height: templateH,
+						width: templateW,
+						position: 'absolute',
+						overflow: 'hidden',
+						bottom: templateY,
+						left: templateX,
+						boxShadow: product.image ? 'none' : '3px 3px 5px 6px #ccc'
+					}}>
 					<RootSVG
 						{...SVGRootProps}
 					>

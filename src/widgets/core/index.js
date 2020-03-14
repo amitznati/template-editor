@@ -13,3 +13,4 @@ export {default as CoreExpandableSortablePaper} from './CoreExpandableSortablePa
 export {default as CoreGeneralField} from './CoreGeneralField';
 export {default as CoreGradientPicker} from './GradientPicker';
 export {default as CoreConfirmationDialog} from './CoreConfirmationDialog';
+export {default as CoreNestedSpeedActions} from './CoreNestedSpeedActions';

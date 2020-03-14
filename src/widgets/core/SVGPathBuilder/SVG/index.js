@@ -37,7 +37,8 @@ class SVG extends Component {
 			addPoint,
 			drag,
 			handleMouseMove,
-			layout: {properties: {x, y, transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0}}}
+			layout: {properties: {x, y, transform: {skewY=0,skewX=0, scaleX=1, scaleY=1, translateX = 0, translateY = 0}}},
+			scale
 		} = this.props;
 		const layoutProperties = {
 			x: getPX(x),
@@ -64,6 +65,7 @@ class SVG extends Component {
 						x={ point.quadratic.x  }
 						y={ point.quadratic.y  }
 						t={ previous.quadratic && point.quadratic.t }
+						scale={scale}
 						drag={ drag } />
 				);
 			} else if (point.cubic) {
@@ -79,6 +81,7 @@ class SVG extends Component {
 						y1={ point.cubic.y1  }
 						x2={ point.cubic.x2  }
 						y2={ point.cubic.y2  }
+						scale={scale}
 						s={ previous.cubic && point.cubic.s }
 						drag={ drag } />
 				);
@@ -96,6 +99,7 @@ class SVG extends Component {
 						index={ index }
 						x={ point.x }
 						y={ point.y }
+						scale={scale}
 						drag={ drag } />
 
 					{ anchors }
@@ -119,6 +123,7 @@ class SVG extends Component {
 				<g
 					transform={layoutProperties.transform} >
 					<path
+						style={{strokeWidth: 4 / scale}}
 						className={ cx('ad-Path', { 'ad-Path--filled': fillPath }) }
 						d={ path } />
 					<g className="ad-Points">

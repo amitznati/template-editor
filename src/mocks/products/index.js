@@ -50,6 +50,18 @@ const products = [
 			height: 25,width: 19, x: 1, y: 1
 		}
 	},
+	{
+		id: 5,
+		name: 'Icon',
+		image: '',
+		productSize: {
+			height: 0.635,
+			width: 0.635
+		},
+		templateFrame: {
+			height: 0.635,width: 0.635, x: 0, y: 0
+		}
+	}
 ];
 
 export default products;

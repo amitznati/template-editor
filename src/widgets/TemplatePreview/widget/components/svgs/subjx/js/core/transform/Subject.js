@@ -152,7 +152,7 @@ export default class Subject {
 				onDestroy,
 				container,
 				proportions,
-				themeColor
+				themeColor,
 			} = options;
 
 			if (isDef(snap)) {
@@ -202,6 +202,8 @@ export default class Subject {
 			_onInit.call(this, el);
 		}
 
+		const _scale = options.scale || 1;
+
 		this.options = {
 			axis: _axis,
 			themeColor: _themeColor,
@@ -213,7 +215,8 @@ export default class Subject {
 			container: _container,
 			snap: _snap,
 			each: _each,
-			proportions: _proportions
+			proportions: _proportions,
+			scale: _scale
 		};
 
 		this.proxyMethods = {
@@ -381,9 +384,9 @@ export default class Subject {
 		}
 
 		if (doSetCenter) {
-			const { 
-				bx, 
-				by 
+			const {
+				bx,
+				by
 			} = storage;
 
 			const { x, y } = this._pointToControls(
@@ -435,14 +438,14 @@ export default class Subject {
 			onTopEdge ||
 			onLeftEdge;
 
-		const { 
-			handles, 
-			radius 
+		const {
+			handles,
+			radius
 		} = storage;
-		
-		const { 
-			axis, 
-			restrict 
+
+		const {
+			axis,
+			restrict
 		} = options;
 
 		if (isDef(radius)) {
@@ -474,9 +477,9 @@ export default class Subject {
 			y: ny
 		} = this._pointToElement({ x, y });
 
-		const { 
-			x: bx, 
-			y: by 
+		const {
+			x: bx,
+			y: by
 		} = this._pointToControls({ x, y });
 
 		const newStorageValues = {

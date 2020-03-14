@@ -57,5 +57,5 @@
 		.ad-Anchor-line {
 			stroke: color(var(--ad-Color-prim) l(+35%));
 			stroke-width: 1px;
-			stroke-dasharray: 10 10;
+			/*stroke-dasharray: 10;*/
 		}

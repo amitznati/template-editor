@@ -1,15 +1,17 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {Button, Drawer, Hidden, Typography, Icon, IconButton, Toolbar, AppBar, CssBaseline} from '@material-ui/core';
-import {TemplatePreview, AddLayoutDialog, LayoutsList} from 'widgets';
+import {Button, Drawer, Typography, Icon, IconButton, Toolbar, AppBar, CssBaseline} from '@material-ui/core';
+import {TemplatePreview, LayoutsList, AddLayoutDialog} from 'widgets';
 import {CoreSlider} from 'core';
 import FontLoader from '../../../../sdk/services/fontLoader';
 import withRoot from '../../../../withRoot';
+// import AddNewLayoutList from './AddNewLayoutList';
 
 const drawerWidth = 500;
 
 const styles = theme => ({
 	root: {
+		height: '100%',
 		display: 'flex',
 	},
 	drawer: {
@@ -22,6 +24,7 @@ const styles = theme => ({
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
+
 		},
 	},
 	menuButton: {
@@ -46,20 +49,43 @@ const styles = theme => ({
 	templatePaper: {
 		position: 'relative',
 		overflow: 'auto',
-		padding: '20px 0',
-		margin: 0
+		padding: '20px',
+		margin: 0,
+		background: 'lightgray'
 	},
 	rootGrid: {
-		// minHeight: '100%',
 		padding: theme.spacing(1)
 	},
 	grow: {
 		flexGrow: 1,
 	},
+	addButton: {
+		width: '30%',
+		alignSelf: 'center'
+	}
 });
 
 
 class EditTemplateMainViewMainView extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.templatePreviewRef = React.createRef();
+		this.state = {
+			templateDivWidth: null,
+			templateDivHeight: null
+		};
+	}
+
+	componentDidMount() {
+		if (this.templatePreviewRef.current) {
+			const el = this.templatePreviewRef.current;
+			this.setState({
+				templateDivWidth: el.clientWidth,
+				templateDivHeight: el.clientHeight
+			});
+		}
+	}
 
 	render() {
 		const {
@@ -74,7 +100,7 @@ class EditTemplateMainViewMainView extends React.Component {
 			saveTemplate,
 			setAllFontsLoaded
 		} = this.props;
-
+		const {templateDivHeight, templateDivWidth} = this.state;
 		return (
 			<div className={classes.root}>
 				<CssBaseline />
@@ -82,7 +108,8 @@ class EditTemplateMainViewMainView extends React.Component {
 					open={isAddLayoutDialogOpen}
 					onClose={handleAddClose}
 				/>
-				<AppBar position="fixed" className={classes.appBar}>
+				{/*<AddNewLayoutList open={isAddLayoutDialogOpen} onClose={() => handleAddClose({})} onSelect={handleAddClose} />*/}
+				<AppBar  className={classes.appBar}>
 					<Toolbar>
 						<Typography variant="h6" noWrap>
 							SVG Template Editor
@@ -103,40 +130,41 @@ class EditTemplateMainViewMainView extends React.Component {
 					</Toolbar>
 				</AppBar>
 				<nav className={classes.drawer} aria-label="mailbox folders">
-					<Hidden xsDown implementation="css">
-						<Drawer
-							classes={{
-								paper: classes.drawerPaper,
-							}}
-							variant="permanent"
-							open
-						>
-							<Button variant="contained" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
-								+ Add Layout
-							</Button>
-							<LayoutsList />
-						</Drawer>
-					</Hidden>
+					{/*<Hidden xsDown implementation="css">*/}
+					<Drawer
+						classes={{
+							paper: classes.drawerPaper,
+						}}
+						variant="permanent"
+						open
+					>
+						<Button className={classes.addButton} variant="contained" color="primary" onClick={() => toggleAddLayoutDialog(true)}>
+							+ Add Layout
+						</Button>
+						<LayoutsList />
+
+					</Drawer>
+					{/*</Hidden>*/}
 				</nav>
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
 					<CoreSlider
 						label="Scale"
 						value={scale}
-						max={3}
+						max={30}
 						step={0.001}
 						handleSliderChange={(v)=> updateScale(Number(Number(v).toFixed(2)))}
 					/>
-					<div className={classes.templatePaper}>
+					<div className={classes.templatePaper}  ref={this.templatePreviewRef} style={{width: templateDivWidth || '100%', height: templateDivHeight || '92%'}}>
 						{allFonts && allFonts.length > 0 &&
-							<FontLoader
-								fontProvider="google"
-								fontFamilies={allFonts}
-								onActive={setAllFontsLoaded}
-							/>
+						<FontLoader
+							fontProvider="google"
+							fontFamilies={allFonts}
+							onActive={setAllFontsLoaded}
+						/>
 						}
 						{(allFontsLoaded || !allFonts || allFonts.length === 0) &&
-							<TemplatePreview />
+						<TemplatePreview />
 						}
 					</div>
 				</main>

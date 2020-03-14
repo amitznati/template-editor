@@ -5,7 +5,7 @@ import subjx from './subjx/js';
 import './subjx/style/subjx.css';
 import {getCM} from './../../../../../sdk/utils';
 
-const svgOptions = (methods) => {
+const svgOptions = (methods, scale) => {
 	const options = {
 		container: '#svg-container',
 		//restrict: '#svg-container',
@@ -21,6 +21,7 @@ const svgOptions = (methods) => {
 			y: 0,
 			angle: 1
 		},
+		scale,
 		cursorMove: 'move',
 		cursorRotate: 'crosshair',
 		cursorResize: 'pointer',
@@ -45,7 +46,7 @@ class DesignCanvas extends React.Component {
 	refreshNode = () => {
 		this.currentLayout && this.currentLayout.disable();
 		const node = this.getActiveNode();
-		this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+		this.currentLayout = node && subjx(node).drag(svgOptions(this.methods, this.props.scale))[0];
 	};
 
 	getPropertiesFromActiveNode = (el) => {
@@ -94,6 +95,10 @@ class DesignCanvas extends React.Component {
 		this.props.onLayoutClick(Number(e.target.getAttribute('name')));
 	};
 
+	componentDidMount() {
+		this.refreshNode();
+	}
+
 	componentDidUpdate(prevProps) {
 		const {selectedLayoutIndex, isSVGPathBuilderOpen} = this.props;
 		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex) {
@@ -102,8 +107,7 @@ class DesignCanvas extends React.Component {
 			if (isSVGPathBuilderOpen) {
 				this.currentLayout && this.currentLayout.disable();
 			} else {
-				const node = this.getActiveNode();
-				this.currentLayout = node && subjx(node).drag(svgOptions(this.methods))[0];
+				this.refreshNode();
 			}
 		}
 	}

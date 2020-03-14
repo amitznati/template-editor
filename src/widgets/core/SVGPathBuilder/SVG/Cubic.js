@@ -13,7 +13,8 @@ function Cubic(props) {
 		p2y,
 		s,
 		index,
-		drag
+		drag,
+		scale
 	} = props;
 
 	return (
@@ -24,6 +25,7 @@ function Cubic(props) {
 					x1={ p1x }
 					y1={ p1y }
 					x2={ x1 }
+					style={{strokeWidth: 1 / scale}}
 					y2={ y1 } />
 			) }
 
@@ -32,6 +34,7 @@ function Cubic(props) {
 				x1={ p2x }
 				y1={ p2y }
 				x2={ x2 }
+				style={{strokeWidth: 1 / scale}}
 				y2={ y2 } />
 
 			{ ! s && (
@@ -40,7 +43,8 @@ function Cubic(props) {
 					onMouseDown={ (e) => drag(e, index, 'cubic', 1) }
 					cx={ x1 }
 					cy={ y1 }
-					r={ 6 } />
+					style={{strokeWidth: 4 / scale}}
+					r={ 6 / scale } />
 			) }
 
 			<circle
@@ -48,7 +52,8 @@ function Cubic(props) {
 				onMouseDown={ (e) => drag(e, index, 'cubic', 2) }
 				cx={ x2 }
 				cy={ y2 }
-				r={ 6 } />
+				style={{strokeWidth: 4 / scale}}
+				r={ 6 /scale } />
 		</g>
 	);
 }

@@ -47,7 +47,8 @@ export default class DraggableSVG extends Subject {
 		const {
 			rotationPoint,
 			container,
-			themeColor
+			themeColor,
+			scale
 		} = options;
 
 		const wrapper = createSVGElement('g');
@@ -121,8 +122,8 @@ export default class DraggableSVG extends Subject {
 			handles.tl.x - handles.tr.x
 		);
 
-		handles.rotator.x = handles.mr.x - ROT_OFFSET * Math.cos(theta);
-		handles.rotator.y = handles.mr.y - ROT_OFFSET * Math.sin(theta);
+		handles.rotator.x = handles.mr.x - (ROT_OFFSET / scale) * Math.cos(theta);
+		handles.rotator.y = handles.mr.y - (ROT_OFFSET / scale) * Math.sin(theta);
 
 		const normalLine = createSVGElement('line');
 
@@ -141,7 +142,7 @@ export default class DraggableSVG extends Subject {
 			radius = createSVGElement('line');
 
 			addClass(radius, 'sjx-hidden');
-			
+
 			radius.x1.baseVal.value = boxCenter.x;
 			radius.y1.baseVal.value = boxCenter.y;
 			radius.x2.baseVal.value = centerX || boxCenter.x;
@@ -162,9 +163,10 @@ export default class DraggableSVG extends Subject {
 				: themeColor;
 
 			handles[key] = createHandler(
-				x, 
-				y, 
-				color
+				x,
+				y,
+				color,
+				scale
 			);
 			handlesGroup.appendChild(handles[key]);
 		});
@@ -347,7 +349,7 @@ export default class DraggableSVG extends Subject {
 			height: elH
 		} = eBBox;
 
-		const rotationPoint = isDef(handles.center) 
+		const rotationPoint = isDef(handles.center)
 			? pointTo(
 				transform.boxCTM,
 				container,
@@ -491,7 +493,7 @@ export default class DraggableSVG extends Subject {
 	}
 
 	_processResize(dx, dy) {
-		const { 
+		const {
 			el,
 			storage,
 			options
@@ -748,7 +750,7 @@ export default class DraggableSVG extends Subject {
 			ctm = getTransformToElement(element, container),
 			boxGroup = box.parentNode,
 			boxCTM = getTransformToElement(boxGroup, container);
-		
+
 		const parentMatrix = getTransformToElement(parent, container);
 
 		const transform = {
@@ -770,7 +772,7 @@ export default class DraggableSVG extends Subject {
 		const boxCenterX =  c_left + cw / 2,
 			boxCenterY = c_top + ch / 2;
 
-		const centerX = cHandle 
+		const centerX = cHandle
 				? cHandle.cx.baseVal.value
 				: boxCenterX,
 			centerY = cHandle
@@ -836,10 +838,10 @@ export default class DraggableSVG extends Subject {
 	_moveCenterHandle(x, y) {
 		const { storage } = this;
 
-		const { 
-			handles, 
-			center, 
-			radius 
+		const {
+			handles,
+			center,
+			radius
 		} = storage;
 
 		if (isUndef(handles.center)) return;
@@ -874,7 +876,7 @@ export default class DraggableSVG extends Subject {
 		} = box.getBBox();
 
 		const matrix = getTransformToElement(box, box.parentNode);
-		
+
 		const { x: cx, y: cy } = pointTo(
 			matrix,
 			container,
@@ -906,7 +908,7 @@ function applyTranslate(element, data) {
 
 	switch (element.tagName.toLowerCase()) {
 
-		
+
 	case 'text': {
 		const resX = element.x.baseVal[0].value + x,
 			resY = element.y.baseVal[0].value + y;
@@ -928,7 +930,7 @@ function applyTranslate(element, data) {
 			['y', resY]
 		);
 		break;
-	}	  
+	}
 	case 'circle':
 	case 'ellipse': {
 		const resX = element.cx.baseVal.value + x,
@@ -939,7 +941,7 @@ function applyTranslate(element, data) {
 			['cy', resY]
 		);
 		break;
-	}   
+	}
 	case 'line': {
 		const resX1 = element.x1.baseVal.value + x,
 			resY1 = element.y1.baseVal.value + y,
@@ -983,7 +985,7 @@ function applyTranslate(element, data) {
 	}
 	default:
 		break;
-	
+
 	}
 
 	attrs.forEach(item => {
@@ -1196,7 +1198,7 @@ function applyResize(element, data) {
 	}
 	default:
 		break;
-	
+
 	}
 
 	attrs.forEach(attr => {
@@ -1332,19 +1334,19 @@ function parsePoints(pts) {
 	);
 }
 
-function createHandler(l, t, color) {
+function createHandler(l, t, color, scale) {
 	const handler = createSVGElement('circle');
 	addClass(handler, 'sjx-svg-hdl');
 
 	const items = {
 		cx: l,
 		cy: t,
-		r: 5,
+		r: 10 / scale,
 		fill: color,
 		stroke: color,
 		'fill-opacity': 0.2,
 		'vector-effect': 'non-scaling-stroke',
-		'stroke-width': 2
+		'stroke-width': 2 / scale
 	};
 
 	Object.keys(items).map(key => {
@@ -1366,7 +1368,7 @@ function createPoint(svg, x, y) {
 		return null;
 	}
 	const pt = svg.createSVGPoint();
-	pt.x = x; 
+	pt.x = x;
 	pt.y = y;
 	return pt;
 }

@@ -20,15 +20,19 @@ export const ActionTypes = {
 	UPDATE_TEMPLATE_GRADIENTS: 'UPDATE_TEMPLATE_GRADIENTS',
 	UPDATE_TEMPLATE_FILTERS: 'UPDATE_TEMPLATE_FILTERS'
 };
-const defaultProperties = {
-	x: 5, y: 10, transform: {}, filters: []
+const getDefaultProperties = (axis) => {
+
+	return {x: axis.x, y: axis.y, transform: {}, filters: []};
 };
 
 const defaultFontProps = {
 	fontSize: 160, fontFamily: 'Raleway',fontStyle: 'normal', fontWeight: '300'
 };
 
-const layoutsTemplate = (type,payload) => {
+const layoutsTemplate = (type, payload, product) => {
+	const x1 = 0;
+	const y1 = product.templateFrame.height / 2;
+	const defaultProperties = getDefaultProperties({x: x1, y: y1});
 	switch(type) {
 	case 'image':
 		return {
@@ -50,8 +54,9 @@ const layoutsTemplate = (type,payload) => {
 			}
 		};
 	case 'textPath': {
-		const x = getPX(5);
-		const y = getPX(10);
+		const x = getPX(x1);
+		const y = getPX(y1);
+		const addWidth = getPX(product.templateFrame.width);
 		return {
 			type: 'textPath',
 			properties: {
@@ -59,7 +64,7 @@ const layoutsTemplate = (type,payload) => {
 				...defaultProperties,
 				...defaultFontProps,
 				fill: {fill: 'black'}, strokeWidth: 0, stroke: '',
-				pathData: {path: `M ${x} ${y} L ${x + 400} ${y}`, points: [{x, y}, {x: x + 400, y}], closePath: false},
+				pathData: {path: `M ${x} ${y} L ${x + addWidth} ${y}`, points: [{x, y}, {x: x + addWidth, y}], closePath: false},
 			}
 		};
 	}
@@ -78,9 +83,13 @@ export default class EditTemplateMainViewApi extends BaseApi {
 	};
 
 	toggleAddLayoutDialog = (isOpen) => {
+		const payload = !!isOpen;
+		if (payload) {
+			this.onEditLayoutEnd();
+		}
 		this.dispatchStoreAction({
 			type: ActionTypes.TOGGLE_ADD_LAYOUT_DIALOG,
-			payload: !!isOpen
+			payload
 		});
 	};
 
@@ -131,11 +140,15 @@ export default class EditTemplateMainViewApi extends BaseApi {
 	handleAddClose = ({type,value}) => {
 		if(!type) {
 			this.toggleAddLayoutDialog(false);
+			this.onEditLayoutEnd();
 			return;
 		}
+		const product = this.getProductSelector();
 		const template = this.getTemplateSelector();
-		template.layouts.push(JSON.parse(JSON.stringify(layoutsTemplate(type,value))));
+		const newLayout = JSON.parse(JSON.stringify(layoutsTemplate(type,value, product)));
+		template.layouts.push(newLayout);
 		this.toggleAddLayoutDialog(false);
+		this.onLayoutClick(template.layouts.length - 1);
 		this.updateTemplate(template);
 	};
 

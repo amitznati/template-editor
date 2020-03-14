@@ -6,16 +6,18 @@ function Point(props) {
 		x,
 		y,
 		drag,
-		index
+		index,
+		scale
 	} = props;
 
 	return (
 		<circle
+			style={{strokeWidth: 5 / scale}}
 			className="ad-Point"
 			onMouseDown={ (e) => drag(e, index) }
 			cx={ x }
 			cy={ y }
-			r={ 8 } />
+			r={ 8 / scale } />
 	);
 }
 
