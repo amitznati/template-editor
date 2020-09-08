@@ -42,6 +42,7 @@ const styles = theme => ({
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3),
+		overflow: 'auto'
 	},
 	section: {
 		padding: '20px 0'
@@ -71,20 +72,6 @@ class EditTemplateMainViewMainView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.templatePreviewRef = React.createRef();
-		this.state = {
-			templateDivWidth: null,
-			templateDivHeight: null
-		};
-	}
-
-	componentDidMount() {
-		if (this.templatePreviewRef.current) {
-			const el = this.templatePreviewRef.current;
-			this.setState({
-				templateDivWidth: el.clientWidth,
-				templateDivHeight: el.clientHeight
-			});
-		}
 	}
 
 	render() {
@@ -100,7 +87,6 @@ class EditTemplateMainViewMainView extends React.Component {
 			saveTemplate,
 			setAllFontsLoaded
 		} = this.props;
-		const {templateDivHeight, templateDivWidth} = this.state;
 		return (
 			<div className={classes.root}>
 				<CssBaseline />
@@ -130,7 +116,6 @@ class EditTemplateMainViewMainView extends React.Component {
 					</Toolbar>
 				</AppBar>
 				<nav className={classes.drawer} aria-label="mailbox folders">
-					{/*<Hidden xsDown implementation="css">*/}
 					<Drawer
 						classes={{
 							paper: classes.drawerPaper,
@@ -144,7 +129,6 @@ class EditTemplateMainViewMainView extends React.Component {
 						<LayoutsList />
 
 					</Drawer>
-					{/*</Hidden>*/}
 				</nav>
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
@@ -155,7 +139,7 @@ class EditTemplateMainViewMainView extends React.Component {
 						step={0.001}
 						handleSliderChange={(v)=> updateScale(Number(Number(v).toFixed(2)))}
 					/>
-					<div className={classes.templatePaper}  ref={this.templatePreviewRef} style={{width: templateDivWidth || '100%', height: templateDivHeight || '92%'}}>
+					<div className={classes.templatePaper}  ref={this.templatePreviewRef}>
 						{allFonts && allFonts.length > 0 &&
 						<FontLoader
 							fontProvider="google"

@@ -373,6 +373,7 @@ export default class FiltersApi extends BaseApi {
 			}
 			return f;
 		});
+		this.updateFilters(newFilters);
 		this.dispatchStoreAction({
 			type: ActionTypes.UPDATE_FILTERS,
 			payload: {filters: newFilters}
