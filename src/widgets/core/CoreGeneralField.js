@@ -1,6 +1,9 @@
 import React from 'react';
 import {Grid, IconButton, Icon, TextField} from '@material-ui/core';
-import {CoreColorPickerButton, CoreNumber, CoreSelect, CoreText} from 'core';
+import CoreColorPickerButton from './CoreColorPicker';
+import CoreNumber from './CoreNumber';
+import CoreSelect from './CoreSelect';
+import CoreText from './CoreText';
 export default function CoreGeneralField({
 	label, type, key, value, ignoreVisible, onAttributeChange, disabled, onIgnoreAttribute, options,
 	min, max, step, isIgnore

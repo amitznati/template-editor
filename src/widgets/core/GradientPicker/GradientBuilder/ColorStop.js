@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ColorStop.css';
+import ColorStopImage from 'ColorStop.png';
 
 class ColorStop extends React.Component {
 	constructor () {
@@ -69,7 +70,7 @@ class ColorStop extends React.Component {
 		const { pos, color, isActive } = this.props.stop;
 		return (
 			<div ref={node => this.node = node} className={ isActive ? 'cs active' : 'cs' }
-				style={{ left: pos }}
+				style={{ left: pos, backgroundImage: ColorStopImage }}
 				onMouseDown={ this.handleMouseDown }>
 				<div style={{ backgroundColor: color }} />
 			</div>

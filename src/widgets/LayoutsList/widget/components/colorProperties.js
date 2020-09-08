@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Grid, Button} from '@material-ui/core';
 import {ToggleButton, ToggleButtonGroup}  from '@material-ui/lab';
-import {Gradients} from 'widgets';
+import Gradients from '../../../Gradients/widget/Gradients.connect';
 import { CoreColorPicker } from '../../../core';
 
 class ColorProperties extends React.Component {

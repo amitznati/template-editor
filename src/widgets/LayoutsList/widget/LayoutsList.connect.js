@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import {getInstance} from 'sdk';
+import {getInstance} from '../../../sdk';
 import LayoutsListComponent from './LayoutsList.component';
 
 const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;

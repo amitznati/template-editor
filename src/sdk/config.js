@@ -1,3 +1,2 @@
-module.exports = {
-	googleFontAPIKey: 'AIzaSyBw-n14e-XCpKjqWZCfYlAZaAVLG2CAZ3M'
-};
+const googleFontAPIKey = 'AIzaSyBw-n14e-XCpKjqWZCfYlAZaAVLG2CAZ3M'
+export { googleFontAPIKey }

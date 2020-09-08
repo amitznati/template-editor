@@ -1,5 +1,5 @@
-**/subjx/*
-*/serviceWorker.js
-*/Data/primitivesAttrs/*
-*/Data/primitives/*
-/framework/*
+build/
+dist/
+node_modules/
+.snapshots/
+*.min.js

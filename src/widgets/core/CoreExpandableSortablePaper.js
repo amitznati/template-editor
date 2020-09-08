@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
+import {Grid, Accordion, AccordionSummary, AccordionDetails} from '@material-ui/core';
 import {sortableHandle} from 'react-sortable-hoc';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -22,8 +22,8 @@ const useStyles = makeStyles(theme => ({
 export default function CoreExpandableSortablePaper({header, actions, children, disabled, sortable = true}) {
 	const classes = useStyles();
 	return (
-		<ExpansionPanel className={classes.root} disabled={disabled} >
-			<ExpansionPanelSummary
+		<Accordion className={classes.root} disabled={disabled} >
+			<AccordionSummary
 				expandIcon={<ExpandMoreIcon/>}
 				className={classes.noPadding}
 			>
@@ -36,11 +36,11 @@ export default function CoreExpandableSortablePaper({header, actions, children, 
 						<CoreSpeedActions {...{actions}} />
 					</Grid>}
 				</Grid>
-			</ExpansionPanelSummary>
-			<ExpansionPanelDetails className={classes.noPadding}>
+			</AccordionSummary>
+			<AccordionDetails className={classes.noPadding}>
 				{children}
-			</ExpansionPanelDetails>
-		</ExpansionPanel>
+			</AccordionDetails>
+		</Accordion>
 	);
 
 }

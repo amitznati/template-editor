@@ -47,25 +47,6 @@ export default class LayoutsListApi extends BaseApi {
 		});
 	};
 
-	loadDummyPosts = async () => {
-		return this.serviceRequest(
-			SimpleServices.getDummyPosts,
-			{},
-			ActionTypes.LOAD_POSTS
-		);
-
-	};
-
-	getPostById = async (id = 1) => {
-		const post = await this.serviceRequest(
-			SimpleServices.getPostById,
-			{id}
-		);
-		return post;
-	};
-
-
-
 	/* Selectors */
 	getVisibleToDosSelector = () => {
 		return selectors.getToDosSelector(this.store.getState());

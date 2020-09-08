@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from '@material-ui/core';
-import {CoreText} from 'core';
+import {CoreText} from '../../../core';
 
 export default function TextTab({onSelect}) {
 	const [value, setValue] = React.useState('');

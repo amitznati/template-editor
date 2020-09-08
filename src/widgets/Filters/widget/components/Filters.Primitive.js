@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton, Icon, ExpansionPanelActions, Divider} from '@material-ui/core';
+import {Grid, Typography, Accordion, AccordionSummary, AccordionDetails, IconButton, Icon, AccordionActions, Divider} from '@material-ui/core';
 import {sortableHandle} from 'react-sortable-hoc';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -101,8 +101,8 @@ export default function FiltersPrimitive(props) {
 	actions.push({ icon: ignoreVisible ? 'visibility_off' : 'visibility', name: 'Toggle Ignore', callback: toggleIgnoreVisibility });
 
 	return (
-		<ExpansionPanel className={classes.root} disabled={primitive.disabled}>
-			<ExpansionPanelSummary
+		<Accordion className={classes.root} disabled={primitive.disabled}>
+			<AccordionSummary
 				expandIcon={<ExpandMoreIcon/>}
 				className={classes.noPadding}
 			>
@@ -126,8 +126,8 @@ export default function FiltersPrimitive(props) {
 						<CoreSpeedActions {...{actions}} />
 					</Grid>
 				</Grid>
-			</ExpansionPanelSummary>
-			<ExpansionPanelDetails className={classes.noPadding}>
+			</AccordionSummary>
+			<AccordionDetails className={classes.noPadding}>
 				<Grid container>
 					{Object.keys(itemProps.inputsData).map(name => {
 						if (!isEnable(name)) {
@@ -165,12 +165,12 @@ export default function FiltersPrimitive(props) {
 						</Grid>
 					}
 				</Grid>
-			</ExpansionPanelDetails>
+			</AccordionDetails>
 
 			{primitive.params.result && <Divider />}
-			{primitive.params.result && <ExpansionPanelActions>
+			{primitive.params.result && <AccordionActions>
 				<Typography variant="subtitle1">{`result="${primitive.params.result.value}"`}</Typography>
-			</ExpansionPanelActions>}
-		</ExpansionPanel>
+			</AccordionActions>}
+		</Accordion>
 	);
 }

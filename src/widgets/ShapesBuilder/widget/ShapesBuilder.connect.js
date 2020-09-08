@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import {getInstance} from 'sdk';
+import {getInstance} from '../../../sdk';
 import ShapesBuilderComponent from './ShapesBuilder.component';
 
 const shapesBuilderApi = getInstance().ShapesBuilderApi;

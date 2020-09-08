@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid, ExpansionPanelSummary, ExpansionPanel, ExpansionPanelDetails, Typography, IconButton, Icon} from '@material-ui/core';
+import {Grid, AccordionSummary, Accordion, AccordionDetails, Typography, IconButton, Icon} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {CoreText, CoreSelect} from '../../../core';
 
@@ -97,13 +97,13 @@ export default function FilterFields({params, onFilterAttributeChange, ignoreVis
 	};
 
 	return (
-		<ExpansionPanel className={classes.marginB}>
-			<ExpansionPanelSummary
+		<Accordion className={classes.marginB}>
+			<AccordionSummary
 				expandIcon={<ExpandMoreIcon />}
 			>
 				<Typography className={classes.heading}>Filter Props</Typography>
-			</ExpansionPanelSummary>
-			<ExpansionPanelDetails>
+			</AccordionSummary>
+			<AccordionDetails>
 				<Grid container>
 					{filterFields.map(field => {
 						return (
@@ -113,8 +113,8 @@ export default function FilterFields({params, onFilterAttributeChange, ignoreVis
 						);
 					})}
 				</Grid>
-			</ExpansionPanelDetails>
-		</ExpansionPanel>
+			</AccordionDetails>
+		</Accordion>
 	);
 
 }

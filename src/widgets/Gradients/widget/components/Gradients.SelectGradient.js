@@ -1,6 +1,5 @@
 import React from 'react';
-import {CoreMenuSelect} from 'core';
-import {CoreConfirmationDialog} from '../../../core';
+import {CoreConfirmationDialog, CoreMenuSelect} from '../../../core';
 
 export default function SelectGradient({selectGradientOptions, onAddGradient, removeGradientFromTemplate}) {
 	const [selectedItem, setSelectedItem] = React.useState(undefined);

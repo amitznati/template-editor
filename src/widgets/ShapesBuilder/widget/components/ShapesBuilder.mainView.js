@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Grid, Button} from '@material-ui/core';
 import {CoreMenuSelect, CoreExpandableSortablePaper, CoreGeneralField} from '../../../core';
-import {TemplatePreview} from 'widgets';
+import TemplatePreview from '../../../TemplatePreview/widget/TemplatePreview.connect';
 import {shapesAttrs, shapesData} from './../../Data';
 
 
