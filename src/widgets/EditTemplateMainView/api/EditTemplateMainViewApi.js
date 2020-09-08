@@ -25,14 +25,15 @@ const getDefaultProperties = (axis) => {
 	return {x: axis.x, y: axis.y, transform: {}, filters: []};
 };
 
-const defaultFontProps = {
-	fontSize: 160, fontFamily: 'Raleway',fontStyle: 'normal', fontWeight: '300'
+const getDefaultFontProps = (templateWidth) => {
+	return {fontSize: templateWidth * 8, fontFamily: 'Raleway',fontStyle: 'normal', fontWeight: '300'};
 };
 
 const layoutsTemplate = (type, payload, product) => {
 	const x1 = 0;
 	const y1 = product.templateFrame.height / 2;
 	const defaultProperties = getDefaultProperties({x: x1, y: y1});
+	const defaultFontProps = getDefaultFontProps(product.templateFrame.width);
 	switch(type) {
 	case 'image':
 		return {
@@ -108,7 +109,7 @@ export default class EditTemplateMainViewApi extends BaseApi {
 	updateTemplateFilters = (filters) => {
 		this.dispatchStoreAction({
 			type: ActionTypes.UPDATE_TEMPLATE_FILTERS,
-			payload: filters
+			payload: [...filters]
 		});
 	};
 

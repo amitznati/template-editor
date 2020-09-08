@@ -2,7 +2,7 @@ import {ActionTypes} from './EditTemplateMainViewApi';
 import {products} from 'mocks';
 const initialState = {
 	template: {templateGradients: [], templateFilters: [], layouts: []},
-	product: products[0],
+	product: products[2],
 	selectedLayout: {selectedLayout: null, selectedLayoutIndex: -1},
 	isAddLayoutDialogOpen: false,
 	scale: 0.5,

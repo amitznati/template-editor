@@ -182,3 +182,4 @@ export function pathToObject(path) {
 
 	return {points};
 }
+

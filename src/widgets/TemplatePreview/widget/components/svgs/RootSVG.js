@@ -100,8 +100,8 @@ class DesignCanvas extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const {selectedLayoutIndex, isSVGPathBuilderOpen} = this.props;
-		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex) {
+		const {selectedLayoutIndex, isSVGPathBuilderOpen, scale} = this.props;
+		if (selectedLayoutIndex !== prevProps.selectedLayoutIndex || scale !== prevProps.scale) {
 			this.refreshNode();
 		} else if (isSVGPathBuilderOpen !== prevProps.isSVGPathBuilderOpen) {
 			if (isSVGPathBuilderOpen) {

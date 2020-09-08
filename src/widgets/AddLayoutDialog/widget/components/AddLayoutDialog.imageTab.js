@@ -5,7 +5,7 @@ import {CoreText} from '../../../core';
 export default function ImageTab({onSelect}) {
 	const [imageSrc, setImageSrc] = React.useState('');
 	const [imageName, setImageName] = React.useState('');
-	const [selectedTab, setSelectedTab] = React.useState(0)
+	const [selectedTab, setSelectedTab] = React.useState(0);
 
 	const handleChange = (event) => {
 		if (event.target.files && event.target.files[0]) {

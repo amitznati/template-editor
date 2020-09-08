@@ -51,7 +51,7 @@ const styles = theme => ({
 		overflow: 'auto',
 		padding: '20px',
 		margin: 0,
-		background: 'lightgray'
+		background: '#ececec'
 	},
 	rootGrid: {
 		padding: theme.spacing(1)
