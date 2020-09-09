@@ -15,10 +15,10 @@ import {
   Typography,
   IconButton
 } from '@material-ui/core';
-import ShapesBuilder from '../../../ShapesBuilder/widget/ShapesBuilder.connect';
 
 import TextTab from './AddLayoutDialog.textTab';
 import ImageTab from './AddLayoutDialog.imageTab';
+import ShapesTab from './AddLayoutDialog.shapeTab';
 
 class AddLayoutDialogMainView extends React.Component {
   state = {
@@ -86,7 +86,7 @@ class AddLayoutDialogMainView extends React.Component {
           )}
           {value === 1 && <ImageTab onSelect={onClose} />}
           {value === 2 && <TextTab onSelect={onClose} />}
-          {value === 3 && <ShapesBuilder />}
+          {value === 3 && <ShapesTab onSelect={onClose} />}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose} color='primary'>

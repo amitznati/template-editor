@@ -1,3 +1,4 @@
+import { saveSvgAsPng } from 'save-svg-as-png';
 import BaseApi from '../../../sdk/BaseApi';
 import selectors from './EditTemplateMainViewSelectors';
 import arrayMove from 'array-move';
@@ -33,12 +34,20 @@ const getDefaultFontProps = (templateWidth) => {
     fontWeight: '300'
   };
 };
+const getFillProperties = () => {
+  return {
+    strokeWidth: 0,
+    stroke: '',
+    fill: { fill: 'black' }
+  };
+};
 
 const layoutsTemplate = (type, payload, product) => {
-  const x1 = 0;
+  const x1 = product.templateFrame.width / 4;
   const y1 = product.templateFrame.height / 2;
   const defaultProperties = getDefaultProperties({ x: x1, y: y1 });
   const defaultFontProps = getDefaultFontProps(product.templateFrame.width);
+  const defaultFillProperties = getFillProperties();
   switch (type) {
     case 'image':
       return {
@@ -55,9 +64,7 @@ const layoutsTemplate = (type, payload, product) => {
           text: payload,
           ...defaultProperties,
           ...defaultFontProps,
-          strokeWidth: 0,
-          stroke: '',
-          fill: { fill: 'black' }
+          ...defaultFillProperties
         }
       };
     case 'textPath': {
@@ -70,9 +77,7 @@ const layoutsTemplate = (type, payload, product) => {
           text: payload,
           ...defaultProperties,
           ...defaultFontProps,
-          fill: { fill: 'black' },
-          strokeWidth: 0,
-          stroke: '',
+          ...defaultFillProperties,
           pathData: {
             path: `M ${x} ${y} L ${x + addWidth} ${y}`,
             points: [
@@ -81,6 +86,16 @@ const layoutsTemplate = (type, payload, product) => {
             ],
             closePath: false
           }
+        }
+      };
+    }
+    case 'shape': {
+      return {
+        type: 'shape',
+        properties: {
+          ...defaultProperties,
+          ...defaultFillProperties,
+          shapeSvg: payload.svg
         }
       };
     }
@@ -176,7 +191,11 @@ export default class EditTemplateMainViewApi extends BaseApi {
   };
 
   saveTemplate = () => {
-    // mockService('templates','create',this.state.template);
+    const product = this.getProductSelector();
+    saveSvgAsPng(
+      document.getElementById('svg-container'),
+      `${product.name}.png`
+    );
   };
 
   onEditLayoutEnd = () => {

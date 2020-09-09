@@ -4,15 +4,11 @@ import AddLayoutDialogComponent from './AddLayoutDialog.component';
 
 // const AddLayoutDialogApi = getInstance().AddLayoutDialogApi;
 
-const mapStateToProps = () => ({
+const mapStateToProps = () => ({});
 
-});
-
-const mapDispatchToProps = () => ({
-
-});
+const mapDispatchToProps = () => ({});
 
 export default connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(AddLayoutDialogComponent);

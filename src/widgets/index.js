@@ -3,5 +3,4 @@ export { default as TemplatePreview } from './TemplatePreview/widget/TemplatePre
 export { default as AddLayoutDialog } from './AddLayoutDialog/widget/AddLayoutDialog.connect';
 export { default as Filters } from './Filters/widget/Filters.connect';
 export { default as EditTemplateMainView } from './EditTemplateMainView/widget/EditTemplateMainView.connect';
-export { default as ShapesBuilder } from './ShapesBuilder/widget/ShapesBuilder.connect';
 export { default as Gradients } from './Gradients/widget/Gradients.connect';

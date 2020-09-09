@@ -73,7 +73,8 @@ function LayoutListOpen(props) {
       allFields.path,
       allFields.filters
     ],
-    image: [allFields.position, allFields.filters]
+    image: [allFields.position, allFields.filters],
+    shape: [allFields.position, allFields.color, allFields.filters]
   };
 
   const onPropertyChange = (name, value) => {
