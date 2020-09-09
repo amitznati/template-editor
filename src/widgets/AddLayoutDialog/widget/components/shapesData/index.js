@@ -1,5 +1,3 @@
 import circle from './circle';
 
-export default {
-	circle
-};
+export default [circle];
