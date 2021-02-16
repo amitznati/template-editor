@@ -46,7 +46,8 @@ const FontProperties = (props) => {
     fontProvider,
     uploadedFonts,
     onPropertiesChange,
-    themeFontFamily
+    themeFontFamily,
+    googleFontAPIKey
   } = props;
   const dynamicOptions = dynamicTextOptions.map((o) => ({ id: o, name: o }));
   const [loadingState, setLoadingState] = React.useState({});
@@ -129,7 +130,8 @@ const FontProperties = (props) => {
             uploadedFonts,
             onFontProviderChange,
             onFontFamilyChange,
-            setLoadingState
+            setLoadingState,
+            googleFontAPIKey
           }}
         />
       </Grid>

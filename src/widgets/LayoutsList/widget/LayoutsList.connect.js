@@ -4,7 +4,7 @@ import LayoutsListComponent from './LayoutsList.component';
 
 const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
 const layoutListApi = getInstance().LayoutsListApi;
-const mapStateToProps = () => {
+const mapStateToProps = (state) => {
   const {
     selectedLayout
   } = editTemplateMainViewApi.getSelectedLayoutSelector();
@@ -19,7 +19,8 @@ const mapStateToProps = () => {
     layouts: template.layouts,
     isSVGPathBuilderOpen,
     dynamicTextOptions,
-    uploadedFonts
+    uploadedFonts,
+    googleFontAPIKey: state?.EditTemplateMainView?.googleFontAPIKey
   };
 };
 

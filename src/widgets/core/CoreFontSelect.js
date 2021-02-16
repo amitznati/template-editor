@@ -103,7 +103,8 @@ const CoreFontSelect = ({
   uploadedFonts,
   onFontProviderChange,
   onFontFamilyChange,
-  setLoadingState
+  setLoadingState,
+  googleFontAPIKey
 }) => {
   const isGoogleFontProvider = fontProvider === 'google';
   const [testText, setTestText] = React.useState('');
@@ -133,7 +134,7 @@ const CoreFontSelect = ({
           </Tabs>
           {isGoogleFontProvider && (
             <CoreFontSelector
-              {...{ fontWeight, fontStyle, fontFamily }}
+              {...{ fontWeight, fontStyle, fontFamily, googleFontAPIKey }}
               handleChange={onSelectFont}
             />
           )}
@@ -144,7 +145,8 @@ const CoreFontSelect = ({
                 fontStyle,
                 fontFamily,
                 uploadedFonts,
-                isGoogleFontProvider
+                isGoogleFontProvider,
+                googleFontAPIKey
               }}
               handleChange={onSelectFont}
             />

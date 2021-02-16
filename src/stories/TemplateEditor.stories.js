@@ -42,7 +42,8 @@ export const EditorModeLogo = () => {
         initialData={{
           dynamicTextValues,
           dynamicImageOptions,
-          product: logo
+          product: logo,
+          googleFontAPIKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx'
         }}
       />
     </Provider>

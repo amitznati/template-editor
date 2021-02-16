@@ -182,11 +182,4 @@ CoreFontPicker.propTypes = {
   value: PropTypes.any
 };
 
-const Widget = withStyles(styles)(CoreFontPicker);
-export default connect((state, props) => {
-  console.log({ state, props });
-  return {
-    ...props,
-    googleFontAPIKey: state.EditTemplateMainView.googleFontAPIKey
-  };
-}, undefined)(Widget);
+export default withStyles(styles)(CoreFontPicker);

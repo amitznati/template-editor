@@ -7,9 +7,9 @@ import TemplatePreviewForProduct from './widgets/TemplatePreview/widget/componen
 import FontLoader from './sdk/services/fontLoader';
 import TemplateEditorModal from './widgets/core/TemplateEditorModal';
 
-const store = getStoreInstance();
 
 const TemplateEditor = (props) => {
+  const store = getStoreInstance();
   return (
     <Provider store={store}>
       <EditTemplateMainView {...props} />
@@ -20,11 +20,15 @@ const TemplateEditor = (props) => {
 const TemplatePreviewForPreview = (props) => (
   <TemplatePreviewComponent previewOnly {...props} />
 );
-const TemplateEditorModalWrapper = (props) => (
-  <Provider store={store}>
-    <TemplateEditorModal {...props} />
-  </Provider>
-);
+const TemplateEditorModalWrapper = (props) => {
+  const store = getStoreInstance();
+  return (
+    <Provider store={store}>
+      <TemplateEditorModal {...props} />
+    </Provider>
+  );
+};
+
 export { default as FontSelect } from './widgets/core/CoreFontSelect';
 export { default as CoreSlider } from './widgets/core/CoreSlider';
 export { default as UploadedImageCard } from './widgets/core/UploadedImageCard';

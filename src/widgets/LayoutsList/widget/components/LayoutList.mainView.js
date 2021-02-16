@@ -18,7 +18,8 @@ function LayoutListMainView(props) {
     dynamicTextOptions,
     uploadedFonts,
     onAlignmentClick,
-    onFullSizeClick
+    onFullSizeClick,
+    googleFontAPIKey
   } = props;
   return (
     <div>
@@ -43,7 +44,8 @@ function LayoutListMainView(props) {
             onTogglePathBuilder,
             onBack,
             onAlignmentClick,
-            onFullSizeClick
+            onFullSizeClick,
+            googleFontAPIKey
           }}
         />
       )}

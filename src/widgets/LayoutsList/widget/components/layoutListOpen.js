@@ -55,7 +55,8 @@ function LayoutListOpen(props) {
     dynamicTextOptions,
     uploadedFonts,
     onAlignmentClick,
-    onFullSizeClick
+    onFullSizeClick,
+    googleFontAPIKey
   } = props;
 
   const allFields = {
@@ -150,7 +151,8 @@ function LayoutListOpen(props) {
               onPropertyChange,
               onPropertiesChange,
               uploadedFonts,
-              themeFontFamily
+              themeFontFamily,
+              googleFontAPIKey
             }}
           />
         );
