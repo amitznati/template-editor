@@ -37,11 +37,24 @@ export const GradientDef = ({ id, gradientData }) => {
     StartY,
     EndRadius,
     palette,
-    spreadMethod
+    spreadMethod,
+    isForGroup,
+    gradientScale = 1
   } = gradientData;
+  const getPoint = (point) => (isForGroup ? `${point * 100}%` : point);
+  const gradientUnits = isForGroup
+    ? {
+        gradientUnits: 'userSpaceOnUse',
+        gradientTransform: `scale(${gradientScale})`
+      }
+    : {};
   const stops = palette.map((point, index) => {
     return (
-      <stop key={`stop-${index}`} offset={point.pos} stopColor={point.color} />
+      <stop
+        key={`stop-${index}`}
+        offset={getPoint(point.pos)}
+        stopColor={point.color}
+      />
     );
   });
   switch (gradientType) {
@@ -50,10 +63,11 @@ export const GradientDef = ({ id, gradientData }) => {
         <linearGradient
           spreadMethod={spreadMethod}
           id={id}
-          x1={StartX}
-          y1={StartY}
-          x2={EndX}
-          y2={EndY}
+          x1={getPoint(StartX)}
+          y1={getPoint(StartY)}
+          x2={getPoint(EndX)}
+          y2={getPoint(EndY)}
+          {...gradientUnits}
         >
           {stops}
         </linearGradient>
@@ -64,11 +78,12 @@ export const GradientDef = ({ id, gradientData }) => {
         <radialGradient
           spreadMethod={spreadMethod}
           id={id}
-          cx={StartX}
-          cy={StartY}
-          r={EndRadius}
-          fx={EndX}
-          fy={EndY}
+          cx={getPoint(StartX)}
+          cy={getPoint(StartY)}
+          r={getPoint(EndRadius)}
+          fx={getPoint(EndX)}
+          fy={getPoint(EndY)}
+          {...gradientUnits}
         >
           {stops}
         </radialGradient>

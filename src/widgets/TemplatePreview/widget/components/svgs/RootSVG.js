@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import subjx from './subjx/js';
 import './subjx/style/subjx.css';
-import { getCM } from './../../../../../sdk/utils';
+import { getCM } from '../../../../../sdk/utils';
 
-const svgOptions = (methods, scale) => {
+const svgOptions = (methods, scale, proportions) => {
   const options = {
     container: '#svg-container',
     // restrict: '#svg-container',
-    // proportions: true,
+    proportions,
     // rotationPoint: true,
     themeColor: 'purple',
     // each: {
@@ -30,11 +30,16 @@ const svgOptions = (methods, scale) => {
 };
 
 class DesignCanvas extends React.Component {
+  shiftPress = false;
+
   getActiveNode = () => {
     const { selectedLayoutIndex } = this.props;
     let node;
     React.Children.map(this.props.children, (element) => {
-      if (element.props.layoutindex === selectedLayoutIndex) {
+      if (
+        !element.props['data-logo-index'] &&
+        element.props['data-layout-index'] === selectedLayoutIndex
+      ) {
         node = element.ref.current;
       }
     });
@@ -42,10 +47,15 @@ class DesignCanvas extends React.Component {
   };
 
   refreshNode = () => {
+    const { setIsNodeRefreshRequire } = this.props;
     this.currentLayout && this.currentLayout.disable();
     const node = this.getActiveNode();
     this.currentLayout =
-      node && subjx(node).drag(svgOptions(this.methods, this.props.scale))[0];
+      node &&
+      subjx(node).drag(
+        svgOptions(this.methods, this.props.scale, this.shiftPress)
+      )[0];
+    setIsNodeRefreshRequire(false);
   };
 
   getPropertiesFromActiveNode = (el) => {
@@ -74,17 +84,26 @@ class DesignCanvas extends React.Component {
 
   methods = {
     onDrop: (e, el) => {
-      const newVals = this.getPropertiesFromActiveNode(el);
+      const newValues = this.getPropertiesFromActiveNode(el);
       this.refreshNode();
-      this.updateNode(newVals);
+      this.updateNode(newValues);
     }
   };
 
-  updateNode = (newVals) => {
+  updateNode = (newValues) => {
     const { selectedLayout, onUpdateLayout } = this.props;
+    const { alignment } = selectedLayout.properties;
+    const newAlignment = { ...alignment };
+    if (newAlignment.vertical) {
+      newAlignment.vertical.align = false;
+    }
+    if (newAlignment.horizontal) {
+      newAlignment.horizontal.align = false;
+    }
     selectedLayout.properties = {
       ...selectedLayout.properties,
-      ...newVals
+      alignment: newAlignment,
+      ...newValues
     };
     onUpdateLayout && onUpdateLayout(selectedLayout);
   };
@@ -99,18 +118,59 @@ class DesignCanvas extends React.Component {
     if (e.target.classList.contains('sjx-drag')) return;
     // this.currentLayout && this.currentLayout.disable();
     // this.currentLayout = subjx(e.target).drag(svgOptions(this.methods))[0];
-    this.props.onLayoutClick(Number(e.target.getAttribute('name')));
+    const layoutIndex = Number(e.target.getAttribute('data-layout-index'));
+    const logoIndex = e.target.getAttribute('data-logo-index');
+    if (logoIndex || logoIndex === 0 || logoIndex === '0') {
+      this.props.onLayoutClick(Number(logoIndex));
+    } else {
+      this.props.onLayoutClick(layoutIndex);
+    }
+  };
+
+  handleShiftPress = (event) => {
+    if (
+      (event.code === 'ShiftLeft' || event.code === 'ShiftRight') &&
+      !this.shiftPress
+    ) {
+      this.shiftPress = true;
+      this.refreshNode();
+    }
+  };
+
+  handleShiftUp = (event) => {
+    if (
+      (event.code === 'ShiftLeft' || event.code === 'ShiftRight') &&
+      this.shiftPress
+    ) {
+      this.shiftPress = false;
+      this.refreshNode();
+    }
   };
 
   componentDidMount() {
+    if (this.props.previewOnly) return;
+    window.addEventListener('keydown', this.handleShiftPress);
+    window.addEventListener('keyup', this.handleShiftUp);
     this.refreshNode();
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleShiftPress);
+    window.removeEventListener('keyup', this.handleShiftPress);
+  }
+
   componentDidUpdate(prevProps) {
-    const { selectedLayoutIndex, isSVGPathBuilderOpen, scale } = this.props;
+    if (this.props.previewOnly) return;
+    const {
+      selectedLayoutIndex,
+      isSVGPathBuilderOpen,
+      scale,
+      isNodeRefreshRequire
+    } = this.props;
     if (
       selectedLayoutIndex !== prevProps.selectedLayoutIndex ||
-      scale !== prevProps.scale
+      scale !== prevProps.scale ||
+      isNodeRefreshRequire
     ) {
       this.refreshNode();
     } else if (isSVGPathBuilderOpen !== prevProps.isSVGPathBuilderOpen) {
@@ -123,13 +183,13 @@ class DesignCanvas extends React.Component {
   }
 
   render() {
-    const { h, w } = this.props;
+    const { h, w, previewOnly } = this.props;
     return (
       <svg
-        id='svg-container'
+        id={previewOnly ? '' : 'svg-container'}
         viewBox={`0 0 ${w} ${h}`}
         xmlns='http://www.w3.org/2000/svg'
-        onMouseDown={this.handleStageMouseDown}
+        onMouseDown={previewOnly ? undefined : this.handleStageMouseDown}
       >
         {this.props.children}
       </svg>

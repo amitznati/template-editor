@@ -1,15 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Grid } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Avatar, Chip, Grid } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styles from '../../../../styles/styles';
 
+const useStyles = makeStyles({
+  imageRow: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  themeImageChip: {
+    margin: '0 1rem'
+  }
+});
+
 export const ImageLayoutHeader = (props) => {
-  const { layout } = props;
+  const {
+    layout: {
+      properties: { src, themeImage }
+    }
+  } = props;
+  const classes = useStyles();
   return (
     <Grid container alignItems='center'>
-      <Grid item xs={12}>
-        <Avatar alt='Remy Sharp' src={layout.properties.src} />
+      <Grid item xs={12} className={classes.imageRow}>
+        <Avatar alt='Remy Sharp' src={src} />
+        {themeImage && (
+          <Chip
+            className={classes.themeImageChip}
+            variant='outlined'
+            color='primary'
+            label={themeImage}
+          />
+        )}
       </Grid>
     </Grid>
   );
@@ -22,21 +45,34 @@ ImageLayoutHeader.propTypes = {
 
 export const TextLayoutHeader = (props) => {
   const { layout } = props;
+  const classes = useStyles();
   return (
     <Grid container alignItems='center'>
       <Grid item xs={12}>
         {layout.properties.text}
+        {layout.properties.dynamicOptionValue && (
+          <Chip
+            className={classes.themeImageChip}
+            variant='outlined'
+            color='primary'
+            label={layout.properties.dynamicOptionValue}
+          />
+        )}
       </Grid>
     </Grid>
   );
 };
 
-export const ShapeLayoutHeader = (props) => {
-  const { layout } = props;
+export const CustomSVGHeader = ({ layout }) => {
   return (
     <Grid container alignItems='center'>
       <Grid item xs={12}>
-        {layout.properties.svg}
+        <svg
+          viewBox='0 0 100 100'
+          height='80px'
+          width='80px'
+          dangerouslySetInnerHTML={{ __html: layout.properties.src }}
+        />
       </Grid>
     </Grid>
   );
@@ -47,8 +83,10 @@ TextLayoutHeader.propTypes = {
   layout: PropTypes.object.isRequired
 };
 
+export const LogoHeader = () => <div>Logo</div>;
 export default {
-  ImageLayoutHeader: withStyles(styles)(ImageLayoutHeader),
+  ImageLayoutHeader,
+  LogoHeader,
   TextLayoutHeader: withStyles(styles)(TextLayoutHeader),
-  ShapeLayoutHeader: withStyles(styles)(ShapeLayoutHeader)
+  CustomSVGHeader: withStyles(styles)(CustomSVGHeader)
 };

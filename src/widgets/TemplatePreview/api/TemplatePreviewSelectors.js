@@ -1,17 +1,15 @@
 import { createSelector } from 'reselect';
 import config from './TemplatePreviewConfig';
 
-const sliceSelector = state => state[config.sliceName];
+const sliceSelector = (state) => state[config.sliceName];
 
-export const getToDosSelector = createSelector(sliceSelector, (slice) => {
-	return slice.toDos;
-});
-
-export const getEditToDoSelector = createSelector(sliceSelector, (slice) => {
-	return slice.editToDo;
-});
+export const isNodeRefreshRequireSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.isNodeRefreshRequire;
+  }
+);
 
 export default {
-	getToDosSelector,
-	getEditToDoSelector
+  isNodeRefreshRequireSelector
 };

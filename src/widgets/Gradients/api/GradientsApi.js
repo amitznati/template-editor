@@ -148,9 +148,12 @@ export default class GradientsApi extends BaseApi {
   onGradientChange = (data) => {
     const { palette } = data;
     const layoutPalette = [];
-    palette.map((p) => {
-      layoutPalette.push({ pos: Number(p.pos), color: p.color });
-      return false;
+    palette.forEach((p) => {
+      layoutPalette.push({
+        pos: Number(p.pos),
+        color: p.color,
+        themeColor: p.themeColor
+      });
     });
     const gradientData = { ...data, palette: layoutPalette };
     this.updateSelectedGradient({ gradientData });

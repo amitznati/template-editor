@@ -24,7 +24,25 @@ export const getIsSVGPathBuilderOpenSelector = createSelector(
 export const getProductSelector = createSelector(sliceSelector, (slice) => {
   return slice.product;
 });
+export const getUploadedFontsSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.uploadedFonts;
+  }
+);
 
+export const getUploadedImagesSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.uploadedImages;
+  }
+);
+export const getDynamicImageOptionsSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.dynamicImageOptions;
+  }
+);
 export const getScaleSelector = createSelector(sliceSelector, (slice) => {
   return slice.scale;
 });
@@ -57,6 +75,20 @@ export const isAllFontLoadedSelector = createSelector(
   }
 );
 
+export const getSelectedThemeSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.selectedTheme;
+  }
+);
+
+export const getSelectedLogoSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.selectedLogo;
+  }
+);
+
 export default {
   getTemplateSelector,
   getSelectedLayoutSelector,
@@ -66,5 +98,10 @@ export default {
   isAddLayoutDialogOpenSelector,
   isAllFontLoadedSelector,
   templateGradientsSelector,
-  templateFiltersSelector
+  templateFiltersSelector,
+  getDynamicImageOptionsSelector,
+  getUploadedFontsSelector,
+  getSelectedThemeSelector,
+  getSelectedLogoSelector,
+  getUploadedImagesSelector
 };

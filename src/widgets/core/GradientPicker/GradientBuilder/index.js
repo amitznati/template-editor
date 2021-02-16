@@ -15,9 +15,9 @@ const toState = (palette, activeId) => ({
 const fromState = (palette) => {
   const compare = ({ pos: pos1 }, { pos: pos2 }) => pos1 - pos2;
   const sortedPalette = palette.sort(compare);
-  return sortedPalette.map(({ pos, color }) => ({
+  return sortedPalette.map(({ pos, ...rest }) => ({
     pos: pos.toPrecision(3),
-    color
+    ...rest
   }));
 };
 
@@ -60,6 +60,7 @@ class GradientBuilder extends React.Component {
     const { children } = this.props;
     const props = {
       color: this.activeStop.color,
+      themeColor: this.activeStop.themeColor,
       onSelect: this.handleSelectColor
     };
     if (!children) {
@@ -109,10 +110,16 @@ class GradientBuilder extends React.Component {
     this.notifyChange(palette);
   }
 
-  handleSelectColor(color) {
+  handleSelectColor(color, themeColor) {
     let { palette, activeId } = this.state;
     palette = palette.map((c) =>
-      activeId === c.id ? { ...c, color } : { ...c }
+      activeId === c.id
+        ? {
+            ...c,
+            color: color || c.color,
+            themeColor: themeColor || c.themeColor
+          }
+        : { ...c }
     );
     this.setState({ palette });
     this.notifyChange(palette);

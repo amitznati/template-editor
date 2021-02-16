@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import TemplatePreviewMainView from './components/TemplatePreview.mainView';
 import { mapComponentProps } from './TemplatePreview.propsMappar';
-export default class TemplatePreviewComponent extends Component {
-  render() {
-    const props = mapComponentProps(this.props);
-    return <TemplatePreviewMainView {...props} />;
-  }
+
+export default function TemplatePreviewComponent(props) {
+  const componentProps = mapComponentProps(props);
+  return <TemplatePreviewMainView {...componentProps} />;
 }

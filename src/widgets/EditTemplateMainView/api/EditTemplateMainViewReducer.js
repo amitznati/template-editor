@@ -1,4 +1,6 @@
 import { ActionTypes } from './EditTemplateMainViewApi';
+import { defaultTheme, defaultLogo } from '../defaults';
+
 const initialState = {
   template: { templateGradients: [], templateFilters: [], layouts: [] },
   selectedLayout: { selectedLayout: null, selectedLayoutIndex: -1 },
@@ -7,17 +9,24 @@ const initialState = {
   allFontsLoaded: false,
   isSVGPathBuilderOpen: false,
   templateGradients: [],
+  dynamicImageOptions: [],
+  uploadedFonts: [],
+  uploadedImages: [],
+  selectedTheme: defaultTheme,
+  selectedLogo: defaultLogo,
   product: {
     id: 1,
     name: '',
     image: '',
-    productSize: { height: 30, width: 20 },
+    size: { height: 30, width: 20 },
     templateFrame: {
       height: 25,
       width: 18.5,
       x: 0.5,
       y: 1.1
-    }
+    },
+    dynamicTextOptions: [],
+    googleFontAPIKey: ''
   }
 };
 // const SUCCESS = '_SUCCESS';
@@ -63,11 +72,14 @@ const reducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_SCALE:
       newState = { ...state, scale: payload };
       break;
-    case ActionTypes.SET_PRODUCT:
-      newState = { ...state, product: payload };
+    case ActionTypes.SET_INITIAL_DATA:
+      newState = { ...state, ...payload };
       break;
     case ActionTypes.SET_ALL_FONTS_LOADED:
       newState = { ...state, allFontsLoaded: true };
+      break;
+    case ActionTypes.RESET_STATE:
+      newState = initialState;
       break;
     default:
       return newState;

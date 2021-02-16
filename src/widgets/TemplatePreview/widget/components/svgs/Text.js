@@ -1,67 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
-import { getPX } from '../../../../../sdk/utils';
+import { getGlobalLayoutProperties } from './SVGUtils';
 
 const Text = (props) => {
-  const textRef = React.createRef();
-  const { layout, index } = props;
-  const {
-    fontFamily,
-    fontSize,
-    fontWeight,
-    x,
-    y,
-    text,
-    fill,
-    transform: {
-      skewY = 0,
-      skewX = 0,
-      scaleX = 1,
-      scaleY = 1,
-      translateX = 0,
-      translateY = 0
-    },
-    filters
-  } = layout.properties;
+  const ref = React.createRef();
+  const { layout, index, previewOnly, logoIndex } = props;
+  const { fontFamily, fontSize, fontWeight, text, fill } = layout.properties;
   const layoutFill = fill.fill;
-  const shapes = [];
-  const layoutProperties = {
-    x: getPX(x),
-    y: getPX(y),
-    transform: `matrix(${scaleX} ${skewX} ${skewY} ${scaleY} ${translateX} ${translateY})`
-  };
-
-  const styleFilter = {};
-  if (filters.length) {
-    styleFilter.style = {
-      filter: filters.map((f) => `url(#${f})`).join(' ')
-    };
-  }
-
+  const layoutProperties = getGlobalLayoutProperties({
+    layout,
+    index,
+    previewOnly,
+    ref,
+    logoIndex
+  });
   const textProperties = {
     fontFamily,
     fontSize,
     fontWeight,
-    fill: layoutFill,
-    ...layoutProperties
+    fill: layoutFill
   };
 
-  shapes.push(
-    <text
-      {...textProperties}
-      {...styleFilter}
-      className={cx('drag-svg')}
-      name={index}
-      key={`text_${index}`}
-      ref={textRef}
-      layoutindex={index}
-    >
-      {text}
-    </text>
+  return (
+    <g {...layoutProperties}>
+      <text
+        data-layout-index={index}
+        data-logo-index={logoIndex}
+        {...textProperties}
+      >
+        {text}
+      </text>
+    </g>
   );
-
-  return shapes;
 };
 
 Text.propTypes = {

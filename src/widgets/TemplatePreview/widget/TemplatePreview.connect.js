@@ -26,7 +26,8 @@ const mapStateToProps = (state, props) => {
     selectedLayoutIndex,
     templateFilters,
     editLayouts: props.editLayouts,
-    templateGradients
+    templateGradients,
+    isNodeRefreshRequire: templatePreviewApi.isNodeRefreshRequireSelector()
   };
 };
 
@@ -34,7 +35,8 @@ const mapDispatchToProps = () => ({
   onLayoutClick: editTemplateMainViewApi.onLayoutClick,
   onUpdateLayout: editTemplateMainViewApi.onUpdateLayout,
   onEditLayoutEnd: editTemplateMainViewApi.onEditLayoutEnd,
-  onPathChange: templatePreviewApi.onPathChange
+  onPathChange: templatePreviewApi.onPathChange,
+  setIsNodeRefreshRequire: templatePreviewApi.setIsNodeRefreshRequire
 });
 
 export default connect(

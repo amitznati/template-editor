@@ -1,9 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Text, TextPath, Image, RootSVG } from './svgs';
+import { Text, TextPath, Image, RootSVG, Defs, Shape, CustomSVG } from './svgs';
+import Logo from './svgs/Logo';
 import PathBuilder from './TemplatePreview.pathBuilder';
-import Defs from './svgs/Defs';
-import Shape from './svgs/Shape';
+import SVGStyles from './svgs/SVGStyles';
 
 const styles = (theme) => ({
   templateRoot: {
@@ -26,27 +26,38 @@ const styles = (theme) => ({
 });
 
 class TemplatePreviewMainView extends React.Component {
-  renderText(layout, index) {
-    return Text({ layout, index });
+  renderText(layout, index, previewOnly) {
+    return Text({ layout, index, previewOnly });
   }
 
-  renderTextPath(layout, index) {
-    return TextPath({ layout, index });
+  renderTextPath(layout, index, previewOnly) {
+    return TextPath({ layout, index, previewOnly });
   }
 
-  renderImage(layout, index) {
-    return Image({ layout, index });
+  renderImage(layout, index, previewOnly) {
+    return Image({ layout, index, previewOnly });
   }
 
-  renderShape(layout, index) {
-    return Shape({ layout, index });
+  renderShape(layout, index, previewOnly) {
+    return Shape({ layout, index, previewOnly });
+  }
+
+  renderCustomSVG(layout, index, previewOnly) {
+    return CustomSVG({ layout, index, previewOnly });
+  }
+
+  renderLogo(layout, index, previewOnly) {
+    const { logoProps } = this.props;
+    return Logo({ layout, index, previewOnly, logoProps });
   }
 
   renderLayout = {
     text: this.renderText.bind(this),
     textPath: this.renderTextPath.bind(this),
     image: this.renderImage.bind(this),
-    shape: this.renderShape.bind(this)
+    shape: this.renderShape.bind(this),
+    customSVG: this.renderCustomSVG.bind(this),
+    logo: this.renderLogo.bind(this)
   };
 
   render() {
@@ -55,7 +66,9 @@ class TemplatePreviewMainView extends React.Component {
       classes,
       PathBuilderProps,
       SVGRootProps,
-      DefsProps
+      DefsProps,
+      previewOnly,
+      SVGStylesProps
     } = this.props;
     const {
       layouts,
@@ -69,7 +82,7 @@ class TemplatePreviewMainView extends React.Component {
     const renderedLayouts = layouts
       .filter((l) => !l.isIgnore)
       .map((l, i) => {
-        return this.renderLayout[l.type](l, i);
+        return this.renderLayout[l.type](l, i, previewOnly);
       });
     return (
       <div
@@ -78,13 +91,13 @@ class TemplatePreviewMainView extends React.Component {
           width: productW,
           position: 'relative',
           margin: 'auto',
-          background: product.image ? '' : 'white'
+          background: product.imageUrl ? '' : 'white'
         }}
       >
-        {product.image && (
+        {product.imageUrl && (
           <img
             className={classes.productImage}
-            src={product.image}
+            src={product.imageUrl}
             alt='product'
             style={{ height: productH, width: productW }}
           />
@@ -98,14 +111,15 @@ class TemplatePreviewMainView extends React.Component {
             overflow: 'hidden',
             bottom: templateY,
             left: templateX,
-            boxShadow: product.image ? 'none' : '3px 3px 5px 6px #ccc'
+            boxShadow: product.imageUrl ? 'none' : '3px 3px 5px 6px #ccc'
           }}
         >
           <RootSVG {...SVGRootProps}>
             <Defs {...DefsProps} />
+            <SVGStyles {...SVGStylesProps} />
             {renderedLayouts}
           </RootSVG>
-          {SVGRootProps.isSVGPathBuilderOpen && (
+          {!previewOnly && SVGRootProps.isSVGPathBuilderOpen && (
             <div
               style={{
                 height: templateH,

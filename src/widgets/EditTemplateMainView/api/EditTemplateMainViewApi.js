@@ -1,4 +1,3 @@
-import { saveSvgAsPng } from 'save-svg-as-png';
 import BaseApi from '../../../sdk/BaseApi';
 import selectors from './EditTemplateMainViewSelectors';
 import arrayMove from 'array-move';
@@ -20,10 +19,21 @@ export const ActionTypes = {
   SET_ALL_FONTS_LOADED: 'SET_ALL_FONTS_LOADED',
   UPDATE_TEMPLATE_GRADIENTS: 'UPDATE_TEMPLATE_GRADIENTS',
   UPDATE_TEMPLATE_FILTERS: 'UPDATE_TEMPLATE_FILTERS',
-  SET_PRODUCT: 'SET_PRODUCT'
+  SET_INITIAL_DATA: 'SET_INITIAL_DATA',
+  RESET_STATE: 'RESET_STATE'
 };
 const getDefaultProperties = (axis) => {
-  return { x: axis.x, y: axis.y, transform: {}, filters: [] };
+  return {
+    x: 0,
+    y: 0,
+    transform: {
+      translateY: getPX(axis.y),
+      translateX: getPX(axis.x),
+      scaleX: 1,
+      scaleY: 1
+    },
+    filters: []
+  };
 };
 
 const getDefaultFontProps = (templateWidth) => {
@@ -31,29 +41,31 @@ const getDefaultFontProps = (templateWidth) => {
     fontSize: templateWidth * 8,
     fontFamily: 'Raleway',
     fontStyle: 'normal',
-    fontWeight: '300'
+    fontWeight: '300',
+    fontProvider: 'google'
   };
 };
-const getFillProperties = () => {
+const getDefaultColorProps = () => {
   return {
     strokeWidth: 0,
     stroke: '',
-    fill: { fill: 'black' }
+    fill: { fill: 'black' },
+    themeColor: ''
   };
 };
 
-const layoutsTemplate = (type, payload, product) => {
-  const x1 = product.templateFrame.width / 4;
+const layoutsTemplate = (type, payload, product, selectedLogo) => {
+  const x1 = 0;
   const y1 = product.templateFrame.height / 2;
   const defaultProperties = getDefaultProperties({ x: x1, y: y1 });
   const defaultFontProps = getDefaultFontProps(product.templateFrame.width);
-  const defaultFillProperties = getFillProperties();
+  const defaultColorProps = getDefaultColorProps();
   switch (type) {
     case 'image':
       return {
         type: 'image',
         properties: {
-          src: payload.url,
+          ...payload,
           ...defaultProperties
         }
       };
@@ -61,44 +73,51 @@ const layoutsTemplate = (type, payload, product) => {
       return {
         type: 'text',
         properties: {
-          text: payload,
+          ...payload,
           ...defaultProperties,
           ...defaultFontProps,
-          ...defaultFillProperties
+          ...defaultColorProps
         }
       };
     case 'textPath': {
       const x = getPX(x1);
-      const y = getPX(y1);
       const addWidth = getPX(product.templateFrame.width);
       return {
         type: 'textPath',
         properties: {
-          text: payload,
+          ...payload,
           ...defaultProperties,
           ...defaultFontProps,
-          ...defaultFillProperties,
+          ...defaultColorProps,
           pathData: {
-            path: `M ${x} ${y} L ${x + addWidth} ${y}`,
+            path: `M ${x} 0 L ${x + addWidth} 0`,
             points: [
-              { x, y },
-              { x: x + addWidth, y }
+              { x, y: 0 },
+              { x: x + addWidth, y: 0 }
             ],
             closePath: false
           }
         }
       };
     }
-    case 'shape': {
+    case 'customSVG': {
       return {
-        type: 'shape',
+        type: 'customSVG',
         properties: {
+          src: payload,
           ...defaultProperties,
-          ...defaultFillProperties,
-          shapeSvg: payload.svg
+          ...defaultColorProps
         }
       };
     }
+    case 'logo':
+      return {
+        type: 'logo',
+        properties: {
+          template: JSON.parse(JSON.stringify(selectedLogo.template)),
+          ...defaultProperties
+        }
+      };
     default:
       return '';
   }
@@ -159,10 +178,16 @@ export default class EditTemplateMainViewApi extends BaseApi {
     this.updateTemplate(template);
   };
 
+  onDuplicateLayout = (index) => {
+    const template = this.getTemplateSelector();
+    const duplicateLayout = JSON.parse(JSON.stringify(template.layouts[index]));
+    template.layouts.push(duplicateLayout);
+    this.updateTemplate(template);
+  };
+
   onSortEnd = ({ oldIndex, newIndex }) => {
     const template = this.getTemplateSelector();
-    const newLayouts = arrayMove(template.layouts, oldIndex, newIndex);
-    template.layouts = newLayouts;
+    template.layouts = arrayMove(template.layouts, oldIndex, newIndex);
     this.updateTemplate(template);
   };
 
@@ -174,13 +199,20 @@ export default class EditTemplateMainViewApi extends BaseApi {
     }
     const product = this.getProductSelector();
     const template = this.getTemplateSelector();
+    const logo = this.getSelectedLogoSelector();
     const newLayout = JSON.parse(
-      JSON.stringify(layoutsTemplate(type, value, product))
+      JSON.stringify(layoutsTemplate(type, value, product, logo))
     );
     template.layouts.push(newLayout);
     this.toggleAddLayoutDialog(false);
-    this.onLayoutClick(template.layouts.length - 1);
     this.updateTemplate(template);
+    const toId = setTimeout(
+      () => {
+        this.onLayoutClick(template.layouts.length - 1);
+        clearTimeout(toId);
+      },
+      newLayout.type === 'logo' ? 300 : 10
+    );
   };
 
   onUpdateLayout = (layout) => {
@@ -188,14 +220,11 @@ export default class EditTemplateMainViewApi extends BaseApi {
     const { selectedLayoutIndex } = this.getSelectedLayoutSelector();
     template.layouts[selectedLayoutIndex] = layout;
     this.updateTemplate(template);
+    this.apis.TemplatePreviewApi.setIsNodeRefreshRequire(true);
   };
 
   saveTemplate = () => {
-    const product = this.getProductSelector();
-    saveSvgAsPng(
-      document.getElementById('svg-container'),
-      `${product.name}.png`
-    );
+    // mockService('templates','create',this.state.template);
   };
 
   onEditLayoutEnd = () => {
@@ -238,6 +267,12 @@ export default class EditTemplateMainViewApi extends BaseApi {
     });
   };
 
+  resetState = () => {
+    this.dispatchStoreAction({
+      type: ActionTypes.RESET_STATE
+    });
+  };
+
   setAllFontsLoaded = () => {
     this.dispatchStoreAction({
       type: ActionTypes.SET_ALL_FONTS_LOADED
@@ -260,15 +295,19 @@ export default class EditTemplateMainViewApi extends BaseApi {
     return selectors.getProductSelector(this.store.getState());
   };
 
-  setProduct = (product) => {
+  setInitialData = (initialData) => {
     this.dispatchStoreAction({
-      type: ActionTypes.SET_PRODUCT,
-      payload: product
+      type: ActionTypes.SET_INITIAL_DATA,
+      payload: initialData
     });
   };
 
   getScaleSelector = () => {
     return selectors.getScaleSelector(this.store.getState());
+  };
+
+  getDynamicImageOptionsSelector = () => {
+    return selectors.getDynamicImageOptionsSelector(this.store.getState());
   };
 
   isAddLayoutDialogOpenSelector = () => {
@@ -277,5 +316,21 @@ export default class EditTemplateMainViewApi extends BaseApi {
 
   isAllFontLoadedSelector = () => {
     return selectors.isAllFontLoadedSelector(this.store.getState());
+  };
+
+  getUploadedFontsSelector = () => {
+    return selectors.getUploadedFontsSelector(this.store.getState());
+  };
+
+  getUploadedImagesSelector = () => {
+    return selectors.getUploadedImagesSelector(this.store.getState());
+  };
+
+  getSelectedThemeSelector = () => {
+    return selectors.getSelectedThemeSelector(this.store.getState());
+  };
+
+  getSelectedLogoSelector = () => {
+    return selectors.getSelectedLogoSelector(this.store.getState());
   };
 }

@@ -2,9 +2,10 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import {
+  CustomSVGHeader,
   ImageLayoutHeader,
-  ShapeLayoutHeader,
-  TextLayoutHeader
+  TextLayoutHeader,
+  LogoHeader
 } from './layoutsHeaders';
 import { CoreExpandableSortablePaper, CoreSortableList } from './../../../core';
 
@@ -23,7 +24,8 @@ function LayoutsListClose({
   onSortEnd,
   onLayoutClick,
   setIgnoreLayout,
-  onDeleteLayout
+  onDeleteLayout,
+  onDuplicateLayout
 }) {
   const getLayoutHeader = (l, i) => {
     switch (l.type) {
@@ -32,8 +34,10 @@ function LayoutsListClose({
       case 'text':
       case 'textPath':
         return <TextLayoutHeader key={i} layout={l} />;
-      case 'shape':
-        return <ShapeLayoutHeader key={i} layout={l} />;
+      case 'customSVG':
+        return <CustomSVGHeader key={i} layout={l} />;
+      case 'logo':
+        return <LogoHeader key={i} />;
       default:
         return '';
     }
@@ -41,7 +45,11 @@ function LayoutsListClose({
 
   const renderLayout = (l, i) => {
     const actions = [
-      { icon: 'file_copy', name: 'Duplicate' },
+      {
+        icon: 'file_copy',
+        name: 'Duplicate',
+        callback: () => onDuplicateLayout(i)
+      },
       { icon: 'delete', name: 'Delete', callback: () => onDeleteLayout(i) },
       {
         icon: l.isIgnore ? 'visibility_off' : 'visibility',

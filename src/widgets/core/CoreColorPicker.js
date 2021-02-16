@@ -2,14 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Popover } from '@material-ui/core';
 import { SketchPicker } from 'react-color';
+import CoreThemeVariantSelect from './CoreThemeVariantSelect';
 
 const getRgba = (rgba) => {
   return `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
 };
 
-const CoreColorPicker = ({ ...props }) => {
-  const { handleClose, onChange, open, id, anchorEl, color } = props;
-
+const CoreColorPicker = ({
+  handleClose,
+  onChange,
+  open,
+  id,
+  anchorEl,
+  color,
+  onThemeColorSelect,
+  themeColor
+}) => {
   const handleChange = (color) => {
     onChange && onChange(getRgba(color.rgb));
   };
@@ -29,6 +37,12 @@ const CoreColorPicker = ({ ...props }) => {
         horizontal: 'left'
       }}
     >
+      {onThemeColorSelect && (
+        <CoreThemeVariantSelect
+          onSelect={onThemeColorSelect}
+          value={themeColor}
+        />
+      )}
       <SketchPicker color={color} onChange={handleChange} />
     </Popover>
   );

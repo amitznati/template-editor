@@ -1,32 +1,48 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroller';
+import BackIcon from '@material-ui/icons/KeyboardArrowDown';
 import {
-  Popper,
+  Popover,
   TextField,
   FormControl,
-  ClickAwayListener,
   MenuItem,
-  MenuList
+  MenuList,
+  Fab
 } from '@material-ui/core';
-import { googleFontAPIKey } from '../../sdk/config';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = () => ({
+  formControl: {
+    flexDirection: 'row'
+  },
+  textInput: {
+    flexGrow: 1
+  }
+});
 
 class CoreFontPicker extends React.Component {
   constructor(props) {
     super(props);
+    const { uploadedFonts } = props;
+    const allFontsNames =
+      (uploadedFonts && uploadedFonts.map((f) => f.name)) || [];
+    const activeFonts = allFontsNames.slice(0, 30);
     this.state = {
-      activeFonts: [],
-      hasMore: false,
+      activeFonts,
+      hasMore: !(activeFonts.length === allFontsNames.length),
       open: false,
-      allFontsNames: [],
-      searchResult: [],
+      allFontsNames,
+      searchResult: allFontsNames,
       textSearch: props.fontFamily
     };
     this.inputFamilyRef = React.createRef();
-    this.loadFonts();
+    !uploadedFonts && this.loadFonts();
   }
 
   loadFonts = () => {
+    const googleFontAPIKey = this.props.googleFontAPIKey;
     // eslint-disable-next-line no-undef
     this.xhr1 = new XMLHttpRequest();
     /*eslint-disable */
@@ -101,43 +117,42 @@ class CoreFontPicker extends React.Component {
     this.setState({ activeFonts, textSearch, searchResult, hasMore });
   };
 
-  render() {
-    const { fontFamily, fontWeight, fontStyle } = this.props;
-    const { hasMore, textSearch, anchorEl } = this.state;
-    const open = Boolean(anchorEl);
-    const id = open ? 'stroke-color-popover' : undefined;
+  setOpen = (open) => {
+    this.setState({ open });
+  };
 
+  render() {
+    const { fontFamily, fontWeight, fontStyle, classes } = this.props;
+    const { hasMore, textSearch, open } = this.state;
     return (
       <div>
-        <ClickAwayListener
-          onClickAway={() => this.setState({ anchorEl: null })}
-        >
-          <div ref={this.inputFamilyRef}>
-            <FormControl fullWidth>
-              <TextField
-                inputProps={{
-                  style: { fontFamily, fontStyle, fontWeight }
-                }}
-                label='Font Family'
-                value={textSearch}
-                onFocus={(e) => this.setState({ anchorEl: e.currentTarget })}
-                onChange={this.handleFamilyChange}
-              />
-            </FormControl>
-          </div>
-        </ClickAwayListener>
-        <Popper
-          id={id}
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            inputProps={{
+              style: { fontFamily, fontStyle, fontWeight }
+            }}
+            ref={this.inputFamilyRef}
+            className={classes.textInput}
+            label='Font Family'
+            value={textSearch}
+            onChange={this.handleFamilyChange}
+          />
+          <Fab size='small' onClick={() => this.setOpen(true)}>
+            <BackIcon />
+          </Fab>
+        </FormControl>
+        <Popover
           open={open}
-          anchorEl={anchorEl}
-          // anchorOrigin={{
-          // 	vertical: 'bottom',
-          // 	horizontal: 'left',
-          // }}
-          // transformOrigin={{
-          // 	vertical: 'top',
-          // 	horizontal: 'left',
-          // }}
+          anchorEl={this.inputFamilyRef.current}
+          onClose={() => this.setOpen(false)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+          }}
         >
           <MenuList
             style={{ height: '300px', overflow: 'auto', background: 'white' }}
@@ -156,7 +171,7 @@ class CoreFontPicker extends React.Component {
               {this.renderItems()}
             </InfiniteScroll>
           </MenuList>
-        </Popper>
+        </Popover>
       </div>
     );
   }
@@ -167,4 +182,11 @@ CoreFontPicker.propTypes = {
   value: PropTypes.any
 };
 
-export default CoreFontPicker;
+const Widget = withStyles(styles)(CoreFontPicker);
+export default connect((state, props) => {
+  console.log({ state, props });
+  return {
+    ...props,
+    googleFontAPIKey: state.EditTemplateMainView.googleFontAPIKey
+  };
+}, undefined)(Widget);

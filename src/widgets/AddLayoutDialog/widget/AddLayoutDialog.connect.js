@@ -1,10 +1,19 @@
 import { connect } from 'react-redux';
-// import {getInstance} from '../../../sdk';
+import { getInstance } from '../../../sdk';
 import AddLayoutDialogComponent from './AddLayoutDialog.component';
 
-// const AddLayoutDialogApi = getInstance().AddLayoutDialogApi;
+const EditTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state, props) => {
+  const product = EditTemplateMainViewApi.getProductSelector();
+  return {
+    selectedTheme: EditTemplateMainViewApi.getSelectedThemeSelector(),
+    dynamicTextOptions: product.dynamicTextOptions,
+    dynamicImageOptions: EditTemplateMainViewApi.getDynamicImageOptionsSelector(),
+    uploadedImages: EditTemplateMainViewApi.getUploadedImagesSelector(),
+    ...props
+  };
+};
 
 const mapDispatchToProps = () => ({});
 

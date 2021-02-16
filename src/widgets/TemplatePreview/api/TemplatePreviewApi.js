@@ -1,5 +1,9 @@
 import BaseApi from '../../../sdk/BaseApi';
-export const ActionTypes = {};
+import selectors from './TemplatePreviewSelectors';
+
+export const ActionTypes = {
+  SET_IS_NODE_REFRESH_REQUIRE: 'SET_IS_NODE_REFRESH_REQUIRE'
+};
 export default class TemplatePreviewApi extends BaseApi {
   onPathChange = (pathData) => {
     const {
@@ -8,5 +12,16 @@ export default class TemplatePreviewApi extends BaseApi {
     const { selectedLayout } = getSelectedLayoutSelector();
     selectedLayout.properties.pathData = pathData;
     onUpdateLayout(selectedLayout);
+  };
+
+  setIsNodeRefreshRequire = (isRequire) => {
+    this.dispatchStoreAction({
+      type: ActionTypes.SET_IS_NODE_REFRESH_REQUIRE,
+      payload: isRequire
+    });
+  };
+
+  isNodeRefreshRequireSelector = () => {
+    return selectors.isNodeRefreshRequireSelector(this.store.getState());
   };
 }

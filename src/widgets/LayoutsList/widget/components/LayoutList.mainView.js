@@ -13,7 +13,12 @@ function LayoutListMainView(props) {
     onDeleteLayout,
     onLayoutClick,
     onSortEnd,
-    setIgnoreLayout
+    setIgnoreLayout,
+    onDuplicateLayout,
+    dynamicTextOptions,
+    uploadedFonts,
+    onAlignmentClick,
+    onFullSizeClick
   } = props;
   return (
     <div>
@@ -24,15 +29,22 @@ function LayoutListMainView(props) {
           onLayoutClick={onLayoutClick}
           onDeleteLayout={onDeleteLayout}
           setIgnoreLayout={setIgnoreLayout}
+          onDuplicateLayout={onDuplicateLayout}
         />
       )}
       {selectedLayout && (
         <LayoutListOpen
           layout={selectedLayout}
-          onBack={onBack}
           onUpdate={onUpdateLayout}
-          onTogglePathBuilder={onTogglePathBuilder}
-          {...{ isSVGPathBuilderOpen }}
+          {...{
+            isSVGPathBuilderOpen,
+            dynamicTextOptions,
+            uploadedFonts,
+            onTogglePathBuilder,
+            onBack,
+            onAlignmentClick,
+            onFullSizeClick
+          }}
         />
       )}
     </div>

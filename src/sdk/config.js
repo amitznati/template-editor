@@ -1,2 +1,2 @@
-const googleFontAPIKey = 'AIzaSyC_GzE5UvLbPXBJN6QKwNL4hRiAdqAOkbY'
+const googleFontAPIKey = 'AIzaSyBw-n14e-XCpKjqWZCfYlAZaAVLG2CAZ3M'
 export { googleFontAPIKey }
