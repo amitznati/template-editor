@@ -38,6 +38,7 @@ const FontProperties = (props) => {
     text,
     dynamicOptionValue,
     dynamicTextOptions,
+    dynamicFontOptions,
     fontSize,
     fontWeight,
     fontStyle,
@@ -49,7 +50,9 @@ const FontProperties = (props) => {
     themeFontFamily,
     googleFontAPIKey
   } = props;
-  const dynamicOptions = dynamicTextOptions.map((o) => ({ id: o, name: o }));
+  const dynamicOptions = dynamicTextOptions
+    ? dynamicTextOptions.map((o) => ({ id: o, name: o }))
+    : [];
   const [loadingState, setLoadingState] = React.useState({});
   const isGoogleFontProvider = fontProvider === 'google';
   const classes = useStyles();
@@ -140,6 +143,8 @@ const FontProperties = (props) => {
           value={themeFontFamily}
           onSelect={onSelectThemeFontFamily}
           className={classes.progress}
+          options={dynamicFontOptions}
+          title='Dynamic Font Options'
         />
       </Grid>
       <Grid item xs={3}>

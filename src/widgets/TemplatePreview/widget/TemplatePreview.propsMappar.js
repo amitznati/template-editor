@@ -125,7 +125,7 @@ export const getAllFonts = (template) => {
   return allFonts;
 };
 
-const replaceDynamicThemeValues = (template, selectedTheme, selectedLogo) => {
+const replaceDynamicThemeValues = (template, selectedTheme) => {
   const { layouts = [], templateGradients = [] } = template;
   template.layouts = layouts.map((layout) => {
     const p = layout.properties;
@@ -141,7 +141,7 @@ const replaceDynamicThemeValues = (template, selectedTheme, selectedLogo) => {
       p.fontProvider = fontProvider;
     }
     if (p.themeImage) {
-      p.src = selectedTheme.images[p.themeImage.split('-').pop()];
+      p.src = selectedTheme.images[p.themeImage];
     }
     if (p.fill && p.fill.gradientId) {
       if (!p.fill.gradientId.includes(selectedTheme.id)) {

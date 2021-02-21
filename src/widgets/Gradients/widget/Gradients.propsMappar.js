@@ -1,32 +1,29 @@
-
 const mapComponentProps = (props) => {
-	const {
-		selectGradientOptions,
-		selectedGradient,
-		onAddGradient,
-		onGradientChange,
-		removeGradientFromLayout,
-		removeGradientFromTemplate,
-		onGradientNameChange
-	} = props;
-	return {
-		selectedGradient,
-		editGradientProps: {
-			onGradientChange,
-			selectedGradient,
-			removeGradientFromLayout,
-			onGradientNameChange
-		},
-		selectGradientProps: {
-			selectGradientOptions,
-			onAddGradient,
-			removeGradientFromTemplate
-		}
-	};
+  const {
+    selectGradientOptions,
+    selectedGradient,
+    onAddGradient,
+    onGradientChange,
+    removeGradientFromLayout,
+    removeGradientFromTemplate,
+    onGradientNameChange,
+    dynamicColorOptions
+  } = props;
+  return {
+    selectedGradient,
+    editGradientProps: {
+      onGradientChange,
+      selectedGradient,
+      removeGradientFromLayout,
+      onGradientNameChange,
+      dynamicColorOptions
+    },
+    selectGradientProps: {
+      selectGradientOptions,
+      onAddGradient,
+      removeGradientFromTemplate
+    }
+  };
 };
 
-export {
-	mapComponentProps
-};
-
-
+export { mapComponentProps };

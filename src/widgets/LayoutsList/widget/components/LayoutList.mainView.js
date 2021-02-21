@@ -16,6 +16,8 @@ function LayoutListMainView(props) {
     setIgnoreLayout,
     onDuplicateLayout,
     dynamicTextOptions,
+    dynamicColorOptions,
+    dynamicFontOptions,
     uploadedFonts,
     onAlignmentClick,
     onFullSizeClick,
@@ -40,6 +42,8 @@ function LayoutListMainView(props) {
           {...{
             isSVGPathBuilderOpen,
             dynamicTextOptions,
+            dynamicColorOptions,
+            dynamicFontOptions,
             uploadedFonts,
             onTogglePathBuilder,
             onBack,

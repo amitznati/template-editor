@@ -53,6 +53,8 @@ function LayoutListOpen(props) {
     onUpdate,
     isSVGPathBuilderOpen,
     dynamicTextOptions,
+    dynamicColorOptions,
+    dynamicFontOptions,
     uploadedFonts,
     onAlignmentClick,
     onFullSizeClick,
@@ -143,6 +145,7 @@ function LayoutListOpen(props) {
               text,
               dynamicOptionValue,
               dynamicTextOptions,
+              dynamicFontOptions,
               fontSize,
               fontWeight,
               fontStyle,
@@ -167,7 +170,14 @@ function LayoutListOpen(props) {
       case 'colorProperties': {
         return (
           <ColorProperties
-            {...{ fill, strokeWidth, stroke, onPropertyChange, themeColor }}
+            {...{
+              fill,
+              strokeWidth,
+              stroke,
+              onPropertyChange,
+              themeColor,
+              dynamicColorOptions
+            }}
           />
         );
       }

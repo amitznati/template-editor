@@ -3,6 +3,7 @@ import { getInstance } from '../../../sdk';
 import GradientsComponent from './Gradients.component';
 
 const gradientsApi = getInstance().GradientsApi;
+const editTemplateMainViewApi = getInstance().EditTemplateMainViewApi;
 const {
   selectGradientOptionsSelector,
   getSelectedGradientSelector,
@@ -10,12 +11,13 @@ const {
   onGradientChange,
   removeGradientFromLayout,
   removeGradientFromTemplate,
-  onGradientNameChange
+  onGradientNameChange,
 } = gradientsApi;
 const mapStateToProps = () => {
   return {
     selectGradientOptions: selectGradientOptionsSelector(),
-    selectedGradient: getSelectedGradientSelector()
+    selectedGradient: getSelectedGradientSelector(),
+    dynamicColorOptions: editTemplateMainViewApi.getDynamicColorOptionsSelector()
   };
 };
 

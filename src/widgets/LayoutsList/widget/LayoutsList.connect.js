@@ -12,6 +12,8 @@ const mapStateToProps = (state) => {
   const isSVGPathBuilderOpen = editTemplateMainViewApi.getIsSVGPathBuilderOpenSelector();
   const dynamicTextOptions = editTemplateMainViewApi.getProductSelector()
     .dynamicTextOptions;
+  const dynamicFontOptions = editTemplateMainViewApi.getDynamicFontOptionsSelector();
+  const dynamicColorOptions = editTemplateMainViewApi.getDynamicColorOptionsSelector();
   const uploadedFonts = editTemplateMainViewApi.getUploadedFontsSelector();
   return {
     selectedLayout,
@@ -19,6 +21,8 @@ const mapStateToProps = (state) => {
     layouts: template.layouts,
     isSVGPathBuilderOpen,
     dynamicTextOptions,
+    dynamicFontOptions,
+    dynamicColorOptions,
     uploadedFonts,
     googleFontAPIKey: state?.EditTemplateMainView?.googleFontAPIKey
   };

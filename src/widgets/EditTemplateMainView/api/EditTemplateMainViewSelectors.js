@@ -43,6 +43,18 @@ export const getDynamicImageOptionsSelector = createSelector(
     return slice.dynamicImageOptions;
   }
 );
+export const getDynamicFontOptionsSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.dynamicFontOptions;
+  }
+);
+export const getDynamicColorOptionsSelector = createSelector(
+  sliceSelector,
+  (slice) => {
+    return slice.dynamicColorOptions;
+  }
+);
 export const getScaleSelector = createSelector(sliceSelector, (slice) => {
   return slice.scale;
 });
@@ -103,5 +115,7 @@ export default {
   getUploadedFontsSelector,
   getSelectedThemeSelector,
   getSelectedLogoSelector,
-  getUploadedImagesSelector
+  getUploadedImagesSelector,
+  getDynamicColorOptionsSelector,
+  getDynamicFontOptionsSelector
 };

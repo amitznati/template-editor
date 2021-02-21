@@ -310,6 +310,14 @@ export default class EditTemplateMainViewApi extends BaseApi {
     return selectors.getDynamicImageOptionsSelector(this.store.getState());
   };
 
+  getDynamicColorOptionsSelector = () => {
+    return selectors.getDynamicColorOptionsSelector(this.store.getState());
+  };
+
+  getDynamicFontOptionsSelector = () => {
+    return selectors.getDynamicFontOptionsSelector(this.store.getState());
+  };
+
   isAddLayoutDialogOpenSelector = () => {
     return selectors.isAddLayoutDialogOpenSelector(this.store.getState());
   };

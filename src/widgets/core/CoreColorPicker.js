@@ -16,7 +16,8 @@ const CoreColorPicker = ({
   anchorEl,
   color,
   onThemeColorSelect,
-  themeColor
+  themeColor,
+  dynamicColorOptions
 }) => {
   const handleChange = (color) => {
     onChange && onChange(getRgba(color.rgb));
@@ -41,6 +42,8 @@ const CoreColorPicker = ({
         <CoreThemeVariantSelect
           onSelect={onThemeColorSelect}
           value={themeColor}
+          options={dynamicColorOptions}
+          title='Dynamic Color Option'
         />
       )}
       <SketchPicker color={color} onChange={handleChange} />

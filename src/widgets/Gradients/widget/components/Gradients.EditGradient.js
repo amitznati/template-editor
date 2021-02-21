@@ -17,7 +17,8 @@ export default function EditGradient({
   onGradientChange,
   selectedGradient,
   removeGradientFromLayout,
-  onGradientNameChange
+  onGradientNameChange,
+  dynamicColorOptions
 }) {
   const classes = useStyles();
   const gradientHeader = () => {
@@ -51,6 +52,7 @@ export default function EditGradient({
       <CoreGradientPicker
         onPaletteChange={onGradientChange}
         gradientData={selectedGradient.gradientData}
+        dynamicColorOptions={dynamicColorOptions}
       />
     </CoreExpandableSortablePaper>
   );

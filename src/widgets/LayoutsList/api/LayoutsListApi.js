@@ -113,6 +113,27 @@ export default class LayoutsListApi extends BaseApi {
         ...newLayout.properties.alignment,
         vertical: { value, align: true }
       };
+    } else if (alignment === 'flip') {
+      let translateY = newLayout.properties.transform.translateY;
+      let translateX = newLayout.properties.transform.translateX;
+      let scaleX = newLayout.properties.transform.scaleX;
+      let scaleY = newLayout.properties.transform.scaleY;
+      switch (value) {
+        case 'vertical':
+          translateY = imageH;
+          scaleY = -1;
+          break;
+        case 'horizontal':
+          translateX = imageW;
+          scaleX = -1;
+          break;
+        default:
+          break;
+      }
+      newLayout.properties.transform.translateY = translateY;
+      newLayout.properties.transform.translateX = translateX;
+      newLayout.properties.transform.scaleX = scaleX;
+      newLayout.properties.transform.scaleY = scaleY;
     }
     this.handleRectHorizontalAlignment(
       alignment,

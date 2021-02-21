@@ -4,13 +4,15 @@ import { CoreText, RadioButtonsGroup } from '../../../core';
 
 export default function TextTab({ onSelect, dynamicTextOptions = [] }) {
   const [value, setValue] = React.useState('');
-  const dynamicOptions = dynamicTextOptions.map((o) => ({
-    value: o,
-    label: o
-  }));
+  const dynamicOptions = dynamicTextOptions
+    ? dynamicTextOptions.map((o) => ({
+        value: o,
+        label: o
+      }))
+    : [];
   const onAdd = (type) => {
     const payload = { type, value: { text: value } };
-    if (dynamicTextOptions.includes(value)) {
+    if (dynamicTextOptions && dynamicTextOptions.includes(value)) {
       payload.value.dynamicOptionValue = value;
     }
     onSelect(payload);

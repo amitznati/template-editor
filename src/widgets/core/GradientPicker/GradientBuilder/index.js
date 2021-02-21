@@ -112,14 +112,23 @@ class GradientBuilder extends React.Component {
 
   handleSelectColor(color, themeColor) {
     let { palette, activeId } = this.state;
+    const selectedThemeColor = themeColor;
+    const getSelectedThemeColor = (c) => {
+      if (selectedThemeColor === 'none') {
+        return undefined;
+      } else if (selectedThemeColor) {
+        return selectedThemeColor;
+      }
+      return c.themeColor;
+    };
     palette = palette.map((c) =>
       activeId === c.id
         ? {
             ...c,
             color: color || c.color,
-            themeColor: themeColor || c.themeColor
+            themeColor: getSelectedThemeColor(c)
           }
-        : { ...c }
+        : c
     );
     this.setState({ palette });
     this.notifyChange(palette);

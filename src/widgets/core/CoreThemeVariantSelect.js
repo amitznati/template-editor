@@ -1,34 +1,48 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Button } from '@material-ui/core';
+import { Paper, Button, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles({
   label: { padding: '1rem' },
   buttonsGroup: { display: 'flex' }
 });
 
-export default function CoreThemeVariantSelect({ value, onSelect, ...rest }) {
+export default function CoreThemeVariantSelect({
+  value,
+  onSelect,
+  options = [],
+  title,
+  ...rest
+}) {
   const classes = useStyles();
   return (
     <Paper {...rest}>
-      <span className={classes.label}>Theme Variant Select</span>
-      <div className={classes.buttonsGroup}>
-        {['none', 'primary', 'secondary', 'tertiary'].map((themeColor) => {
-          const isNone = themeColor === 'none';
+      <span className={classes.label}>{title}</span>
+      <Grid container className={classes.buttonsGroup}>
+        <Grid item xs={12}>
+          <Button
+            variant={value ? 'text' : 'outlined'}
+            color={value ? 'default' : 'primary'}
+            onClick={() => onSelect(undefined)}
+          >
+            None
+          </Button>
+        </Grid>
+        {options.map((option) => {
           const btnProps = {
-            onClick: () => onSelect(isNone ? '' : themeColor)
+            onClick: () => onSelect(option)
           };
-          if (value === themeColor || (isNone && !value)) {
+          if (value === option) {
             btnProps.variant = 'outlined';
             btnProps.color = 'primary';
           }
           return (
-            <Button key={themeColor} {...btnProps}>
-              {themeColor}
-            </Button>
+            <Grid key={option} item xs={4}>
+              <Button {...btnProps}>{option}</Button>
+            </Grid>
           );
         })}
-      </div>
+      </Grid>
     </Paper>
   );
 }

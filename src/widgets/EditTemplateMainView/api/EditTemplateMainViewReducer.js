@@ -26,6 +26,8 @@ const initialState = {
       y: 1.1
     },
     dynamicTextOptions: [],
+    dynamicColorOptions: [],
+    dynamicFontOptions: [],
     googleFontAPIKey: ''
   }
 };

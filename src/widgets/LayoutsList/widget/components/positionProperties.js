@@ -134,6 +134,23 @@ const PositionProperties = ({
         </ButtonGroup>
       </Grid>
       {layout.type === 'image' && (
+        <Grid item xs={12} className={classes.buttonGroup}>
+          <Grid container>
+            {['horizontal', 'vertical'].map((dir) => (
+              <Grid key={dir} item xs={6} className={classes.fullAlignmentItem}>
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  onClick={() => onAlignmentClick('flip', dir)}
+                >
+                  Flip {dir}
+                </Button>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      )}
+      {layout.type === 'image' && (
         <Grid item xs={12}>
           <Grid container>
             {['width', 'height'].map((dir) => (

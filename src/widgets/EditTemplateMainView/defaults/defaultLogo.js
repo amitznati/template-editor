@@ -1,5 +1,4 @@
-import sideB from './sideB.jpg';
-import sideT from './sideT.jpg';
+import sideB from './side.png';
 
 export default {
   template: {
@@ -72,7 +71,7 @@ export default {
       {
         type: 'image',
         properties: {
-          src: sideT,
+          src: sideB,
           themeImage: '@theme-image-sideT',
           x: 0,
           y: 0,

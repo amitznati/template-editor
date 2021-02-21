@@ -28,15 +28,26 @@ const getRgba = (rgba) => {
   return `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
 };
 
-const WrappedSketchPicker = ({ onSelect, classes, themeColor, ...rest }) => {
+const WrappedSketchPicker = ({
+  onSelect,
+  classes,
+  themeColor,
+  dynamicColorOptions,
+  ...rest
+}) => {
+  const onColorChange = (c) => {
+    onSelect(getRgba(c.rgb));
+  };
   if (rest && rest.isActive) {
     return (
       <div className={classes.popover}>
         <CoreThemeVariantSelect
           value={themeColor}
-          onSelect={(tc) => onSelect(rest.color, tc)}
+          onSelect={(tc) => onSelect(rest.color, tc || 'none')}
+          options={dynamicColorOptions}
+          title='Dynamic Color Option'
         />
-        <SketchPicker {...rest} onChange={(c) => onSelect(getRgba(c.rgb))} />
+        <SketchPicker {...rest} onChange={onColorChange} />
       </div>
     );
   }
@@ -78,7 +89,7 @@ class GradientPicker extends React.Component {
   };
 
   render() {
-    const { gradientData, classes } = this.props;
+    const { gradientData, classes, dynamicColorOptions } = this.props;
     const {
       palette,
       activeId,
@@ -145,7 +156,8 @@ class GradientPicker extends React.Component {
                 width: 200,
                 disableAlpha: false,
                 isActive: isActive,
-                classes
+                classes,
+                dynamicColorOptions
               }}
             />
           </GradientBuilder>

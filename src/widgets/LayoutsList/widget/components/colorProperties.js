@@ -36,7 +36,7 @@ class ColorProperties extends React.Component {
   };
 
   renderFillField = () => {
-    const { fill, themeColor } = this.props;
+    const { fill, themeColor, dynamicColorOptions } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'fill-color-popover' : undefined;
@@ -62,14 +62,17 @@ class ColorProperties extends React.Component {
             <Chip variant='outlined' color='primary' label={themeColor} />
           )}
           <CoreColorPicker
-            anchorEl={anchorEl}
-            id={id}
-            open={open}
             handleClose={this.handleColorClose}
             onChange={this.handleFillColorChange}
-            color={color}
             onThemeColorSelect={this.onThemeColorSelect}
-            themeColor={themeColor}
+            {...{
+              anchorEl,
+              dynamicColorOptions,
+              id,
+              color,
+              themeColor,
+              open
+            }}
           />
         </Grid>
       </Grid>
@@ -85,11 +88,15 @@ class ColorProperties extends React.Component {
     Gradient: this.renderFillGradientField
   };
 
-  handleFillColorTypeChange = (event, selectedFillColorType) => {
-    const { fill, onPropertyChange } = this.props;
-    fill.selectedFillColorType = selectedFillColorType || 'Fill';
+  handleFillColorTypeChange = (event, fillColorType) => {
+    if (!fillColorType) return;
+    const { onPropertyChange } = this.props;
+    const selectedFillColorType = fillColorType;
     onPropertyChange &&
-      onPropertyChange('fill', { selectedFillColorType, fill: 'black' });
+      onPropertyChange('fill', {
+        selectedFillColorType,
+        fill: 'black'
+      });
   };
 
   render() {
