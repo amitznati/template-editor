@@ -102,6 +102,10 @@ const App = () => {
     // setSizeState(newSizeState);
     setIsPX(!isPX);
   };
+
+  const getSize = (fName) =>
+    (isPX ? getCM(sizeState[fName]) : sizeState[fName]) || 0;
+
   return (
     <Container className={classes.container}>
       <Grid container>
@@ -163,14 +167,14 @@ const App = () => {
             name: 'temp product',
             imageUrl: imageSrc,
             size: {
-              height: sizeState['size.height'] || 0,
-              width: sizeState['size.width'] || 0
+              height: getSize('size.height'),
+              width: getSize('size.width')
             },
             templateFrame: {
-              height: sizeState['templateFrame.height'] || 0,
-              width: sizeState['templateFrame.width'] || 0,
-              x: sizeState['templateFrame.x'] || 0,
-              y: sizeState['templateFrame.y'] || 0
+              height: getSize('templateFrame.height'),
+              width: getSize('templateFrame.width'),
+              x: getSize('templateFrame.x'),
+              y: getSize('templateFrame.y')
             }
           },
           uploadedFonts: [],
