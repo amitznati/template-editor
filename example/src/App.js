@@ -26,20 +26,9 @@ const useStyles = makeStyles({
   }
 });
 
-export const getPX = (cm, scale) => {
-  const s = scale || 1;
-  return Number((cm * s * (96 / 2.54)).toFixed(3));
-};
 export const getCM = (px, scale) => {
   const s = scale || 1;
   return Number((px / s / (96 / 2.54)).toFixed(3));
-};
-
-const convertPX = (isPX, source) => {
-  if (!source) {
-    return;
-  }
-  return isPX ? getPX(source) : getCM(source);
 };
 
 const ProductPreview = ({ imageSrc, sizeState, isPX }) => {
