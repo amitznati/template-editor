@@ -6,6 +6,8 @@ import {
   Container,
   Grid,
   TextField,
+  Switch,
+  FormControlLabel,
   makeStyles
 } from 'template-editor';
 import 'template-editor/dist/index.css';
@@ -23,31 +25,57 @@ const useStyles = makeStyles({
     marginTop: '20rem'
   }
 });
-const ProductPreview = ({ imageSrc, sizeState }) => {
+
+export const getPX = (cm, scale) => {
+  const s = scale || 1;
+  return Number((cm * s * (96 / 2.54)).toFixed(3));
+};
+export const getCM = (px, scale) => {
+  const s = scale || 1;
+  return Number((px / s / (96 / 2.54)).toFixed(3));
+};
+
+const convertPX = (isPX, source) => {
+  if (!source) {
+    return;
+  }
+  return isPX ? getPX(source) : getCM(source);
+};
+
+const ProductPreview = ({ imageSrc, sizeState, isPX }) => {
+  const convertedSizeState = {};
+  Object.keys(sizeState).forEach((sName) => {
+    if (isPX) {
+      convertedSizeState[sName] = getCM(sizeState[sName]);
+    } else {
+      convertedSizeState[sName] = sizeState[sName];
+    }
+  });
   const product = {
     id: 1,
     name: 'temp product',
     imageUrl: imageSrc,
     size: {
-      height: sizeState['size.height'] || 0,
-      width: sizeState['size.width'] || 0
+      height: convertedSizeState['size.height'] || 0,
+      width: convertedSizeState['size.width'] || 0
     },
     templateFrame: {
-      height: sizeState['templateFrame.height'] || 0,
-      width: sizeState['templateFrame.width'] || 0,
-      x: sizeState['templateFrame.x'] || 0,
-      y: sizeState['templateFrame.y'] || 0
+      height: convertedSizeState['templateFrame.height'] || 0,
+      width: convertedSizeState['templateFrame.width'] || 0,
+      x: convertedSizeState['templateFrame.x'] || 0,
+      y: convertedSizeState['templateFrame.y'] || 0
     }
   };
   return (
     <div style={{ paddingTop: '4rem' }}>
-      <TemplatePreviewForProduct product={product} />
+      <TemplatePreviewForProduct product={product} initiateScale={1} />
     </div>
   );
 };
 
 const App = () => {
   const [open, setOpen] = React.useState(false);
+  const [isPX, setIsPX] = React.useState(false);
   const initialSizeState = {};
   sizeFields.forEach((sf) => {
     initialSizeState[sf.source] = 0;
@@ -77,9 +105,30 @@ const App = () => {
       setOpen(true);
     }
   };
+  const onPXChange = () => {
+    // const newSizeState = {};
+    // Object.keys(sizeState).forEach(
+    //   (ss) => (newSizeState[ss] = convertPX(!isPX, sizeState[ss]))
+    // );
+    // setSizeState(newSizeState);
+    setIsPX(!isPX);
+  };
   return (
     <Container className={classes.container}>
       <Grid container>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPX}
+                onChange={onPXChange}
+                name='isPX'
+                color='primary'
+              />
+            }
+            label='is PX (off = in CM)'
+          />
+        </Grid>
         <Grid item xs={12}>
           <Grid container>
             {sizeFields.map((field) => (
@@ -102,7 +151,13 @@ const App = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <ProductPreview imageSrc={imageSrc} sizeState={sizeState} />
+          <ProductPreview
+            {...{
+              isPX,
+              imageSrc,
+              sizeState
+            }}
+          />
         </Grid>
       </Grid>
       <Button onClick={onOpenDialog}>Open template editor dialog</Button>
@@ -134,7 +189,7 @@ const App = () => {
           template: { templateGradients: [], templateFilters: [], layouts: [] },
           selectedTheme: undefined,
           selectedLogo: undefined,
-          googleFontAPIKey: 'AIzaSyC_GzE5UvLbPXBJN6QKwNL4hRiAdqAOkbY'
+          googleFontAPIKey: process.env.REACT_APP_googleFontAPIKey
         }}
       />
     </Container>

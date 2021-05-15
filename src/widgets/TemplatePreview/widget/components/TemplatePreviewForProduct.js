@@ -2,8 +2,8 @@ import React from 'react';
 import { CoreSlider } from '../../../core';
 import { getPX } from '../../../../sdk/utils';
 
-const TemplatePreviewForProduct = ({ product }) => {
-  const [scale, setScale] = React.useState(0.5);
+const TemplatePreviewForProduct = ({ product, initiateScale = 0.5 }) => {
+  const [scale, setScale] = React.useState(initiateScale);
   const productW = getPX(product.size.width, scale);
   const productH = getPX(product.size.height, scale);
   const templateH = getPX(product.templateFrame.height, scale);
