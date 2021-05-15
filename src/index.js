@@ -40,3 +40,5 @@ export {
   FontLoader,
   TemplateEditorModalWrapper as TemplateEditorModal
 };
+export * from '@material-ui/core';
+export * from '@material-ui/icons';

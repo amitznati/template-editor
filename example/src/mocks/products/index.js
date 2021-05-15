@@ -1,12 +1,12 @@
-import paperBagBround from './paper_bag_bround.png';
+import paperBagBrown from './paper_bag_brown.png';
 import paperBagWhite from './paper_bag_white.png';
 import businessCard from './business_card.png';
 const products = [
   {
     id: 1,
-    name: 'Paper Bag - Bround',
-    image: paperBagBround,
-    productSize: {
+    name: 'Paper Bag - Brown',
+    image: paperBagBrown,
+    size: {
       height: 30,
       width: 20
     },
@@ -21,7 +21,7 @@ const products = [
     id: 2,
     name: 'Business Card - front',
     image: businessCard,
-    productSize: {
+    size: {
       height: 5.5,
       width: 8.5
     },
@@ -36,7 +36,7 @@ const products = [
     id: 3,
     name: 'Business Card - back',
     image: businessCard,
-    productSize: {
+    size: {
       height: 5.5,
       width: 8.5
     },
@@ -51,7 +51,7 @@ const products = [
     id: 4,
     name: 'Paper Bag - White',
     image: paperBagWhite,
-    productSize: {
+    size: {
       height: 30,
       width: 20
     },
@@ -66,7 +66,7 @@ const products = [
     id: 5,
     name: 'Icon',
     image: '',
-    productSize: {
+    size: {
       height: 0.635,
       width: 0.635
     },

@@ -17,7 +17,7 @@ class SVGPathBuilder extends Component {
     initialPoints: PropTypes.array.isRequired,
     h: PropTypes.number.isRequired,
     w: PropTypes.number.isRequired,
-    gridSize: PropTypes.number.isRequired,
+    gridSize: PropTypes.any,
     onChange: PropTypes.func.isRequired,
     layout: PropTypes.object.isRequired,
     scale: PropTypes.number
@@ -26,7 +26,9 @@ class SVGPathBuilder extends Component {
   constructor(props) {
     super(props);
     this.svg = React.createRef();
+    // eslint-disable-next-line no-undef
     SVGElement.prototype.getTransformToElement =
+      // eslint-disable-next-line no-undef
       SVGElement.prototype.getTransformToElement ||
       function (toElement) {
         return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
@@ -505,6 +507,7 @@ class SVGPathBuilder extends Component {
     if (!this.state.path) return null;
     return (
       <div className='ad-Builder--' onMouseUp={this.cancelDragging}>
+        {/* eslint-disable-next-line react/jsx-pascal-case */}
         <SVG
           propRef={this.svg}
           {...this.state}

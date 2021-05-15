@@ -26,14 +26,17 @@ const TemplatePreviewForProduct = ({ product }) => {
           position: 'relative',
           margin: 'auto',
           overflow: 'hidden',
-          background: product.imageUrl ? '' : 'white'
+          background: product.imageUrl ? '' : 'white',
+          boxShadow: product.imageUrl ? 'none' : '2px 4px 4px #00000085'
         }}
       >
-        <img
-          src={product.imageUrl}
-          alt='product'
-          style={{ height: productH, width: productW, position: 'absolute' }}
-        />
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt='product'
+            style={{ height: productH, width: productW, position: 'absolute' }}
+          />
+        )}
         <div
           style={{
             height: templateH,
